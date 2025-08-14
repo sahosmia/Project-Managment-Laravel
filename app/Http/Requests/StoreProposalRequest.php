@@ -54,8 +54,7 @@ class StoreProposalRequest extends FormRequest
                     $query->where('role', 'student'); // Ensure selected user is a student
                 }),
             ],
-            'members.*.student_id' => ['required', 'string', 'max:50'],
-       
+
         ];
     }
 
@@ -94,8 +93,7 @@ class StoreProposalRequest extends FormRequest
             'members.*.user_id.required' => 'Member name is required for all group members.',
             'members.*.user_id.distinct' => 'Each group member must be unique.',
             'members.*.user_id.exists' => 'Selected member is invalid.',
-            'members.*.student_id.required' => 'Student ID is required for all group members.',
-           
+
         ];
     }
 }

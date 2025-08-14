@@ -763,3 +763,21 @@ span.flatpickr-weekday,
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+
+.select2-container .select2-selection--single {
+
+    height: 45px;
+
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 45px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 44px;
+    top: 0px;
+    right: 1px;
+}
+.select2-container--default .select2-selection--single {
+  @apply shadow-sm appearance-none border border-gray-300 rounded-lg  text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition duration-200
+}
