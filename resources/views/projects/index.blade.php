@@ -168,7 +168,7 @@
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>
 
-                            <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden dark:bg-gray-700"
+                            <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 hidden dark:bg-gray-700"
                                 role="menu" aria-orientation="vertical" aria-labelledby="options-menu-{{ $item->id }}">
                                 <div class="py-1" role="none">
                                     <a href="{{route('projects.show', $item->id)}}"
@@ -177,15 +177,15 @@
                                     @if (auth()->user()->role == "research_cell")
 
 
-                                    <form method="POST" action="{{route('projects.approve', $item->id)}}">
+                                    <form method="POST" action="{{route('projects.approve', $item->id)}}" class="approve-form">
                                         @csrf
                                         <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
+                                            class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 dark:text-green-300 dark:hover:bg-gray-600"
                                             role="menuitem">Approve</button>
                                     </form>
 
                                     @if ($item->status == 'pending_research_cell')
-                                    <form method="POST" action="{{route('projects.reject', $item->id)}}">
+                                    <form method="POST" action="{{route('projects.reject', $item->id)}}" class="reject-form">
                                         @csrf
                                         <button type="submit"
                                             class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
@@ -195,7 +195,7 @@
                                     @endif
                                     @if (auth()->user()->role == "student")
 
-                                    <form method="POST" action="#">
+                                    <form method="POST" action="{{route('projects.destroy', $item->id)}}" class="delete-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -242,7 +242,7 @@
 
                 <div class="mb-4">
                     <label for="filter_status" class="input_label">Status</label>
-                    <select name="status" id="filter_status" class="input">
+                    <select name="status" id="filter_status" class="input select2">
                         <option value="">All Statuses</option>
                         <option @selected(request('status')=='pending_research_cell' ) value="pending_research_cell">
                             Pending Research Cell
@@ -268,9 +268,9 @@
                 @if(auth()->user()->role == 'admin' || auth()->user()->role == 'research_cell')
                 <div class="mb-4">
                     <label for="filter_supervisor" class="input_label">Supervisor</label>
-                    <select name="supervisor_id" id="filter_supervisor" class="input">
+                    <select name="supervisor_id" id="filter_supervisor" class="input select2">
                         <option value="">All Supervisors</option>
-                        @foreach(\App\Models\User::where('role', 'supervisor')->get() as $supervisor)
+                        @foreach(getRoleList('supervisor') as $supervisor)
                         <option value="{{ $supervisor->id }}" @selected(request('supervisor_id')==$supervisor->id)>{{
                             $supervisor->name }}
                         </option>
@@ -294,3 +294,70 @@
 
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('.select2').select2({
+            width: '100%'
+        });
+        // Handle Delete Confirmation
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+
+        // Handle Approve Confirmation
+        document.querySelectorAll('.approve-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Do you want to approve this project?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approve it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+
+        // Handle Reject Confirmation
+        document.querySelectorAll('.reject-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Do you want to reject this project?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, reject it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+    });
+</script>
+@endpush

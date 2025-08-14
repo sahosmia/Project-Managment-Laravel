@@ -1,4 +1,5 @@
 import './bootstrap';
+import './../css/custom.css';
 
 // import "jsvectormap/dist/jsvectormap.min.css";
 // import "flatpickr/dist/flatpickr.min.css";

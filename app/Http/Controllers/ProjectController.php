@@ -25,9 +25,10 @@ class ProjectController extends Controller
 
         switch ($user->role) {
             case 'admin':
+                $projectsQuery->whereIn('status', ['pending_admin', 'rejected_by_admin']);
                 break;
             case 'research_cell':
-                $projectsQuery->whereIn('status', ['pending_research_cell', 'rejected_by_research_cell']);
+                $projectsQuery->where('status', 'pending_research_cell');
                 break;
             case 'supervisor':
                 $projectsQuery->where('supervisor_id', $user->id);
@@ -177,35 +178,60 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        $user_role = auth()->user()->role;
-        $project_status = $project->status;
-        if ($user_role == "research_cell" && ($project_status == "pending_research_cell" || $project_status == "rejected_by_research_cell")) {
+        $user = auth()->user();
 
-            $project->update(['status' => 'approved_by_research_cell']);
-            return back()->with('success', 'Project approved and sent to Admin.');
-        } else {
-            abort(403, "You are not authorized to perform this action or the project status is incorrect.");
+        switch ($user->role) {
+            case 'research_cell':
+                if ($project->status === 'pending_research_cell') {
+                    $project->update(['status' => 'pending_admin']);
+                    return back()->with('success', 'Project approved and sent to Admin for review.');
+                }
+                break;
+            case 'admin':
+                if ($project->status === 'pending_admin') {
+                    $project->update(['status' => 'assigned_to_supervisor']);
+                    return back()->with('success', 'Project approved and assigned to supervisor.');
+                }
+                break;
+            case 'supervisor':
+                if ($project->status === 'assigned_to_supervisor') {
+                    $project->update(['status' => 'in_progress']);
+                    return back()->with('success', 'Project started.');
+                }
+                break;
         }
+
+        abort(403, "You are not authorized to perform this action or the project is not in a valid state for approval.");
     }
 
 
 
     public function reject(Project $project)
     {
-        $user_role = auth()->user()->role;
-        $project_status = $project->status;
+        $user = auth()->user();
 
-        if ($user_role == "research_cell" && $project_status == "pending_research_cell") {
-
-            $project->update(['status' => 'rejected_by_research_cell']);
-        } elseif ($user_role == "admin" && $project_status == "pending_admin") {
-
-            $project->update(['status' => 'rejected_by_admin']);
-        } else {
-            abort(403, "You are not authorized to perform this action or the project status is incorrect.");
+        switch ($user->role) {
+            case 'research_cell':
+                if ($project->status === 'pending_research_cell') {
+                    $project->update(['status' => 'rejected_by_research_cell']);
+                    return back()->with('success', 'Project has been rejected.');
+                }
+                break;
+            case 'admin':
+                if ($project->status === 'pending_admin') {
+                    $project->update(['status' => 'rejected_by_admin']);
+                    return back()->with('success', 'Project has been rejected by admin.');
+                }
+                break;
+            case 'supervisor':
+                if ($project->status === 'assigned_to_supervisor') {
+                    $project->update(['status' => 'rejected_by_supervisor']);
+                    return back()->with('success', 'Project has been rejected by supervisor.');
+                }
+                break;
         }
 
-        return back()->with('success', 'Project rejected and sent back to Student.');
+        abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
     }
 
 
