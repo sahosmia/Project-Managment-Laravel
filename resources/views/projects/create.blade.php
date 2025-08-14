@@ -14,7 +14,7 @@
             <div>
                 <label for="department_id" class="input_label">Department</label>
                 <div class="relative">
-                    <select id="department_id" name="department_id" class="input">
+                    <select id="department_id" name="department_id" class="input select2">
                         <option value="">Select Department</option>
                         @foreach ($departments as $department)
                         <option value="{{ $department->id }}" @selected(old('department_id')==$department->id)>{{
@@ -36,7 +36,7 @@
             <div>
                 <label for="academic_year" class="input_label">Academic Year</label>
                 <div class="relative">
-                    <select id="academic_year" name="academic_year" class="input">
+                    <select id="academic_year" name="academic_year" class="input select2">
                         <option value="">Select Year</option>
                         @php
                         $currentYear = date('Y');
@@ -61,7 +61,7 @@
             <div>
                 <label for="semester" class="input_label">Semester</label>
                 <div class="relative">
-                    <select id="semester" name="semester" class="input">
+                    <select id="semester" name="semester" class="input select2">
                         <option value="">Select Semester</option>
                         <option @selected(old('semester')=='Fall' ) value="Fall">Fall</option>
                         <option @selected(old('semester')=='Summer' ) value="Summer">Summer</option>
@@ -82,7 +82,7 @@
             <div>
                 <label for="course_type" class="input_label">Course Type</label>
                 <div class="relative">
-                    <select id="course_type" name="course_type" class="input">
+                    <select id="course_type" name="course_type" class="input select2">
                         <option value="">Select Course Type</option>
                         <option @selected(old('course_type')=='Project' ) value="Project">Project</option>
                         <option @selected(old('course_type')=='Thesis' ) value="Thesis">Thesis</option>
@@ -131,12 +131,13 @@
                         <div>
                             <label for="member_user_id_0" class="input_label">Member Name</label>
                             <div class="relative">
-                                <select id="member_user_id_0" name="members[0][user_id]" class="input member-select">
+                                <select id="member_user_id_0" name="members[0][user_id]"
+                                    class="input member-select select2">
                                     <option value="">Select Member</option>
                                     @foreach ($students as $student)
                                     <option value="{{ $student->id }}" @selected(old('members.0.user_id', auth()->id())
                                         == $student->id)>
-                                        {{ $student->name }}
+                                        {{ $student->name }} ({{$student->student_id}})
                                     </option>
                                     @endforeach
                                 </select>
@@ -159,22 +160,6 @@
                                 class="input member-student-id" placeholder="Student ID"
                                 value="{{ old('members.0.student_id') }}" readonly>
                             @error('members.0.student_id')
-                            <p class="validate_error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="member_email_0" class="input_label">Email Address</label>
-                            <input type="email" id="member_email_0" name="members[0][email]" class="input member-email"
-                                placeholder="Email Address" value="{{ old('members.0.email') }}" readonly>
-                            @error('members.0.email')
-                            <p class="validate_error">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label for="member_phone_0" class="input_label">Phone Number</label>
-                            <input type="text" id="member_phone_0" name="members[0][phone]" class="input member-phone"
-                                placeholder="Phone Number" value="{{ old('members.0.phone') }}" readonly>
-                            @error('members.0.phone')
                             <p class="validate_error">{{ $message }}</p>
                             @enderror
                         </div>
@@ -224,7 +209,7 @@
             <div>
                 <label for="rcell_id" class="input_label">Intended Research Cell to Join</label>
                 <div class="relative">
-                    <select id="rcell_id" name="rcell_id" class="input">
+                    <select id="rcell_id" name="rcell_id" class="input select2">
                         <option value="">Select Research Cell</option>
                         @foreach ($rcells as $rcell)
                         <option value="{{ $rcell->id }}" @selected(old('rcell_id')==$rcell->id)>{{ $rcell->name }}
@@ -246,7 +231,7 @@
             <div>
                 <label for="supervisor_id" class="input_label">Assigned Supervisor</label>
                 <div class="relative">
-                    <select id="supervisor_id" name="supervisor_id" class="input">
+                    <select id="supervisor_id" name="supervisor_id" class="input select2">
                         <option value="">Select Supervisor</option>
                         @foreach ($supervisors as $supervisor)
                         <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>{{
@@ -268,7 +253,7 @@
             <div>
                 <label for="cosupervisor_id" class="input_label">Assigned Co-Supervisor (optional)</label>
                 <div class="relative">
-                    <select id="cosupervisor_id" name="cosupervisor_id" class="input">
+                    <select id="cosupervisor_id" name="cosupervisor_id" class="input select2">
                         <option value="">Select Co-Supervisor</option>
                         @foreach ($cosupervisors as $cosupervisor)
                         <option value="{{ $cosupervisor->id }}" @selected(old('cosupervisor_id')==$cosupervisor->id)>{{
@@ -310,18 +295,11 @@
             const selectedStudentId = selectElement.value;
             const memberItem = selectElement.closest('.group-member-item');
             const studentIdInput = memberItem.querySelector('.member-student-id');
-            const emailInput = memberItem.querySelector('.member-email');
-            const phoneInput = memberItem.querySelector('.member-phone');
-
             if (selectedStudentId && allStudents[selectedStudentId]) {
                 const student = allStudents[selectedStudentId];
                 studentIdInput.value = student.student_id || '';
-                emailInput.value = student.email || '';
-                phoneInput.value = student.phone || '';
             } else {
                 studentIdInput.value = '';
-                emailInput.value = '';
-                phoneInput.value = '';
             }
         }
 
@@ -379,10 +357,10 @@
                         <div>
                             <label for="member_user_id_${index}" class="input_label">Member Name</label>
                             <div class="relative">
-                                <select id="member_user_id_${index}" name="members[${index}][user_id]" class="input member-select">
+                                <select id="member_user_id_${index}" name="members[${index}][user_id]" class="input member-select select2">
                                     <option value="">Select Member</option>
                                     ${Object.values(allStudents).map(student =>
-                                        `<option value="${student.id}" ${student.id == member.user_id ? 'selected' : ''}>${student.name}</option>`
+                                        `<option value="${student.id}" ${student.id == member.user_id ? 'selected' : ''}>${student.name} (${student.student_id})</option>`
                                     ).join('')}
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -396,16 +374,6 @@
                             <label for="member_student_id_${index}" class="input_label">Student ID</label>
                             <input type="text" id="member_student_id_${index}" name="members[${index}][student_id]"
                                 class="input member-student-id" placeholder="Student ID" value="${member.student_id || ''}" readonly>
-                        </div>
-                        <div>
-                            <label for="member_email_${index}" class="input_label">Email Address</label>
-                            <input type="email" id="member_email_${index}" name="members[${index}][email]"
-                                class="input member-email" placeholder="Email Address" value="${member.email || ''}" readonly>
-                        </div>
-                        <div>
-                            <label for="member_phone_${index}" class="input_label">Phone Number</label>
-                            <input type="text" id="member_phone_${index}" name="members[${index}][phone]"
-                                class="input member-phone" placeholder="Phone Number" value="${member.phone || ''}" readonly>
                         </div>
                     </div>
                 </div>
@@ -431,6 +399,10 @@
         // Initial listeners for first (default) member
         attachRemoveListeners();
         attachMemberSelectListeners();
+
+        $('.select2').select2({
+            width: '100%'
+        });
     });
 </script>
 @endsection
