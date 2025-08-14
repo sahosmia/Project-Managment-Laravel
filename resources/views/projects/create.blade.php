@@ -1,0 +1,436 @@
+@extends('layouts.admin')
+
+@section('content')
+
+<div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto"> {{-- Added mx-auto for centering --}}
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create New Proposal</h2> {{-- Added text-center --}}
+    <form action="{{route('projects.store')}}" method="POST"> {{-- Update action="{{ route('your.proposal.store.route')
+        }}" --}}
+        @csrf
+        <!-- Laravel CSRF token for security -->
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <!-- Department -->
+            <div>
+                <label for="department_id" class="input_label">Department</label>
+                <div class="relative">
+                    <select id="department_id" name="department_id" class="input">
+                        <option value="">Select Department</option>
+                        @foreach ($departments as $department)
+                        <option value="{{ $department->id }}" @selected(old('department_id')==$department->id)>{{
+                            $department->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('department_id') {{-- Corrected: matches name attribute --}}
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Academic Year -->
+            <div>
+                <label for="academic_year" class="input_label">Academic Year</label>
+                <div class="relative">
+                    <select id="academic_year" name="academic_year" class="input">
+                        <option value="">Select Year</option>
+                        @php
+                        $currentYear = date('Y');
+                        for ($i = $currentYear + 1; $i >= $currentYear - 5; $i--) {
+                        echo "<option value='{$i}' " . (old('academic_year') == $i ? 'selected' : '') . ">{$i}</option>
+                        ";
+                        }
+                        @endphp
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('academic_year')
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Semester -->
+            <div>
+                <label for="semester" class="input_label">Semester</label>
+                <div class="relative">
+                    <select id="semester" name="semester" class="input">
+                        <option value="">Select Semester</option>
+                        <option @selected(old('semester')=='Fall' ) value="Fall">Fall</option>
+                        <option @selected(old('semester')=='Summer' ) value="Summer">Summer</option>
+                        <option @selected(old('semester')=='Spring' ) value="Spring">Spring</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('semester')
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Course Type -->
+            <div>
+                <label for="course_type" class="input_label">Course Type</label>
+                <div class="relative">
+                    <select id="course_type" name="course_type" class="input">
+                        <option value="">Select Course Type</option>
+                        <option @selected(old('course_type')=='Project' ) value="Project">Project</option>
+                        <option @selected(old('course_type')=='Thesis' ) value="Thesis">Thesis</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('course_type')
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Course Title -->
+            <div> {{-- Explicitly spans two columns --}}
+                <label for="course_title" class="input_label">Course Title</label>
+                <input type="text" id="course_title" name="course_title" class="input" placeholder="Enter course title"
+                    value="{{ old('course_title', 'Project & Thesis') }}" readonly> {{-- Kept readonly as per your code
+                --}}
+                @error('course_title')
+                <p class="validate_error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Course Code -->
+            <div> {{-- Explicitly spans two columns --}}
+                <label for="course_code" class="input_label">Course Code</label>
+                <input type="text" id="course_code" name="course_code" class="input" placeholder="Enter course code"
+                    value="{{ old('course_code') }}">
+                @error('course_code')
+                <p class="validate_error">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        <!-- Group Member's Information -->
+        <div class="mb-6 mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Group Member's Information</h3>
+            <div id="group-members-container">
+                <!-- Initial member fields -->
+                <div class="group-member-item mb-4 p-3 border border-gray-300 rounded-lg bg-white">
+                    <h4 class="font-medium text-gray-800 mb-3">Member 1</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <label for="member_user_id_0" class="input_label">Member Name</label>
+                            <div class="relative">
+                                <select id="member_user_id_0" name="members[0][user_id]" class="input member-select">
+                                    <option value="">Select Member</option>
+                                    @foreach ($students as $student)
+                                    <option value="{{ $student->id }}" @selected(old('members.0.user_id', auth()->id())
+                                        == $student->id)>
+                                        {{ $student->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                                    </svg>
+                                </div>
+                                @error('members.0.user_id')
+                                <p class="validate_error">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div>
+                            <label for="member_student_id_0" class="input_label">Student ID</label>
+                            <input type="text" id="member_student_id_0" name="members[0][student_id]"
+                                class="input member-student-id" placeholder="Student ID"
+                                value="{{ old('members.0.student_id') }}" readonly>
+                            @error('members.0.student_id')
+                            <p class="validate_error">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="member_email_0" class="input_label">Email Address</label>
+                            <input type="email" id="member_email_0" name="members[0][email]" class="input member-email"
+                                placeholder="Email Address" value="{{ old('members.0.email') }}" readonly>
+                            @error('members.0.email')
+                            <p class="validate_error">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="member_phone_0" class="input_label">Phone Number</label>
+                            <input type="text" id="member_phone_0" name="members[0][phone]" class="input member-phone"
+                                placeholder="Phone Number" value="{{ old('members.0.phone') }}" readonly>
+                            @error('members.0.phone')
+                            <p class="validate_error">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="add-member-btn"
+                class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                Add Another Member
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 gap-x-6 gap-y-4">
+            <!-- Proposed Title -->
+            <div>
+                <label for="proposed_title" class="input_label">Proposed Title</label>
+                <input type="text" id="proposed_title" name="proposed_title" class="input"
+                    placeholder="Enter proposed project/thesis title" value="{{ old('proposed_title') }}">
+                @error('proposed_title')
+                <p class="validate_error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Problem Statement -->
+            <div>
+                <label for="problem_statement" class="input_label">Problem Statement</label>
+                <textarea id="problem_statement" name="problem_statement" class="input h-32 resize-y"
+                    placeholder="Describe the problem your project addresses">{{ old('problem_statement') }}</textarea>
+                @error('problem_statement')
+                <p class="validate_error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Motivation of the Work -->
+            <div>
+                <label for="motivation" class="input_label">Motivation of the Work</label>
+                <textarea id="motivation" name="motivation" class="input h-32 resize-y"
+                    placeholder="Explain why this work is important and what inspired it">{{ old('motivation') }}</textarea>
+                @error('motivation')
+                <p class="validate_error">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mt-4">
+            <!-- Intended Research Cell to Join -->
+            <div>
+                <label for="rcell_id" class="input_label">Intended Research Cell to Join</label>
+                <div class="relative">
+                    <select id="rcell_id" name="rcell_id" class="input">
+                        <option value="">Select Research Cell</option>
+                        @foreach ($rcells as $rcell)
+                        <option value="{{ $rcell->id }}" @selected(old('rcell_id')==$rcell->id)>{{ $rcell->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('rcell_id') {{-- Corrected: matches name attribute --}}
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Assigned Supervisor -->
+            <div>
+                <label for="supervisor_id" class="input_label">Assigned Supervisor</label>
+                <div class="relative">
+                    <select id="supervisor_id" name="supervisor_id" class="input">
+                        <option value="">Select Supervisor</option>
+                        @foreach ($supervisors as $supervisor)
+                        <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>{{
+                            $supervisor->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('supervisor_id') {{-- Corrected: matches name attribute --}}
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Assigned Co-Supervisor -->
+            <div>
+                <label for="cosupervisor_id" class="input_label">Assigned Co-Supervisor (optional)</label>
+                <div class="relative">
+                    <select id="cosupervisor_id" name="cosupervisor_id" class="input">
+                        <option value="">Select Co-Supervisor</option>
+                        @foreach ($cosupervisors as $cosupervisor)
+                        <option value="{{ $cosupervisor->id }}" @selected(old('cosupervisor_id')==$cosupervisor->id)>{{
+                            $cosupervisor->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                        </svg>
+                    </div>
+                    @error('cosupervisor_id')
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex items-center justify-center mt-6">
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 w-full">
+                Submit Proposal
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const allStudents = @json($students->keyBy('id'));
+    const oldMembers = @json(old('members', []));
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let memberCount = 1;
+        const groupMembersContainer = document.getElementById('group-members-container');
+        const addMemberBtn = document.getElementById('add-member-btn');
+
+        function populateMemberFields(selectElement) {
+            const selectedStudentId = selectElement.value;
+            const memberItem = selectElement.closest('.group-member-item');
+            const studentIdInput = memberItem.querySelector('.member-student-id');
+            const emailInput = memberItem.querySelector('.member-email');
+            const phoneInput = memberItem.querySelector('.member-phone');
+
+            if (selectedStudentId && allStudents[selectedStudentId]) {
+                const student = allStudents[selectedStudentId];
+                studentIdInput.value = student.student_id || '';
+                emailInput.value = student.email || '';
+                phoneInput.value = student.phone || '';
+            } else {
+                studentIdInput.value = '';
+                emailInput.value = '';
+                phoneInput.value = '';
+            }
+        }
+
+        function attachMemberSelectListeners() {
+            document.querySelectorAll('.member-select').forEach(selectElement => {
+                selectElement.removeEventListener('change', handleMemberSelectChange);
+                selectElement.addEventListener('change', handleMemberSelectChange);
+                if (selectElement.value) {
+                    populateMemberFields(selectElement);
+                }
+            });
+        }
+
+        function handleMemberSelectChange(event) {
+            populateMemberFields(event.target);
+        }
+
+        function attachRemoveListeners() {
+            document.querySelectorAll('.remove-member-btn').forEach(button => {
+                button.onclick = function() {
+                    if (groupMembersContainer.children.length > 1) {
+                        this.closest('.group-member-item').remove();
+                        updateMemberTitles();
+                    } else {
+                        alert("At least one group member is required.");
+                    }
+                };
+            });
+        }
+
+        function updateMemberTitles() {
+            const memberItems = groupMembersContainer.querySelectorAll('.group-member-item');
+            memberItems.forEach((item, index) => {
+                const titleElement = item.querySelector('h4');
+                if (titleElement) {
+                    titleElement.textContent = `Member ${index + 1}`;
+                }
+                item.querySelectorAll('input, select').forEach(input => {
+                    const nameAttr = input.getAttribute('name');
+                    if (nameAttr && nameAttr.startsWith('members[')) {
+                        const fieldName = nameAttr.split('][')[1].replace(']', '');
+                        input.setAttribute('name', `members[${index}][${fieldName}]`);
+                        input.setAttribute('id', `member_${fieldName}_${index}`);
+                    }
+                });
+            });
+        }
+
+        function addMemberWithOldData(member, index) {
+            const newMemberHtml = `
+                <div class="group-member-item mb-4 p-3 border border-gray-300 rounded-lg bg-white relative">
+                    <button type="button" class="remove-member-btn absolute top-2 right-2 text-red-500 hover:text-red-700 text-xl font-bold leading-none">&times;</button>
+                    <h4 class="font-medium text-gray-800 mb-3">Member ${index + 1}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <label for="member_user_id_${index}" class="input_label">Member Name</label>
+                            <div class="relative">
+                                <select id="member_user_id_${index}" name="members[${index}][user_id]" class="input member-select">
+                                    <option value="">Select Member</option>
+                                    ${Object.values(allStudents).map(student =>
+                                        `<option value="${student.id}" ${student.id == member.user_id ? 'selected' : ''}>${student.name}</option>`
+                                    ).join('')}
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="member_student_id_${index}" class="input_label">Student ID</label>
+                            <input type="text" id="member_student_id_${index}" name="members[${index}][student_id]"
+                                class="input member-student-id" placeholder="Student ID" value="${member.student_id || ''}" readonly>
+                        </div>
+                        <div>
+                            <label for="member_email_${index}" class="input_label">Email Address</label>
+                            <input type="email" id="member_email_${index}" name="members[${index}][email]"
+                                class="input member-email" placeholder="Email Address" value="${member.email || ''}" readonly>
+                        </div>
+                        <div>
+                            <label for="member_phone_${index}" class="input_label">Phone Number</label>
+                            <input type="text" id="member_phone_${index}" name="members[${index}][phone]"
+                                class="input member-phone" placeholder="Phone Number" value="${member.phone || ''}" readonly>
+                        </div>
+                    </div>
+                </div>
+            `;
+            groupMembersContainer.insertAdjacentHTML('beforeend', newMemberHtml);
+            attachRemoveListeners();
+            attachMemberSelectListeners();
+            memberCount++;
+        }
+
+        // Render old members (if > 1)
+        if (oldMembers.length > 1) {
+            for (let i = 1; i < oldMembers.length; i++) {
+                addMemberWithOldData(oldMembers[i], i);
+            }
+            memberCount = oldMembers.length;
+        }
+
+        addMemberBtn.addEventListener('click', function() {
+            addMemberWithOldData({}, memberCount);
+        });
+
+        // Initial listeners for first (default) member
+        attachRemoveListeners();
+        attachMemberSelectListeners();
+    });
+</script>
+@endsection

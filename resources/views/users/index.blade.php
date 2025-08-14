@@ -1,0 +1,279 @@
+@extends('layouts.admin')
+
+@section('content')
+<div
+    class=" rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 shadow-lg">
+    <div class="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+                User List
+            </h3>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                id="openFilterModalButton">
+                <svg class="stroke-current fill-white dark:fill-gray-800" width="20" height="20" viewBox="0 0 20 20"
+                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.29004 5.90393H17.7067" stroke="" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M17.7075 14.0961H2.29085" stroke="" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path
+                        d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
+                        fill="" stroke="" stroke-width="1.5" />
+                    <path
+                        d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
+                        fill="" stroke="" stroke-width="1.5" />
+                </svg>
+                Filter
+            </button>
+
+
+            <a href="{{ route('users.create') }}"
+                class="bg-brand-600 text-white hover:bg-brand-700 transition-all px-5 py-2 rounded font-medium text-sm">Add
+                <i class="fa fa-plus"></i></a>
+
+
+        </div>
+    </div>
+
+    <div class="w-full overflow-x-auto">
+        <table class="min-w-full mb-4">
+            <!-- table header start -->
+            <thead>
+                <tr class="border-gray-100 border-y dark:border-gray-800">
+                    <th class="py-3 text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Name
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3  text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Email
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3  text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Role
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3  w-5">
+                        <div class="flex items-center ">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Action
+                            </p>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <!-- table header end -->
+
+            <tbody class="divide-y divide-gray-300 dark:divide-gray-800">
+                @foreach ($users as $item)
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3">
+                        <div class="flex items-center">
+                            <div class="flex items-center gap-3">
+
+                                <div>
+                                    <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                        {{ $item->name }} </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3">
+                        <div class="flex items-center">
+                            <div class="flex items-center gap-3">
+
+                                <div>
+                                    <p class=" text-gray-500 text-theme-sm dark:text-white/90">
+                                        {{ $item->email }} </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+
+
+                    <td class="py-3">
+                        <div class="flex items-center">
+                            {{-- Status badge based on project status --}}
+                            @php
+                            $statusClass = '';
+                            switch ($item->role) {
+                            case 'research_cell':
+                            $statusClass =
+                            'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-500';
+                            break;
+                            case 'admin':
+                            $statusClass =
+                            'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-500';
+                            break;
+                            case 'supervisor':
+                            $statusClass =
+                            'bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-500';
+                            break;
+                            case 'student':
+                            $statusClass =
+                            'bg-purple-50 text-purple-600 dark:bg-purple-500/15 dark:text-purple-500';
+                            break;
+                            default:
+                            $statusClass =
+                            'bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400';
+                            break;
+                            }
+                            @endphp
+                            <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium {{ $statusClass }}">
+                                {{ Str::title(str_replace('_', ' ', $item->role)) }}
+                            </p>
+                        </div>
+                    </td>
+
+
+
+
+
+
+                    <td class="py-3 px-4 text-right">
+                        <div class="relative inline-block text-left">
+                            <button type="button"
+                                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                                id="options-menu-{{ $item->id }}" aria-haspopup="true" aria-expanded="true">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+
+                            <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden dark:bg-gray-700"
+                                role="menu" aria-orientation="vertical" aria-labelledby="options-menu-{{ $item->id }}">
+                                <div class="py-1" role="none">
+                                    <a href="{{route('users.show', $item->id)}}"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-600"
+                                        role="menuitem">View</a>
+
+                                    <a href="{{route('users.edit', $item->id)}}"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-600"
+                                        role="menuitem">Edit</a>
+
+
+                                    <form method="POST" action="{{route('users.destroy', $item->id)}}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
+                                            role="menuitem">Delete</button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                </tr>
+                @endforeach
+
+                <!-- table body end -->
+            </tbody>
+        </table>
+        {{-- <div class="flex justify-between items-center px-4 py-3">
+            <div class="text-sm text-slate-500">
+                Showing <b>1-5</b> of {{$users->total}}
+            </div>
+            <div class="flex space-x-1">
+                <button
+                    class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease">
+                    Prev
+                </button>
+                <button
+                    class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-white bg-slate-800 border border-slate-800 rounded hover:bg-slate-600 hover:border-slate-600 transition duration-200 ease">
+                    1
+                </button>
+                <button
+                    class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease">
+                    2
+                </button>
+                <button
+                    class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease">
+                    3
+                </button>
+                <button
+                    class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease">
+                    Next
+                </button>
+            </div>
+        </div> --}}
+
+        {{ $users->links() }}
+    </div>
+</div>
+
+{{-- Filter Modal --}}
+<div id="filterModal"
+    class="fixed inset-0 bg-black/80  overflow-y-auto h-full w-full hidden flex items-center justify-center z-100">
+    <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex justify-between items-center pb-3">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Filter Projects</h3>
+            <button id="closeFilterModalButton"
+                class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+                <span class="sr-only">Close</span>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form action="{{ route('users.index') }}" method="GET">
+            <div class="mt-2">
+                <div class="mb-4">
+                    <label for="name" class="input_label">Project
+                        Name</label>
+                    <input type="text" name="name" id="name" class="input" value="{{ request('name') }}">
+
+
+                </div>
+
+                <div class="mb-4">
+                    <label for="role" class="input_label">Role</label>
+                    <div class="relative">
+                        <select id="role" name="role" class="input">
+                            <option value="">Select a role</option>
+                            <option @selected(request('role')=='admin' ) value="admin">Admin</option>
+                            <option @selected(request('role')=='research_cell' ) value="research_cell">Research Cell
+                            </option>
+                            <option @selected(request('role')=='supervisor' ) value="supervisor">Supervisor</option>
+                            <option @selected(request('role')=='student' ) value="student">Student</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                            </svg>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+                <button type="button"
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                    id="cancelFilterModalButton">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Apply
+                    Filters</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection

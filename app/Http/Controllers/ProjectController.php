@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreProposalRequest;
+use App\Models\Project;
+use App\Models\Department;
+use App\Models\RCell;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\TryCatch;
+
+class ProjectController extends Controller
+{
+    public function index(Request $request)
+    {
+        $projectsQuery = Project::query();
+        $user = Auth::user();
+
+
+
+        switch ($user->role) {
+            case 'admin':
+                break;
+            case 'research_cell':
+                $projectsQuery->whereIn('status', ['pending_research_cell', 'rejected_by_research_cell']);
+                break;
+            case 'supervisor':
+                $projectsQuery->where('supervisor_id', $user->id);
+                break;
+            case 'student':
+                $projectsQuery->where(function ($q) use ($user) {
+                    $q->where('created_by', $user->id)
+                        ->orWhereHas('members', function ($query) use ($user) {
+                            $query->where('project_members.student_id', $user->id);
+                        });
+                });
+                break;
+            default:
+                // For any other undefined role, deny access
+                abort(Response::HTTP_FORBIDDEN, 'You do not have permission to view projects.');
+                break;
+        }
+
+        if ($request->has('title') && $request->input('title') !== null) {
+            $projectsQuery->where('title', 'like', '%' . $request->input('title') . '%');
+        }
+
+        if ($request->has('status') && $request->input('status') !== null && $request->input('status') !== '') {
+            $validStatuses = [
+                'pending_research_cell',
+                'rejected_by_research_cell',
+                'approved_by_research_cell',
+                'pending_admin_review',
+                'assigned_to_supervisor',
+                'in_progress',
+                'completed',
+                'cancelled'
+            ];
+
+            if (in_array($request->input('status'), $validStatuses)) {
+                $projectsQuery->where('status', $request->input('status'));
+            }
+        }
+
+        if (($user->role == 'admin' || $user->role == 'research_cell') && $request->has('supervisor_id') && $request->input('supervisor_id') !== null && $request->input('supervisor_id') !== '') {
+            $projectsQuery->where('supervisor_id', $request->input('supervisor_id'));
+        }
+
+
+
+        $projectsQuery->with('creator', 'supervisor', 'members');
+
+        $projectsQuery->orderBy('status');
+
+        // Paginate the results and append all current query string parameters to the pagination links
+        $projects = $projectsQuery->paginate(10)->withQueryString();
+
+        return view('projects.index', compact('projects'));
+    }
+
+    public function create()
+    {
+        $departments = Department::get();
+        $rcells = RCell::get();
+        $students = User::where('role', 'student')->get();
+        $supervisors = User::where('role', 'supervisor')->get();
+        $cosupervisors = User::where('role', 'co-supervisor')->get();
+        return view('projects.create', compact('students', 'departments', 'rcells', 'supervisors', 'cosupervisors'));
+    }
+
+    public function store(StoreProposalRequest $request)
+    {
+
+            $project = Project::create([
+                'title' => $request->proposed_title,
+                'academic_year' => $request->academic_year,
+                'course_title' => $request->course_title,
+                'course_code' => $request->course_code,
+                'problem_statement' => $request->problem_statement,
+                'motivation' => $request->motivation,
+                'course_type' => $request->course_type,
+                'semester' => $request->semester,
+                'status' => 'pending_research_cell',
+                'created_by' => Auth::id(),
+                'department_id' => $request->department_id,
+                'r_cell_id' => $request->rcell_id,
+                'supervisor_id' => $request->supervisor_id,
+                'cosupervisor_id' => $request->cosupervisor_id,
+            ]);
+
+            foreach ($request->members as $memberData) {
+                $project->members()->attach($memberData['user_id']);
+            }
+
+            return redirect()->route('projects.index')->with('success', 'Project proposal submitted successfully!');
+       
+
+        }
+
+
+
+        public function show(Project $project){
+
+            return view('projects.show', compact('project',  ));
+        }
+
+    public function edit(Project $project)
+    {
+        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_by_research_cell') {
+            abort(403, 'You can only edit rejected projects that you created.');
+        }
+        $students = User::where('role', 'student')->get();
+        $currentMembers = $project->members->pluck('id')->toArray();
+        return view('student.projects.edit', compact('project', 'students', 'currentMembers'));
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_by_research_cell') {
+            abort(403, 'You can only update rejected projects that you created.');
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'members' => 'required|array',
+            'members.*' => 'exists:users,id',
+        ]);
+
+        $project->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'status' => 'pending_research_cell', 
+        ]);
+
+        $project->members()->sync(array_merge([Auth::id()], $request->members));
+
+        return redirect()->route('student.projects.my')->with('success', 'Project updated and re-submitted for review.');
+    }
+
+
+
+    public function destroy(Project $project)
+    {
+
+        $project->delete();
+
+        return back()->with('success', 'Project deleted successfully.');
+    }
+
+
+
+    public function approve(Project $project)
+    {
+        $user_role = auth()->user()->role;
+        $project_status = $project->status;
+        if ($user_role == "research_cell" && ($project_status == "pending_research_cell" || $project_status == "rejected_by_research_cell")) {
+
+            $project->update(['status' => 'approved_by_research_cell']);
+            return back()->with('success', 'Project approved and sent to Admin.');
+        } else {
+            abort(403, "You are not authorized to perform this action or the project status is incorrect.");
+        }
+    }
+
+
+
+    public function reject(Project $project)
+    {
+        $user_role = auth()->user()->role;
+        $project_status = $project->status;
+
+        if ($user_role == "research_cell" && $project_status == "pending_research_cell") {
+
+            $project->update(['status' => 'rejected_by_research_cell']);
+        } elseif ($user_role == "admin" && $project_status == "pending_admin") {
+
+            $project->update(['status' => 'rejected_by_admin']);
+        } else {
+            abort(403, "You are not authorized to perform this action or the project status is incorrect.");
+        }
+
+        return back()->with('success', 'Project rejected and sent back to Student.');
+    }
+
+
+
+   
+}
