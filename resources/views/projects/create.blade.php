@@ -21,11 +21,6 @@
                             $department->name }}</option>
                         @endforeach
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('department_id') {{-- Corrected: matches name attribute --}}
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -46,11 +41,6 @@
                         }
                         @endphp
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('academic_year')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -67,11 +57,6 @@
                         <option @selected(old('semester')=='Summer' ) value="Summer">Summer</option>
                         <option @selected(old('semester')=='Spring' ) value="Spring">Spring</option>
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('semester')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -87,11 +72,6 @@
                         <option @selected(old('course_type')=='Project' ) value="Project">Project</option>
                         <option @selected(old('course_type')=='Thesis' ) value="Thesis">Thesis</option>
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('course_type')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -141,27 +121,10 @@
                                     </option>
                                     @endforeach
                                 </select>
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20">
-                                        <path
-                                            d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                                    </svg>
-                                </div>
                                 @error('members.0.user_id')
                                 <p class="validate_error">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
-                        <div>
-                            <label for="member_student_id_0" class="input_label">Student ID</label>
-                            <input type="text" id="member_student_id_0" name="members[0][student_id]"
-                                class="input member-student-id" placeholder="Student ID"
-                                value="{{ old('members.0.student_id') }}" readonly>
-                            @error('members.0.student_id')
-                            <p class="validate_error">{{ $message }}</p>
-                            @enderror
                         </div>
                     </div>
                 </div>
@@ -216,11 +179,6 @@
                         </option>
                         @endforeach
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('rcell_id') {{-- Corrected: matches name attribute --}}
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -238,11 +196,6 @@
                             $supervisor->name }}</option>
                         @endforeach
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('supervisor_id') {{-- Corrected: matches name attribute --}}
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -260,11 +213,6 @@
                             $cosupervisor->name }}</option>
                         @endforeach
                     </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                        </svg>
-                    </div>
                     @error('cosupervisor_id')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -291,30 +239,9 @@
         const groupMembersContainer = document.getElementById('group-members-container');
         const addMemberBtn = document.getElementById('add-member-btn');
 
-        function populateMemberFields(selectElement) {
-            const selectedStudentId = selectElement.value;
-            const memberItem = selectElement.closest('.group-member-item');
-            const studentIdInput = memberItem.querySelector('.member-student-id');
-            if (selectedStudentId && allStudents[selectedStudentId]) {
-                const student = allStudents[selectedStudentId];
-                studentIdInput.value = student.student_id || '';
-            } else {
-                studentIdInput.value = '';
-            }
-        }
-
         function attachMemberSelectListeners() {
             document.querySelectorAll('.member-select').forEach(selectElement => {
-                selectElement.removeEventListener('change', handleMemberSelectChange);
-                selectElement.addEventListener('change', handleMemberSelectChange);
-                if (selectElement.value) {
-                    populateMemberFields(selectElement);
-                }
             });
-        }
-
-        function handleMemberSelectChange(event) {
-            populateMemberFields(event.target);
         }
 
         function attachRemoveListeners() {
@@ -363,22 +290,15 @@
                                         `<option value="${student.id}" ${student.id == member.user_id ? 'selected' : ''}>${student.name} (${student.student_id})</option>`
                                     ).join('')}
                                 </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                                    </svg>
-                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label for="member_student_id_${index}" class="input_label">Student ID</label>
-                            <input type="text" id="member_student_id_${index}" name="members[${index}][student_id]"
-                                class="input member-student-id" placeholder="Student ID" value="${member.student_id || ''}" readonly>
                         </div>
                     </div>
                 </div>
             `;
             groupMembersContainer.insertAdjacentHTML('beforeend', newMemberHtml);
+            $(`#member_user_id_${index}`).select2({
+                width: '100%'
+            });
             attachRemoveListeners();
             attachMemberSelectListeners();
             memberCount++;
