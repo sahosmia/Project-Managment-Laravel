@@ -39,7 +39,6 @@
                         }
                         @endphp
                     </select>
-
                     @error('academic_year')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -56,7 +55,6 @@
                         <option @selected(old('semester')=='Summer' ) value="Summer">Summer</option>
                         <option @selected(old('semester')=='Spring' ) value="Spring">Spring</option>
                     </select>
-
                     @error('semester')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -72,7 +70,6 @@
                         <option @selected(old('course_type')=='Project' ) value="Project">Project</option>
                         <option @selected(old('course_type')=='Thesis' ) value="Thesis">Thesis</option>
                     </select>
-
                     @error('course_type')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -176,7 +173,6 @@
                         </option>
                         @endforeach
                     </select>
-
                     @error('rcell_id') {{-- Corrected: matches name attribute --}}
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -193,8 +189,7 @@
                         <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>{{
                             $supervisor->name }}</option>
                         @endforeach
-                    </select>
-
+                     </select>
                     @error('supervisor_id') {{-- Corrected: matches name attribute --}}
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
@@ -212,7 +207,6 @@
                             $cosupervisor->name }}</option>
                         @endforeach
                     </select>
-
                     @error('cosupervisor_id')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
