@@ -98,37 +98,7 @@
 
                     <td class="py-3">
                         <div class="flex items-center">
-                            {{-- Status badge based on project status --}}
-                            @php
-                            $statusClass = '';
-                            switch ($item->status) {
-                            case 'pending_research_cell':
-                            case 'pending_admin_review':
-                            $statusClass =
-                            'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-500';
-                            break;
-                            case 'approved_by_research_cell':
-                            case 'assigned_to_supervisor':
-                            case 'in_progress':
-                            $statusClass =
-                            'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-500';
-                            break;
-                            case 'completed':
-                            $statusClass =
-                            'bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-500';
-                            break;
-                            case 'rejected_by_research_cell':
-                            case 'cancelled':
-                            $statusClass =
-                            'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-500';
-                            break;
-                            default:
-                            $statusClass =
-                            'bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400';
-                            break;
-                            }
-                            @endphp
-                            <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium {{ $statusClass }}">
+                            <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium {{ $item->status_class }}">
                                 {{ Str::title(str_replace('_', ' ', $item->status)) }}
                             </p>
                         </div>
@@ -177,7 +147,8 @@
                                     @if (auth()->user()->role == "research_cell")
 
 
-                                    <form method="POST" action="{{route('projects.approve', $item->id)}}" class="approve-form">
+                                    <form method="POST" action="{{route('projects.approve', $item->id)}}"
+                                        class="approve-form">
                                         @csrf
                                         <button type="submit"
                                             class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 dark:text-green-300 dark:hover:bg-gray-600"
@@ -185,7 +156,8 @@
                                     </form>
 
                                     @if ($item->status == 'pending_research_cell')
-                                    <form method="POST" action="{{route('projects.reject', $item->id)}}" class="reject-form">
+                                    <form method="POST" action="{{route('projects.reject', $item->id)}}"
+                                        class="reject-form">
                                         @csrf
                                         <button type="submit"
                                             class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
@@ -195,7 +167,8 @@
                                     @endif
                                     @if (auth()->user()->role == "student")
 
-                                    <form method="POST" action="{{route('projects.destroy', $item->id)}}" class="delete-form">
+                                    <form method="POST" action="{{route('projects.destroy', $item->id)}}"
+                                        class="delete-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -268,14 +241,16 @@
                 @if(auth()->user()->role == 'admin' || auth()->user()->role == 'research_cell')
                 <div class="mb-4">
                     <label for="filter_supervisor" class="input_label">Supervisor</label>
-                    <select name="supervisor_id" id="filter_supervisor" class="input select2">
-                        <option value="">All Supervisors</option>
-                        @foreach(getRoleList('supervisor') as $supervisor)
-                        <option value="{{ $supervisor->id }}" @selected(request('supervisor_id')==$supervisor->id)>{{
-                            $supervisor->name }}
-                        </option>
+                    <select id="supervisor_id" name="supervisor_id" class="input select2">
+                        <option value="">Select Supervisor</option>
+                        @foreach ($supervisors as $supervisor)
+                        <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>{{
+                            $supervisor->name }}</option>
                         @endforeach
                     </select>
+                    @error('supervisor_id')
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
                 </div>
                 @endif
 

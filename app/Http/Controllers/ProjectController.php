@@ -9,17 +9,18 @@ use App\Models\RCell;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\TryCatch;
 
 class ProjectController extends Controller
 {
+
+
+
     public function index(Request $request)
     {
         $projectsQuery = Project::query();
         $user = Auth::user();
+        $supervisors = User::where('role', 'supervisor')->get();
 
 
 
@@ -42,7 +43,6 @@ class ProjectController extends Controller
                 });
                 break;
             default:
-                // For any other undefined role, deny access
                 abort(Response::HTTP_FORBIDDEN, 'You do not have permission to view projects.');
                 break;
         }
@@ -81,7 +81,7 @@ class ProjectController extends Controller
         // Paginate the results and append all current query string parameters to the pagination links
         $projects = $projectsQuery->paginate(10)->withQueryString();
 
-        return view('projects.index', compact('projects'));
+        return view('projects.index', compact('projects','supervisors'));
     }
 
     public function create()
@@ -119,7 +119,7 @@ class ProjectController extends Controller
             }
 
             return redirect()->route('projects.index')->with('success', 'Project proposal submitted successfully!');
-       
+
 
         }
 
@@ -156,7 +156,7 @@ class ProjectController extends Controller
         $project->update([
             'title' => $request->title,
             'description' => $request->description,
-            'status' => 'pending_research_cell', 
+            'status' => 'pending_research_cell',
         ]);
 
         $project->members()->sync(array_merge([Auth::id()], $request->members));
@@ -236,5 +236,5 @@ class ProjectController extends Controller
 
 
 
-   
+
 }

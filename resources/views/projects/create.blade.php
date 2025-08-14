@@ -190,7 +190,7 @@
                             $supervisor->name }}</option>
                         @endforeach
                      </select>
-                    @error('supervisor_id') {{-- Corrected: matches name attribute --}}
+                    @error('supervisor_id')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
                 </div>

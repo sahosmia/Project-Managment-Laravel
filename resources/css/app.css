@@ -778,6 +778,6 @@ span.flatpickr-weekday,
     top: 0px;
     right: 1px;
 }
-.select2-container--default .select2-selection--single {
-  @apply shadow-sm appearance-none border border-gray-300 rounded-lg  text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition duration-200
-}
+/* .select2-container--default .select2-selection--single {
+  @apply shadow-sm appearance-none border border-gray-300 rounded-lg w-full  text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition duration-200 
+} */
