@@ -41,31 +41,33 @@
                             </span>
                         </a>
                     </li>
-                    <li>
-                        <a href="/departments" @click="selected = (selected === 'Department' ? '':'Department')"
-                            class="menu-item group" :class="(selected === 'Department') || {{ request()->is('departments') ? 'true' : 'false' }} ?
+                    @if (auth()->user()->hasRole('admin'))
+                        <li>
+                            <a href="/departments" @click="selected = (selected === 'Department' ? '':'Department')"
+                                class="menu-item group" :class="(selected === 'Department') || {{ request()->is('departments') ? 'true' : 'false' }} ?
                                 'menu-item-active' : 'menu-item-inactive'">
-                            <i :class="((selected === 'Department') || {{ request()->is('departments') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-book"></i>
+                                <i :class="((selected === 'Department') || {{ request()->is('departments') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-book"></i>
 
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Department
-                            </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/r_cells" @click="selected = (selected === 'R-Cell' ? '':'R-Cell')"
-                            class="menu-item group" :class="(selected === 'R-Cell') || {{ request()->is('r_cells') ? 'true' : 'false' }} ?
+                                <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                    Department
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/r_cells" @click="selected = (selected === 'R-Cell' ? '':'R-Cell')"
+                                class="menu-item group" :class="(selected === 'R-Cell') || {{ request()->is('r_cells') ? 'true' : 'false' }} ?
                                 'menu-item-active' : 'menu-item-inactive'">
-                            <i :class="((selected === 'R-Cell') || {{ request()->is('r_cells') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-microscope"></i>
+                                <i :class="((selected === 'R-Cell') || {{ request()->is('r_cells') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-microscope"></i>
 
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                R-Cell
-                            </span>
-                        </a>
-                    </li>
-                    @if (auth()->user()->role == "student")
+                                <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                    R-Cell
+                                </span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (auth()->user()->role == 'student')
 
                     <li>
                         <a href="/proposal-sends"
@@ -113,40 +115,42 @@
                     </li>
 
 
-                    <li>
-                        <a href="#" @click.prevent="selected = (selected === 'Users' ? '':'Users')"
-                            class="menu-item group" :class="(selected === 'Users') || {{ request()->is('users*') ? 'true' : 'false' }} ?
+                    @if (auth()->user()->hasRole('admin'))
+                        <li>
+                            <a href="#" @click.prevent="selected = (selected === 'Users' ? '':'Users')"
+                                class="menu-item group" :class="(selected === 'Users') || {{ request()->is('users*') ? 'true' : 'false' }} ?
                                 'menu-item-active' : 'menu-item-inactive'">
-                            <i :class="((selected === 'Users') || {{ request()->is('users*') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-users"></i>
+                                <i :class="((selected === 'Users') || {{ request()->is('users*') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-users"></i>
 
-                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Users
-                            </span>
+                                <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                    Users
+                                </span>
 
-                            <i :class="[(selected === 'Users') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive',
-                                sidebarToggle ? 'lg:hidden' : ''
-                            ]" class="fa-solid fa-angle-down menu-item-arrow"></i>
-                        </a>
+                                <i :class="[(selected === 'Users') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive',
+                                    sidebarToggle ? 'lg:hidden' : ''
+                                ]" class="fa-solid fa-angle-down menu-item-arrow"></i>
+                            </a>
 
-                        <div class="overflow-hidden transform translate"
-                            :class="(selected === 'Users') ? 'block' : 'hidden'">
-                            <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'"
-                                class="flex flex-col gap-1 mt-2 menu-dropdown pl-9">
-                                <li>
-                                    <a href="/users" class="menu-dropdown-item group" :class="{{ request()->is('users') ? 'true' : 'false' }} ?
+                            <div class="overflow-hidden transform translate"
+                                :class="(selected === 'Users') ? 'block' : 'hidden'">
+                                <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'"
+                                    class="flex flex-col gap-1 mt-2 menu-dropdown pl-9">
+                                    <li>
+                                        <a href="/users" class="menu-dropdown-item group" :class="{{ request()->is('users') ? 'true' : 'false' }} ?
                                             'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
-                                        User List </a>
-                                </li>
-                                <li>
-                                    <a href="/users/create"
-                                        class="menu-dropdown-item group {{ request()->is('users/create') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive' }}">
-                                        User Create
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                                            User List </a>
+                                    </li>
+                                    <li>
+                                        <a href="/users/create"
+                                            class="menu-dropdown-item group {{ request()->is('users/create') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive' }}">
+                                            User Create
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </nav>

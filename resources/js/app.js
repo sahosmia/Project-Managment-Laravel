@@ -17,7 +17,9 @@ import flatpickr from "flatpickr";
 
 Alpine.plugin(persist);
 window.Alpine = Alpine;
-Alpine.start();
+document.addEventListener("DOMContentLoaded", () => {
+  Alpine.start();
+});
 
 // Init flatpickr
 flatpickr(".datepicker", {
