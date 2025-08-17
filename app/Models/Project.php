@@ -59,15 +59,14 @@ class Project extends Model
     {
         switch ($this->status) {
             case 'pending_research_cell':
-            case 'pending_admin_review':
+            case 'pending_admin':
+            case 'pending_supervisor':
                 return 'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-500';
-            case 'assigned_to_supervisor':
-            case 'in_progress':
-                return 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-500';
             case 'completed':
                 return 'bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-500';
-            case 'rejected_by_research_cell':
-            case 'cancelled':
+            case 'rejected_research_cell':
+            case 'rejected_admin':
+            case 'rejected_supervisor':
                 return 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-500';
             default:
                 return 'bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400';

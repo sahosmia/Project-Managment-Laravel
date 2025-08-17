@@ -71,6 +71,12 @@
                 <p class="text-gray-900">{{ $project->creator->name ?? 'N/A' }} ({{ $project->creator->email ?? 'N/A'
                     }})</p>
             </div>
+            @if(in_array($project->status, ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor']))
+            <div class="md:col-span-2">
+                <p class="text-gray-700 text-sm font-semibold mb-1">Rejection Notes:</p>
+                <p class="text-red-600 leading-relaxed">{{ $project->notes }}</p>
+            </div>
+            @endif
         </div>
     </div>
 
@@ -120,11 +126,35 @@
 
     {{-- Action Buttons --}}
     <div class="flex justify-end gap-3 mt-8">
+        @php $user = auth()->user(); @endphp
+
+        @if(
+            ($user->role == 'research_cell' && $project->status == 'pending_research_cell') ||
+            ($user->role == 'admin' && $project->status == 'pending_admin') ||
+            ($user->role == 'supervisor' && $project->status == 'pending_supervisor')
+        )
+            <form action="{{ route('projects.approve', $project) }}" method="POST">
+                @csrf
+                <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200">
+                    Approve
+                </button>
+            </form>
+
+            <form action="{{ route('projects.reject', $project) }}" method="POST">
+                @csrf
+                <div class="flex items-center gap-2">
+                    <textarea name="notes" rows="1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Reason for rejection"></textarea>
+                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200">
+                        Reject
+                    </button>
+                </div>
+            </form>
+        @endif
+
         <a href="{{ route('projects.index') }}"
             class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-200">
             Back to Project List
         </a>
-
     </div>
 </div>
 
