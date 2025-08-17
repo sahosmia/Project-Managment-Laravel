@@ -54,13 +54,12 @@ class ProjectController extends Controller
         if ($request->has('status') && $request->input('status') !== null && $request->input('status') !== '') {
             $validStatuses = [
                 'pending_research_cell',
-                'rejected_by_research_cell',
-                'approved_by_research_cell',
-                'pending_admin_review',
-                'assigned_to_supervisor',
-                'in_progress',
+                'rejected_research_cell',
+                'pending_admin',
+                'rejected_admin',
+                'pending_supervisor',
+                'rejected_supervisor',
                 'completed',
-                'cancelled'
             ];
 
             if (in_array($request->input('status'), $validStatuses)) {
@@ -132,7 +131,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_by_research_cell') {
+        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_research_cell') {
             abort(403, 'You can only edit rejected projects that you created.');
         }
         $students = User::where('role', 'student')->get();
@@ -142,7 +141,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_by_research_cell') {
+        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_research_cell') {
             abort(403, 'You can only update rejected projects that you created.');
         }
 
@@ -189,14 +188,14 @@ class ProjectController extends Controller
                 break;
             case 'admin':
                 if ($project->status === 'pending_admin') {
-                    $project->update(['status' => 'assigned_to_supervisor']);
+                    $project->update(['status' => 'pending_supervisor']);
                     return back()->with('success', 'Project approved and assigned to supervisor.');
                 }
                 break;
             case 'supervisor':
-                if ($project->status === 'assigned_to_supervisor') {
-                    $project->update(['status' => 'in_progress']);
-                    return back()->with('success', 'Project started.');
+                if ($project->status === 'pending_supervisor') {
+                    $project->update(['status' => 'completed']);
+                    return back()->with('success', 'Project has been completed.');
                 }
                 break;
         }
@@ -206,26 +205,28 @@ class ProjectController extends Controller
 
 
 
-    public function reject(Project $project)
+    public function reject(Request $request, Project $project)
     {
         $user = auth()->user();
+
+        $request->validate(['notes' => 'required|string']);
 
         switch ($user->role) {
             case 'research_cell':
                 if ($project->status === 'pending_research_cell') {
-                    $project->update(['status' => 'rejected_by_research_cell']);
+                    $project->update(['status' => 'rejected_research_cell', 'notes' => $request->notes]);
                     return back()->with('success', 'Project has been rejected.');
                 }
                 break;
             case 'admin':
                 if ($project->status === 'pending_admin') {
-                    $project->update(['status' => 'rejected_by_admin']);
+                    $project->update(['status' => 'rejected_admin', 'notes' => $request->notes]);
                     return back()->with('success', 'Project has been rejected by admin.');
                 }
                 break;
             case 'supervisor':
-                if ($project->status === 'assigned_to_supervisor') {
-                    $project->update(['status' => 'rejected_by_supervisor']);
+                if ($project->status === 'pending_supervisor') {
+                    $project->update(['status' => 'rejected_supervisor', 'notes' => $request->notes]);
                     return back()->with('success', 'Project has been rejected by supervisor.');
                 }
                 break;
