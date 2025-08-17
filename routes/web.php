@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('r_cells', RCellController::class);
 
 
-        Route::post('/projects/{project}/assign-supervisor', [AdminController::class, 'assignSupervisor'])->name('projects.assignSupervisor'); 
+        Route::post('/projects/{project}/assign-supervisor', [AdminController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
     });
 
     // Research Sell
@@ -57,10 +57,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:student'])->group(function () {
         Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');
-        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');        
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     });
 
-    
+        Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors');
+
 });
 
 require __DIR__ . '/auth.php';

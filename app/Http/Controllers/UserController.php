@@ -31,7 +31,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        $supervisors = User::where('role', 'supervisor')->get();
+        return view('users.create', compact('supervisors'));
     }
 
     public function store(Request $request)
@@ -41,6 +42,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
+                        'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],
+
         ]);
 
         User::create([
@@ -48,6 +51,8 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+                        'parent_id' => $request->parent_id,
+
         ]);
 
 
@@ -61,8 +66,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
-    }
+$supervisors = User::where('role', 'supervisor')->get();
+        return view('users.edit', compact('user', 'supervisors'));    }
 
     public function update(Request $request, User $user)
     {
@@ -71,8 +76,8 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
                         'password' => ['nullable', 'string', 'min:8'],
 
-            'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student'])],
-        ]);
+ 'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
+            'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],        ]);
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
@@ -81,6 +86,8 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+                        'parent_id' => $request->parent_id,
+
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
@@ -110,9 +117,9 @@ class UserController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => ['required', Rule::in(['pending_research_cell', 'rejected_by_research_cell', 'approved_by_research_cell', 'pending_admin_review', 'assigned_to_supervisor', 'in_progress', 'completed', 'cancelled'])],
+            'status' => ['required', Rule::in(['pending_research_cell', 'rejected_research_cell', 'approved_by_research_cell', 'pending_admin_review', 'assigned_to_supervisor', 'in_progress', 'completed', 'cancelled'])],
             'supervisor_id' => ['nullable', 'exists:users,id', Rule::in(User::where('role', 'supervisor')->pluck('id'))],
-            'members' => 'nullable|array', 
+            'members' => 'nullable|array',
             'members.*' => 'exists:users,id',
         ]);
 
@@ -121,7 +128,7 @@ class UserController extends Controller
         if ($request->has('members')) {
             $project->members()->sync($request->members);
         } else {
-            $project->members()->detach(); 
+            $project->members()->detach();
         }
 
         return redirect()->route('admin.projects.all')->with('success', 'Project updated successfully.');
@@ -135,9 +142,16 @@ class UserController extends Controller
 
         $project->update([
             'supervisor_id' => $request->supervisor_id,
-            'status' => 'assigned_to_supervisor', 
+            'status' => 'assigned_to_supervisor',
         ]);
 
         return back()->with('success', 'Supervisor assigned successfully.');
+    }
+
+
+    public function getCoSupervisors(User $supervisor)
+    {
+        $coSupervisors = $supervisor->coSupervisors;
+        return response()->json($coSupervisors);
     }
 }

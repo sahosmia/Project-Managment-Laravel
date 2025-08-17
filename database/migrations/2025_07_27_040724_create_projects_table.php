@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('projects', function (Blueprint $table) {
-           $table->id();
+            $table->id();
             $table->string('title');
             $table->string('academic_year')->nullable();
             $table->string('course_title')->nullable();
             $table->string('course_code')->nullable();
             $table->longText('problem_statement')->nullable();
             $table->longText('motivation')->nullable();
+            $table->text('notes')->nullable();
+
             $table->enum('course_type', ['project', 'thesis'])->default('project');
             $table->enum('semester', ['fall', 'summer', 'spring'])->nullable();
-            $table->enum('status', ['pending_research_cell', 'rejected_by_research_cell', 'pending_admin', 'rejected_by_admin', 'pending_supervisor', 'rejected_by_supervisor', 'completed'])->default('pending_research_cell');
+            $table->enum('status', ['pending_research_cell', 'rejected_research_cell', 'pending_admin', 'rejected_admin', 'pending_supervisor', 'rejected_supervisor', 'completed'])->default('pending_research_cell');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('r_cell_id')->nullable();

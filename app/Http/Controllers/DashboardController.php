@@ -36,12 +36,12 @@ class DashboardController extends Controller
     if ($user_role == "admin") {
         $pendingProjectsCount = Project::where('status', 'pending_research_cell')->count();
         $approvedProjectsCount = Project::where('status', 'approved_by_research_cell')->count();
-        $rejectedProjectsCount = Project::where('status', 'rejected_by_research_cell')->count();
+        $rejectedProjectsCount = Project::where('status', 'rejected_research_cell')->count();
     } elseif ($user_role == "research_cell") {
 
  $pendingProjectsCount = Project::where('status', 'pending_research_cell')->count();
         $approvedProjectsCount = Project::where('status', 'approved_by_research_cell')->count();
-        $rejectedProjectsCount = Project::where('status', 'rejected_by_research_cell')->count();
+        $rejectedProjectsCount = Project::where('status', 'rejected_research_cell')->count();
 
     } elseif ($user_role == "supervisor") {
         $supervisorId = Auth::id();

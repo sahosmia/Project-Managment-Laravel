@@ -21,7 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+                'parent_id'
+
     ];
 
     /**
@@ -65,11 +67,22 @@ class User extends Authenticatable
         return $this->belongsToMany(Project::class, 'project_members', 'student_id', 'project_id');
     }
 
-  
+
 
     // helper roll check
     public function hasRole($role)
     {
         return $this->role === $role;
+    }
+
+
+        public function supervisor()
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    public function coSupervisors()
+    {
+        return $this->hasMany(User::class, 'parent_id');
     }
 }

@@ -62,17 +62,27 @@
                     <option value="research_cell" @selected(old('role', $user->role) == 'research_cell')>Research Cell
                     </option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                    </svg>
-                </div>
             </div>
             @error('role')
             <p class="validate_error">{{ $message }}</p>
             @enderror
         </div>
-
+        <div class="mb-6 @if (old('role', $user->role) != 'co-supervisor') hidden @endif" id="supervisor-select">
+            <label for="parent_id" class="input_label">Parent Supervisor</label>
+            <div class="relative">
+                <select id="parent_id" name="parent_id" class="input">
+                    <option value="">Select a supervisor</option>
+                    @foreach ($supervisors as $supervisor)
+                    <option @selected(old('parent_id', $user->parent_id) == $supervisor->id) value="{{ $supervisor->id
+                        }}">{{ $supervisor->name }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            @error('parent_id')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+        </div>
         <!-- Submit Button -->
         <div class="flex items-center justify-center">
             <button type="submit"
@@ -82,4 +92,15 @@
         </div>
     </form>
 </div>
+<script>
+    $(document).ready(function() {
+            $('#role').on('change', function() {
+                if ($(this).val() === 'co-supervisor') {
+                    $('#supervisor-select').removeClass('hidden');
+                } else {
+                    $('#supervisor-select').addClass('hidden');
+                }
+            });
+        });
+</script>
 @endsection

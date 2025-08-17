@@ -220,8 +220,8 @@
                         <option @selected(request('status')=='pending_research_cell' ) value="pending_research_cell">
                             Pending Research Cell
                         </option>
-                        <option @selected(request('status')=='rejected_by_research_cell' )
-                            value="rejected_by_research_cell">Rejected by
+                        <option @selected(request('status')=='rejected_research_cell' )
+                            value="rejected_research_cell">Rejected by
                             Research Cell</option>
                         <option @selected(request('status')=='approved_by_research_cell' )
                             value="approved_by_research_cell">Approved by

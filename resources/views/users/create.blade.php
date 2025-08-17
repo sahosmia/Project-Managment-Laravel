@@ -8,7 +8,7 @@
         <div class="mb-4">
             <label for="name" class="input_label">Name</label>
             <input type="text" id="name" name="name" placeholder="Enter user's name" value="{{ old('name') }}"
-                class="input" required>
+                class="input" >
 
             @error('name')
             <p class="validate_error">{{ $message }}</p>
@@ -20,7 +20,7 @@
         <div class="mb-4">
             <label for="email" class="input_label">Email</label>
             <input type="email" id="email" name="email" placeholder="Enter user's email" value="{{ old('email') }}"
-                class="input" required>
+                class="input" >
             @error('email')
             <p class="validate_error">{{ $message }}</p>
             @enderror
@@ -29,7 +29,7 @@
         <!-- Password Field -->
         <div class="mb-4">
             <label for="password" class="input_label">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" class="input" required>
+            <input type="password" id="password" name="password" placeholder="Enter password" class="input" >
 
             @error('password')
             <p class="validate_error">{{ $message }}</p>
@@ -39,9 +39,11 @@
 
         <!-- Role Select Field -->
         <div class="mb-6">
-            <label for="role" class="input_label">Role</label>
+            <label for="role" class="input_label">Role
+                <x-required />
+            </label>
             <div class="relative">
-                <select id="role" name="role" class="input" required>
+                <select id="role" name="role" class="input" >
                     <option value="">Select a role</option>
                     <option @selected(old('role')=='admin' ) value="admin">Admin</option>
                     <option @selected(old('role')=='research_cell' ) value="research_cell">Research Cell</option>
@@ -49,14 +51,26 @@
                     <option @selected(old('role')=='co-supervisor' ) value="co-supervisor">Co-Supervisor</option>
                     <option @selected(old('role')=='student' ) value="student">Student</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                    </svg>
-                </div>
+
             </div>
 
             @error('role')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+        </div>
+        <div class="mb-6 hidden" id="supervisor-select">
+            <label for="parent_id" class="input_label">Parent Supervisor</label>
+            <div class="relative">
+                <select id="parent_id" name="parent_id" class="input">
+                    <option value="">Select a supervisor</option>
+                    @foreach ($supervisors as $supervisor)
+                    <option @selected(old('parent_id')==$supervisor->id) value="{{ $supervisor->id }}">{{
+                        $supervisor->name }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            @error('parent_id')
             <p class="validate_error">{{ $message }}</p>
             @enderror
         </div>
@@ -70,4 +84,16 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+            $('#role').on('change', function() {
+                if ($(this).val() === 'co-supervisor') {
+                    $('#supervisor-select').removeClass('hidden');
+                } else {
+                    $('#supervisor-select').addClass('hidden');
+                }
+            });
+        });
+</script>
 @endsection

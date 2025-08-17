@@ -26,7 +26,7 @@ class ProjectController extends Controller
 
         switch ($user->role) {
             case 'admin':
-                $projectsQuery->whereIn('status', ['pending_admin', 'rejected_by_admin']);
+                $projectsQuery->whereIn('status', ['pending_admin', 'rejected_admin']);
                 break;
             case 'research_cell':
                 $projectsQuery->where('status', 'pending_research_cell');
