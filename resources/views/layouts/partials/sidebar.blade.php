@@ -3,7 +3,7 @@
     <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
         class="flex items-center gap-2 pt-8 sidebar-header pb-7">
         {{-- Using direct URL for href since request()->is() checks paths --}}
-        <a href="/dashboard/ecommerce">
+        <a href="/dashboard">
             <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
                 <img class="dark:hidden w-36 flex items-center justify-center"
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSor28R4NlTk5A2Vr3zfgi3FnldWQCm6YgOZQ&s"
@@ -23,7 +23,7 @@
     </div>
     <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav
-            x-data="{ selected: '{{ request()->is('projects*') ? 'Projects' : (request()->is('users*') ? 'Users' : (request()->is('dashboard') ? 'Dashboard' : (request()->is('departments') ? 'Department' : (request()->is('r_cells') ? 'R-Cell' : (request()->is('proposal-sends')? 'Proposal-Send' :''))))) }}' }">
+            x-data="{ selected: '{{ request()->is('projects*') ? 'Projects' : (request()->is('users*') ? 'Users' : (request()->is('dashboard') ? 'Dashboard' : (request()->is('departments') ? 'Department' : (request()->is('r_cells') ? 'R-Cell' : (request()->is('proposal-sends') ? 'Proposal-Send' : ''))))) }}' }">
             <div>
 
 
@@ -41,39 +41,47 @@
                             </span>
                         </a>
                     </li>
+                    @if (auth()->user()->role == 'admin')
                     <li>
                         <a href="/departments" @click="selected = (selected === 'Department' ? '':'Department')"
                             class="menu-item group" :class="(selected === 'Department') || {{ request()->is('departments') ? 'true' : 'false' }} ?
-                                'menu-item-active' : 'menu-item-inactive'">
+                                    'menu-item-active' : 'menu-item-inactive'">
                             <i :class="((selected === 'Department') || {{ request()->is('departments') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-book"></i>
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-book"></i>
 
                             <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
                                 Department
                             </span>
                         </a>
                     </li>
+                    @endif
+
+                    @if (auth()->user()->role == 'admin')
                     <li>
                         <a href="/r_cells" @click="selected = (selected === 'R-Cell' ? '':'R-Cell')"
                             class="menu-item group" :class="(selected === 'R-Cell') || {{ request()->is('r_cells') ? 'true' : 'false' }} ?
-                                'menu-item-active' : 'menu-item-inactive'">
+                                    'menu-item-active' : 'menu-item-inactive'">
                             <i :class="((selected === 'R-Cell') || {{ request()->is('r_cells') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-microscope"></i>
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                                class="fa-solid fa-microscope"></i>
 
                             <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
                                 R-Cell
                             </span>
                         </a>
                     </li>
-                    @if (auth()->user()->role == "student")
+                    @endif
 
+                    @if (auth()->user()->role == 'student')
                     <li>
                         <a href="/proposal-sends"
                             @click="selected = (selected === 'Proposal-Send' ? '':'Proposal-Send')"
-                            class="menu-item group" :class="(selected === 'Proposal-Send') || {{ request()->is('proposal-sends') ? 'true' : 'false' }} ?
-                                'menu-item-active' : 'menu-item-inactive'">
-                            <i :class="((selected === 'Proposal-Send') || {{ request()->is('proposal-sends') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-seedling"></i>
+                            class="menu-item group" :class="(selected === 'Proposal-Send') ||
+                                {{ request()->is('proposal-sends') ? 'true' : 'false' }} ?
+                                    'menu-item-active' : 'menu-item-inactive'">
+                            <i :class="((selected === 'Proposal-Send') ||
+                                    {{ request()->is('proposal-sends') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-seedling"></i>
 
                             <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
                                 Proposal Send
@@ -112,21 +120,21 @@
                         </div>
                     </li>
 
-
+                    @if (auth()->user()->role == 'admin')
                     <li>
                         <a href="#" @click.prevent="selected = (selected === 'Users' ? '':'Users')"
                             class="menu-item group" :class="(selected === 'Users') || {{ request()->is('users*') ? 'true' : 'false' }} ?
-                                'menu-item-active' : 'menu-item-inactive'">
+                                    'menu-item-active' : 'menu-item-inactive'">
                             <i :class="((selected === 'Users') || {{ request()->is('users*') ? 'true' : 'false' }}) ?
-                            'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-users"></i>
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-users"></i>
 
                             <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
                                 Users
                             </span>
 
                             <i :class="[(selected === 'Users') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive',
-                                sidebarToggle ? 'lg:hidden' : ''
-                            ]" class="fa-solid fa-angle-down menu-item-arrow"></i>
+                                    sidebarToggle ? 'lg:hidden' : ''
+                                ]" class="fa-solid fa-angle-down menu-item-arrow"></i>
                         </a>
 
                         <div class="overflow-hidden transform translate"
@@ -135,7 +143,7 @@
                                 class="flex flex-col gap-1 mt-2 menu-dropdown pl-9">
                                 <li>
                                     <a href="/users" class="menu-dropdown-item group" :class="{{ request()->is('users') ? 'true' : 'false' }} ?
-                                            'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                                'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
                                         User List </a>
                                 </li>
                                 <li>
@@ -147,6 +155,7 @@
                             </ul>
                         </div>
                     </li>
+                    @endif
                 </ul>
             </div>
         </nav>
