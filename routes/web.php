@@ -29,41 +29,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
     // student role
-    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
+    Route::middleware(['role:student'])->group(function () {
+        Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+        Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+        Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
+    });
 
     // admin, supervisor, research_cell role
     Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
     Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 
-
-
-
     Route::middleware(['role:admin'])->group(function () {
-
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
         Route::resource('r_cells', RCellController::class);
-
-
-        Route::post('/projects/{project}/assign-supervisor', [AdminController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
+        Route::post('/projects/{project}/assign-supervisor', [ProjectController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
     });
-
-    // Research Sell
-    Route::middleware(['role:research_cell'])->prefix('research-cell')->name('research_cell.')->group(function () {
-
-    });
-
-    Route::middleware(['role:supervisor'])->prefix('supervisor')->name('supervisor.')->group(function () {
-    });
-
-    Route::middleware(['role:student'])->group(function () {
-        Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');
-        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-    });
-
-        Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors');
-
+    Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors');
 });
 
 require __DIR__ . '/auth.php';

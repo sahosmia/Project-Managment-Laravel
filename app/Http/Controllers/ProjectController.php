@@ -254,4 +254,18 @@ class ProjectController extends Controller
 
         abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
     }
+
+    public function assignSupervisor(Request $request, Project $project)
+    {
+        $request->validate([
+            'supervisor_id' => ['required', 'exists:users,id', Rule::in(User::where('role', 'supervisor')->pluck('id'))],
+        ]);
+
+        $project->update([
+            'supervisor_id' => $request->supervisor_id,
+            'status' => 'assigned_to_supervisor',
+        ]);
+
+        return back()->with('success', 'Supervisor assigned successfully.');
+    }
 }
