@@ -143,21 +143,12 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'supervisors', 'cosupervisors', ));
     }
 
-    public function update(Request $request, Project $project)
+    public function update(StoreProposalRequest $request, Project $project)
     {
         $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
         if ($project->created_by !== Auth::id() || !in_array($project->status, $rejectedStatuses)) {
             abort(403, 'You can only update rejected projects that you created.');
         }
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'members' => 'required|array',
-            'members.*' => 'exists:users,id',
-        ]);
-
-
         $newStatus = '';
         switch ($project->status) {
             case 'rejected_research_cell':
@@ -172,17 +163,28 @@ class ProjectController extends Controller
         }
 
         $project->update([
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => $request->proposed_title,
+            'academic_year' => $request->academic_year,
+            'course_title' => $request->course_title,
+            'course_code' => $request->course_code,
+            'problem_statement' => $request->problem_statement,
+            'motivation' => $request->motivation,
+            'course_type' => $request->course_type,
+            'semester' => $request->semester,
             'status' => $newStatus,
             'notes' => null,
+            'department_id' => $request->department_id,
+            'r_cell_id' => $request->rcell_id,
+            'supervisor_id' => $request->supervisor_id,
+            'cosupervisor_id' => $request->cosupervisor_id,
         ]);
 
-        $project->members()->sync(array_merge([Auth::id()], $request->members));
+             $project->members()->sync(array_column($request->members, 'user_id'));
 
-        return redirect()->route('student.projects.my')->with('success', 'Project updated and re-submitted for review.');
+
+
+        return redirect()->route('projects.index')->with('success', 'Project updated and re-submitted for review.');
     }
-
 
 
     public function destroy(Project $project)

@@ -51,9 +51,9 @@
                 <div class="relative">
                     <select id="semester" name="semester" class="input select2">
                         <option value="">Select Semester</option>
-                        <option @selected(old('semester')=='Fall' ) value="Fall">Fall</option>
-                        <option @selected(old('semester')=='Summer' ) value="Summer">Summer</option>
-                        <option @selected(old('semester')=='Spring' ) value="Spring">Spring</option>
+                        <option @selected(old('semester')=='fall' ) value="Fall">Fall</option>
+                        <option @selected(old('semester')=='summer' ) value="Summer">Summer</option>
+                        <option @selected(old('semester')=='spring' ) value="Spring">Spring</option>
                     </select>
                     @error('semester')
                     <p class="validate_error">{{ $message }}</p>
@@ -67,8 +67,8 @@
                 <div class="relative">
                     <select id="course_type" name="course_type" class="input select2">
                         <option value="">Select Course Type</option>
-                        <option @selected(old('course_type')=='Project' ) value="Project">Project</option>
-                        <option @selected(old('course_type')=='Thesis' ) value="Thesis">Thesis</option>
+                        <option @selected(old('course_type')=='project' ) value="Project">Project</option>
+                        <option @selected(old('course_type')=='thesis' ) value="Thesis">Thesis</option>
                     </select>
                     @error('course_type')
                     <p class="validate_error">{{ $message }}</p>
