@@ -80,7 +80,7 @@ class ProjectController extends Controller
         // Paginate the results and append all current query string parameters to the pagination links
         $projects = $projectsQuery->paginate(10)->withQueryString();
 
-        return view('projects.index', compact('projects','supervisors'));
+        return view('projects.index', compact('projects', 'supervisors'));
     }
 
     public function create()
@@ -96,52 +96,57 @@ class ProjectController extends Controller
     public function store(StoreProposalRequest $request)
     {
 
-            $project = Project::create([
-                'title' => $request->proposed_title,
-                'academic_year' => $request->academic_year,
-                'course_title' => $request->course_title,
-                'course_code' => $request->course_code,
-                'problem_statement' => $request->problem_statement,
-                'motivation' => $request->motivation,
-                'course_type' => $request->course_type,
-                'semester' => $request->semester,
-                'status' => 'pending_research_cell',
-                'created_by' => Auth::id(),
-                'department_id' => $request->department_id,
-                'r_cell_id' => $request->rcell_id,
-                'supervisor_id' => $request->supervisor_id,
-                'cosupervisor_id' => $request->cosupervisor_id,
-            ]);
+        $project = Project::create([
+            'title' => $request->proposed_title,
+            'academic_year' => $request->academic_year,
+            'course_title' => $request->course_title,
+            'course_code' => $request->course_code,
+            'problem_statement' => $request->problem_statement,
+            'motivation' => $request->motivation,
+            'course_type' => $request->course_type,
+            'semester' => $request->semester,
+            'status' => 'pending_research_cell',
+            'created_by' => Auth::id(),
+            'department_id' => $request->department_id,
+            'r_cell_id' => $request->rcell_id,
+            'supervisor_id' => $request->supervisor_id,
+            'cosupervisor_id' => $request->cosupervisor_id,
+        ]);
 
-            foreach ($request->members as $memberData) {
-                $project->members()->attach($memberData['user_id']);
-            }
-
-            return redirect()->route('projects.index')->with('success', 'Project proposal submitted successfully!');
-
-
+        foreach ($request->members as $memberData) {
+            $project->members()->attach($memberData['user_id']);
         }
 
+        return redirect()->route('projects.index')->with('success', 'Project proposal submitted successfully!');
+    }
 
 
-        public function show(Project $project){
 
-            return view('projects.show', compact('project',  ));
-        }
+    public function show(Project $project)
+    {
+
+        return view('projects.show', compact('project',));
+    }
 
     public function edit(Project $project)
     {
-        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_research_cell') {
+        $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
+        if ($project->created_by !== Auth::id() || !in_array($project->status, $rejectedStatuses)) {
             abort(403, 'You can only edit rejected projects that you created.');
         }
         $students = User::where('role', 'student')->get();
         $currentMembers = $project->members->pluck('id')->toArray();
-        return view('student.projects.edit', compact('project', 'students', 'currentMembers'));
+         $departments = Department::get();
+        $rcells = RCell::get();
+        $supervisors = User::where('role', 'supervisor')->get();
+        $cosupervisors = User::where('role', 'co-supervisor')->get();
+        return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'supervisors', 'cosupervisors', ));
     }
 
     public function update(Request $request, Project $project)
     {
-        if ($project->created_by !== Auth::id() || $project->status !== 'rejected_research_cell') {
+        $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
+        if ($project->created_by !== Auth::id() || !in_array($project->status, $rejectedStatuses)) {
             abort(403, 'You can only update rejected projects that you created.');
         }
 
@@ -152,10 +157,25 @@ class ProjectController extends Controller
             'members.*' => 'exists:users,id',
         ]);
 
+
+        $newStatus = '';
+        switch ($project->status) {
+            case 'rejected_research_cell':
+                $newStatus = 'pending_research_cell';
+                break;
+            case 'rejected_admin':
+                $newStatus = 'pending_admin';
+                break;
+            case 'rejected_supervisor':
+                $newStatus = 'pending_supervisor';
+                break;
+        }
+
         $project->update([
             'title' => $request->title,
             'description' => $request->description,
-            'status' => 'pending_research_cell',
+            'status' => $newStatus,
+            'notes' => null,
         ]);
 
         $project->members()->sync(array_merge([Auth::id()], $request->members));
@@ -234,8 +254,4 @@ class ProjectController extends Controller
 
         abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
     }
-
-
-
-
 }

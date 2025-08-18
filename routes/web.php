@@ -22,19 +22,21 @@ Route::middleware('auth')->group(function () {
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
-    Route::get('/projects/{project}/edit', [AdminController::class, 'editProject'])->name('projects.edit');
-    Route::put('/projects/{project}/update', [AdminController::class, 'updateProject'])->name('projects.update');
+    // student role
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
 
+    // admin, supervisor, research_cell role
     Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
     Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 
 
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 
     Route::middleware(['role:admin'])->group(function () {

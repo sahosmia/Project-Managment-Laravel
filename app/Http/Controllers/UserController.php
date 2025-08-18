@@ -42,7 +42,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
-                        'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],
+            'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],
 
         ]);
 
@@ -51,7 +51,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-                        'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent_id,
 
         ]);
 
@@ -66,18 +66,20 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-$supervisors = User::where('role', 'supervisor')->get();
-        return view('users.edit', compact('user', 'supervisors'));    }
+        $supervisors = User::where('role', 'supervisor')->get();
+        return view('users.edit', compact('user', 'supervisors'));
+    }
 
     public function update(Request $request, User $user)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-                        'password' => ['nullable', 'string', 'min:8'],
+            'password' => ['nullable', 'string', 'min:8'],
 
- 'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
-            'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],        ]);
+            'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
+            'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],
+        ]);
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
@@ -86,7 +88,7 @@ $supervisors = User::where('role', 'supervisor')->get();
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
-                        'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent_id,
 
         ]);
 
