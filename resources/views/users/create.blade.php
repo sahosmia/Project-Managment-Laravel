@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('title', 'Create User')
 @section('content')
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New User</h2>
@@ -8,7 +9,7 @@
         <div class="mb-4">
             <label for="name" class="input_label">Name</label>
             <input type="text" id="name" name="name" placeholder="Enter user's name" value="{{ old('name') }}"
-                class="input" >
+                class="input">
 
             @error('name')
             <p class="validate_error">{{ $message }}</p>
@@ -20,7 +21,7 @@
         <div class="mb-4">
             <label for="email" class="input_label">Email</label>
             <input type="email" id="email" name="email" placeholder="Enter user's email" value="{{ old('email') }}"
-                class="input" >
+                class="input">
             @error('email')
             <p class="validate_error">{{ $message }}</p>
             @enderror
@@ -29,7 +30,7 @@
         <!-- Password Field -->
         <div class="mb-4">
             <label for="password" class="input_label">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" class="input" >
+            <input type="password" id="password" name="password" placeholder="Enter password" class="input">
 
             @error('password')
             <p class="validate_error">{{ $message }}</p>
@@ -43,7 +44,7 @@
                 <x-required />
             </label>
             <div class="relative">
-                <select id="role" name="role" class="input" >
+                <select id="role" name="role" class="input">
                     <option value="">Select a role</option>
                     <option @selected(old('role')=='admin' ) value="admin">Admin</option>
                     <option @selected(old('role')=='research_cell' ) value="research_cell">Research Cell</option>

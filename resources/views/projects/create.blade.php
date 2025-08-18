@@ -6,7 +6,7 @@
     <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create New Proposal</h2>
     <form action="{{route('projects.store')}}" method="POST">
         @csrf
-        
+
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <!-- Department -->
@@ -203,10 +203,6 @@
                 <div class="relative">
                     <select id="cosupervisor_id" name="cosupervisor_id" class="input select2">
                         <option value="">Select Co-Supervisor</option>
-                        {{-- @foreach ($cosupervisors as $cosupervisor)
-                        <option value="{{ $cosupervisor->id }}" @selected(old('cosupervisor_id')==$cosupervisor->id)>{{
-                            $cosupervisor->name }}</option>
-                        @endforeach --}}
                     </select>
                     @error('cosupervisor_id')
                     <p class="validate_error">{{ $message }}</p>

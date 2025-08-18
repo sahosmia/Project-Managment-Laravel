@@ -94,18 +94,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-console.log("sahosss");
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
 
-        // Password toggle
+    // Password toggle
     const togglePassword = document.querySelectorAll('.toggle-password');
     if (togglePassword) {
         togglePassword.forEach(function(element) {
             element.addEventListener('click', function() {
-                const passwordInput = this.previousElementSibling;
+                const passwordInput = this.closest('.relative').querySelector('input');
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 this.classList.toggle('fa-eye');
@@ -134,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeModalButton) {
         closeModalButton.addEventListener('click', function() {
             if (filterModal) {
-                filterModal.classList.add('hidden'); 
+                filterModal.classList.add('hidden');
                 console.log('Modal closed. Hidden class added.');
             } else {
                 console.error('Filter Modal element not found!');

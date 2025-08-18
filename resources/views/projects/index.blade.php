@@ -153,16 +153,6 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 dark:text-green-300 dark:hover:bg-gray-600"
                                             role="menuitem">Approve</button>
                                     </form>
-
-                                    {{-- @if ($item->status == 'pending_research_cell')
-                                    <form method="POST" action="{{ route('projects.reject', $item->id) }}"
-                                        class="reject-form">
-                                        @csrf
-                                        <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
-                                            role="menuitem">Reject</button>
-                                    </form>
-                                    @endif --}}
                                     @endif
                                     @if (auth()->user()->role == 'student')
                                     @if (in_array($item->status, ['rejected_research_cell', 'rejected_admin',
@@ -193,7 +183,6 @@
         </table>
     </div>
 </div>
-
 {{-- Filter Modal --}}
 <div id="filterModal"
     class="fixed inset-0 bg-black/80  overflow-y-auto h-full w-full hidden flex items-center justify-center z-100">

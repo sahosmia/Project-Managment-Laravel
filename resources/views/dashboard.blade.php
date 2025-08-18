@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('title', 'Dashboard')
 @section('content')
 <div class="min-h-screen  p-4 sm:p-6 lg:p-8">
     <header class="mb-6">
@@ -148,7 +149,7 @@
             </div>
         </div>
 
-       
+
         @endif
 
     </section>
