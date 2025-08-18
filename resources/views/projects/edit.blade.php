@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+@section('title', 'Edit & Resubmit Profile')
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto">

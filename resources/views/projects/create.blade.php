@@ -1,11 +1,12 @@
 @extends('layouts.admin')
-
+@section('title', 'Proposal Submit')
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto">
     <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create New Proposal</h2>
     <form action="{{route('projects.store')}}" method="POST">
         @csrf
+        
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <!-- Department -->

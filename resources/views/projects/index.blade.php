@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+@section('title', 'Proposal Lists')
 @section('content')
 
 
@@ -8,7 +8,7 @@
     <div class="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                Project List
+                Proposal Lists
             </h3>
         </div>
 
@@ -154,7 +154,7 @@
                                             role="menuitem">Approve</button>
                                     </form>
 
-                                    @if ($item->status == 'pending_research_cell')
+                                    {{-- @if ($item->status == 'pending_research_cell')
                                     <form method="POST" action="{{ route('projects.reject', $item->id) }}"
                                         class="reject-form">
                                         @csrf
@@ -162,7 +162,7 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
                                             role="menuitem">Reject</button>
                                     </form>
-                                    @endif
+                                    @endif --}}
                                     @endif
                                     @if (auth()->user()->role == 'student')
                                     @if (in_array($item->status, ['rejected_research_cell', 'rejected_admin',

@@ -1,5 +1,5 @@
 @extends('layouts.admin') {{-- Assuming you have a layout file named admin.blade.php --}}
-
+@section('title', 'Proposal Details')
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl mx-auto my-8">
@@ -143,18 +143,7 @@
             </button>
         </form>
 
-        <form action="{{ route('projects.reject', $project) }}" method="POST">
-            @csrf
-            <div class="flex items-center gap-2">
-                <textarea name="notes" rows="1"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    placeholder="Reason for rejection"></textarea>
-                <button type="submit"
-                    class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200">
-                    Reject
-                </button>
-            </div>
-        </form>
+
         @endif
 
         <a href="{{ route('projects.index') }}"
@@ -165,5 +154,60 @@
 </div>
 
 
+@if(($user->role == 'research_cell' && $project->status == 'pending_research_cell') ||
+($user->role == 'admin' && $project->status == 'pending_admin') ||
+($user->role == 'supervisor' && $project->status == 'pending_supervisor'))
+<div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl mx-auto my-8 z-10">
+    <section class="space-y-6">
+        <header>
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Reject Project') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Once a project is rejected, this action cannot be undone. Please provide a reason for
+                rejection.') }}
+            </p>
+        </header>
+
+        <x-danger-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-project-rejection')">{{
+            __('Reject Project') }}</x-danger-button>
+
+        <x-modal name="confirm-project-rejection" :show="$errors->rejection->isNotEmpty()" focusable>
+            <form method="post" action="{{ route('projects.reject', $project) }}" class="p-6">
+                @csrf
+
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('Are you sure you want to reject this project?') }}
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {{ __('Please enter a reason for rejecting this project. This reason will be visible to the
+                    student.') }}
+                </p>
+
+                <div class="mt-6">
+                    <x-input-label for="notes" value="{{ __('Rejection Notes') }}" class="sr-only" />
+
+                    <x-textarea-input id="notes" name="notes" class="mt-1 block w-3/4"
+                        placeholder="{{ __('Rejection Notes') }}" />
+
+                    <x-input-error :messages="$errors->rejection->get('notes')" class="mt-2" />
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <x-secondary-button x-on:click="$dispatch('close')">
+                        {{ __('Cancel') }}
+                    </x-secondary-button>
+
+                    <x-danger-button class="ms-3">
+                        {{ __('Reject Project') }}
+                    </x-danger-button>
+                </div>
+            </form>
+        </x-modal>
+    </section>
+</div>
+@endif
 
 @endsection

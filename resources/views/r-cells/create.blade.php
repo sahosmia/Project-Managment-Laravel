@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('title', 'R-Cell Create')
 @section('content')
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
     <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New R-Cell</h2>
