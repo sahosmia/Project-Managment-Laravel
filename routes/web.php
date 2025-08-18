@@ -43,8 +43,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('departments', DepartmentController::class);
         Route::resource('r_cells', RCellController::class);
         Route::post('/projects/{project}/assign-supervisor', [ProjectController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
+        Route::post('/projects/{project}/update-supervisors', [ProjectController::class, 'updateSupervisors'])->name('projects.updateSupervisors');
     });
-    Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors');
+    Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors')->middleware('auth');
 });
 
 require __DIR__ . '/auth.php';

@@ -82,6 +82,37 @@
         </div>
     </div>
 
+    @if(auth()->user()->role == 'admin')
+    <div class="mt-8 pt-4 border-t border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Update Supervisors</h3>
+        <form action="{{ route('projects.updateSupervisors', $project) }}" method="POST">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="supervisor_id" class="text-gray-700 text-sm font-semibold mb-1">Supervisor</label>
+                    <select name="supervisor_id" id="supervisor_id" class="w-full p-2 border rounded-md">
+                        @foreach($supervisors as $supervisor)
+                        <option value="{{ $supervisor->id }}" @if($project->supervisor_id == $supervisor->id) selected @endif>{{ $supervisor->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="cosupervisor_id" class="text-gray-700 text-sm font-semibold mb-1">Co-Supervisor</label>
+                    <select name="cosupervisor_id" id="cosupervisor_id" class="w-full p-2 border rounded-md">
+                        <option value="">Select Co-Supervisor</option>
+                        @foreach($cosupervisors as $cosupervisor)
+                        <option value="{{ $cosupervisor->id }}" @if($project->cosupervisor_id == $cosupervisor->id) selected @endif>{{ $cosupervisor->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200">Update Supervisors</button>
+            </div>
+        </form>
+    </div>
+    @endif
+
     {{-- Group Members Section --}}
     <div class="mt-8 pt-4 border-t border-gray-200">
         <h3 class="text-xl font-semibold text-gray-700 mb-4">Group Members</h3>
@@ -160,11 +191,11 @@
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl mx-auto my-8 z-10">
     <section class="space-y-6">
         <header>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <h2 class="text-lg font-medium text-gray-900">
                 {{ __('Reject Project') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm text-gray-600">
                 {{ __('Once a project is rejected, this action cannot be undone. Please provide a reason for
                 rejection.') }}
             </p>
@@ -177,11 +208,11 @@
             <form method="post" action="{{ route('projects.reject', $project) }}" class="p-6">
                 @csrf
 
-                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                <h2 class="text-lg font-medium text-gray-900">
                     {{ __('Are you sure you want to reject this project?') }}
                 </h2>
 
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <p class="mt-1 text-sm text-gray-600">
                     {{ __('Please enter a reason for rejecting this project. This reason will be visible to the
                     student.') }}
                 </p>
@@ -211,3 +242,42 @@
 @endif
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const supervisorSelect = document.getElementById('supervisor_id');
+        const coSupervisorSelect = document.getElementById('cosupervisor_id');
+        const userRole = "{{ auth()->user()->role }}";
+
+        function fetchCoSupervisors(supervisorId) {
+            if (supervisorId) {
+                fetch(`/supervisors/${supervisorId}/co-supervisors`)
+                    .then(response => response.json())
+                    .then(data => {
+                        coSupervisorSelect.innerHTML = '<option value="">Select Co-Supervisor</option>';
+                        data.forEach(coSupervisor => {
+                            const option = document.createElement('option');
+                            option.value = coSupervisor.id;
+                            option.textContent = coSupervisor.name;
+                            coSupervisorSelect.appendChild(option);
+                        });
+                    });
+            } else {
+                coSupervisorSelect.innerHTML = '<option value="">Select Co-Supervisor</option>';
+            }
+        }
+
+        if (userRole !== 'admin') {
+            supervisorSelect.addEventListener('change', function () {
+                fetchCoSupervisors(this.value);
+            });
+
+            // Initial fetch
+            if (supervisorSelect.value) {
+                fetchCoSupervisors(supervisorSelect.value);
+            }
+        }
+    });
+</script>
+@endpush
