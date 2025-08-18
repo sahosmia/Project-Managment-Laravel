@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Project;
+use App\Policies\ProjectPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
     {
             Paginator::defaultView('vendor.pagination.tailwind');
 
+            Gate::policy(Project::class, ProjectPolicy::class);
     }
 }

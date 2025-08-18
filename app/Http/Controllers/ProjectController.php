@@ -124,8 +124,9 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-
-        return view('projects.show', compact('project',));
+        $supervisors = User::where('role', 'supervisor')->get();
+        $cosupervisors = User::where('role', 'co-supervisor')->get();
+        return view('projects.show', compact('project', 'supervisors', 'cosupervisors'));
     }
 
     public function edit(Project $project)
@@ -269,5 +270,21 @@ class ProjectController extends Controller
         ]);
 
         return back()->with('success', 'Supervisor assigned successfully.');
+    }
+
+    public function updateSupervisors(Request $request, Project $project)
+    {
+        $this->authorize('update', $project);
+        $request->validate([
+            'supervisor_id' => ['required', 'exists:users,id'],
+            'cosupervisor_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        $project->update([
+            'supervisor_id' => $request->supervisor_id,
+            'cosupervisor_id' => $request->cosupervisor_id,
+        ]);
+
+        return back()->with('success', 'Supervisors updated successfully.');
     }
 }
