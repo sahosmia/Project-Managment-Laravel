@@ -29,11 +29,11 @@
                     <th class="py-3 text-left">
                         <p class="font-medium text-gray-500 text-theme-xs">Status</p>
                     </th>
-
+                    @if (auth()->user()->role == 'admin')
                     <th class="py-3 text-left">
                         <p class="font-medium text-gray-500 text-theme-xs">Actions</p>
                     </th>
-
+                    @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-300">
@@ -58,10 +58,13 @@
                             @if($proposal->status == 'complete') bg-green-100 text-green-800 @endif
                         ">{{ Str::title($proposal->status) }}</p>
                     </td>
+                    @if (auth()->user()->role == 'admin')
+
                     <td class="py-3">
                         <a href="{{ route('industrial-proposals.edit', $proposal) }}"
                             class="text-brand-600 hover:text-brand-700">Edit</a>
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

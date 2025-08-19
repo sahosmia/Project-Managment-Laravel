@@ -40,6 +40,9 @@ class ProjectController extends Controller
             case 'supervisor':
                 $projectsQuery->where('supervisor_id', $user->id);
                 break;
+            case 'co-supervisor':
+                $projectsQuery->where('cosupervisor_id', $user->id);
+                break;
             case 'student':
                 $projectsQuery->where(function ($q) use ($user) {
                     $q->where('created_by', $user->id)

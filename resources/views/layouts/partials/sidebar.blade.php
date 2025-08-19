@@ -55,7 +55,7 @@
                         </a>
                     </li>
                     @endif
-                    @if (auth()->user()->role == 'admin')
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'supervisor')
                     <li>
                         <a href="{{ route('industrial-proposals.index') }}"
                             @click="selected = (selected === 'Industrial-Proposals' ? '':'Industrial-Proposals')"

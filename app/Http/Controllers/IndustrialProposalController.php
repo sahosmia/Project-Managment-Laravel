@@ -6,12 +6,18 @@ use App\Models\Company;
 use App\Models\IndustrialProposal;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IndustrialProposalController extends Controller
 {
     public function index()
     {
-        $proposals = IndustrialProposal::with(['user', 'company', 'supervisor'])->get();
+        $user = Auth::user();
+        $query = IndustrialProposal::with(['user', 'company', 'supervisor']);
+        if($user->role == 'supervisor'){
+            $query->where('supervisor_id', $user->id);
+        }
+        $proposals = $query->get();
         return view('industrial-proposals.index', compact('proposals'));
     }
 
@@ -49,7 +55,7 @@ class IndustrialProposalController extends Controller
     $existingProposal = IndustrialProposal::where('user_id', auth()->id())->first();
 
     if ($existingProposal) {
-        
+
         if ($existingProposal->status === 'pending') {
             $existingProposal->update([
                 'skills' => $validatedData['skills'],

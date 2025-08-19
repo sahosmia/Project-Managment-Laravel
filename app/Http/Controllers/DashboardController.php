@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IndustrialProposal;
 use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -15,57 +16,62 @@ class DashboardController extends Controller
     {
         $user_role = auth()->user()->role;
 
-    // Common data for all roles
-    $totalUsers = User::count();
-    $totalProjects = Project::count();
+        // Common data for all roles
+        $totalUsers = User::count();
+        $totalIndustrialProposal = IndustrialProposal::count();
+        $totalProjects = Project::count();
 
-    $globalPendingProjects = Project::where('status', 'approved_by_research_cell')->count();
+        $pendingAdmin = Project::where('status', 'pending_admin')->count();
+        $rejectAdmin = Project::where('status', 'rejected_admin')->count();
 
-    $research_cells = User::where('role', 'research_cell')->limit(5)->orderBy('created_at')->get();
-    $supervisors = User::where('role', 'supervisor')->limit(5)->orderBy('created_at')->get();
-    $students = User::where('role', 'student')->limit(10)->orderBy('created_at')->get();
+        $research_cells = User::where('role', 'research_cell')->limit(5)->orderBy('created_at')->get();
+        $supervisors = User::where('role', 'supervisor')->limit(5)->orderBy('created_at')->get();
+        $students = User::where('role', 'student')->limit(10)->orderBy('created_at')->get();
 
-    // Initialize role-specific data to null
-    $pendingProjectsCount = null;
-    $approvedProjectsCount = null;
-    $rejectedProjectsCount = null;
-    $supervisorMyProjectsCount = null;
-    $studentMyProjectsCount = null;
 
-    if ($user_role == "admin") {
-        $pendingProjectsCount = Project::where('status', 'pending_research_cell')->count();
-        $approvedProjectsCount = Project::where('status', 'approved_by_research_cell')->count();
-        $rejectedProjectsCount = Project::where('status', 'rejected_research_cell')->count();
-    } elseif ($user_role == "research_cell") {
+$pendingProjectsRc = null;
+$rejectProjectsRc = null;
+$pendingProjectsCoSupervisor = null;
+$pendingProjectsSupervisor = null;
+$rejectProjectsSupervisor = null;
 
- $pendingProjectsCount = Project::where('status', 'pending_research_cell')->count();
-        $approvedProjectsCount = Project::where('status', 'approved_by_research_cell')->count();
-        $rejectedProjectsCount = Project::where('status', 'rejected_research_cell')->count();
 
-    } elseif ($user_role == "supervisor") {
-        $supervisorId = Auth::id();
-        $supervisorMyProjectsCount = Project::where('supervisor_id', $supervisorId)->count();
+            $pendingProjectsRc = Project::where('status', 'pending_research_cell')->count();
+            $rejectProjectsRc = Project::where('status', 'rejected_research_cell')->count();
 
-    } elseif ($user_role == "student") {
-        $studentId = Auth::id();
-        $studentMyProjectsCount = Project::where('created_by', $studentId)->count();
+            // $pendingProjectsCount = Project::where('status', 'pending_research_cell')->count();
+            // $approvedProjectsCount = Project::where('status', 'approved_by_research_cell')->count();
+
+            $supervisorId = Auth::id();
+
+            $pendingProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'pending_supervisor']])->count();
+            $rejectProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'rejected_supervisor']])->count();
+
+            $pendingProjectsCoSupervisor = Project::where('cosupervisor_id', $supervisorId)->count();
+
+            $studentId = Auth::id();
+            $studentMyProjectsCount = Project::where('created_by', $studentId)->count();
+
+        return view('dashboard', compact(
+            'user_role',
+            'totalUsers',
+            'totalIndustrialProposal',
+            'totalProjects',
+            'research_cells',
+            'supervisors',
+            'students',
+
+            'studentMyProjectsCount',
+
+            'pendingAdmin',
+            'rejectAdmin',
+
+            'pendingProjectsRc',
+            'rejectProjectsRc',
+
+            'pendingProjectsSupervisor',
+            'rejectProjectsSupervisor',
+            'pendingProjectsCoSupervisor'
+        ));
     }
-
-    return view('dashboard', compact(
-        'user_role',
-        'totalUsers',
-        'totalProjects',
-        'globalPendingProjects',
-        'research_cells',
-        'supervisors',
-        'students',
-        'pendingProjectsCount',
-        'approvedProjectsCount',
-        'rejectedProjectsCount',
-        'supervisorMyProjectsCount',
-        'studentMyProjectsCount',
-    ));
-    }
-
-
 }
