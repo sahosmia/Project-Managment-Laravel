@@ -163,7 +163,7 @@
                                         role="menuitem">Edit</a>
 
 
-                                    <form method="POST" action="{{route('users.destroy', $item->id)}}">
+                                    <form method="POST" action="{{route('users.destroy', $item->id)}}" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

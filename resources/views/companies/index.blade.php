@@ -117,7 +117,7 @@
                                         role="menuitem">Edit</a>
 
 
-                                    <form method="POST" action="{{route('companies.destroy', $item->id)}}">
+                                    <form method="POST" action="{{route('companies.destroy', $item->id)}}" onsubmit="return confirm('Are you sure you want to delete this company?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
