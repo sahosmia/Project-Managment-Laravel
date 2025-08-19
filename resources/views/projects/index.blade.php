@@ -163,7 +163,7 @@
                                         class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 "
                                         role="menuitem">Edit & Resubmit</a>
                                     <form method="POST" action="{{ route('projects.destroy', $item->id) }}"
-                                        class="delete-form">
+                                        class="delete-form" onsubmit="return confirm('Are you sure you want to delete this project?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
