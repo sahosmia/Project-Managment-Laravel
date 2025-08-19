@@ -55,6 +55,20 @@
                         </a>
                     </li>
                     @endif
+                    @if (auth()->user()->role == 'admin')
+                    <li>
+                        <a href="/companies" @click="selected = (selected === 'Company' ? '':'Company')"
+                            class="menu-item group" :class="(selected === 'Company') || {{ request()->is('companies') ? 'true' : 'false' }} ?
+                                    'menu-item-active' : 'menu-item-inactive'">
+                            <i :class="((selected === 'Company') || {{ request()->is('companies') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-building"></i>
+
+                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                Company
+                            </span>
+                        </a>
+                    </li>
+                    @endif
 
                     @if (auth()->user()->role == 'admin')
                     <li>
