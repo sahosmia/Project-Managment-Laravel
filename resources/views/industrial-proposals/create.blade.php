@@ -36,8 +36,7 @@
                 <select id="company_id" name="company_id" class="input select2">
                     <option value="">Select Company</option>
                     @foreach ($companies as $company)
-                    <option value="{{ $company->id }}" @selected(old('company_id')==$company->id)>{{ $company->name }}
-                    </option>
+                    <option value="{{ $company->id }}" @selected(old('company_id') == $company->id)>{{ $company->name }}</option>
                     @endforeach
                 </select>
                 @error('company_id')
@@ -52,8 +51,7 @@
                 <select id="supervisor_id" name="supervisor_id" class="input select2">
                     <option value="">Select Supervisor</option>
                     @foreach ($supervisors as $supervisor)
-                    <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>{{
-                        $supervisor->name }}</option>
+                    <option value="{{ $supervisor->id }}" @selected(old('supervisor_id') == $supervisor->id)>{{ $supervisor->name }}</option>
                     @endforeach
                 </select>
                 @error('supervisor_id')

@@ -29,7 +29,7 @@
                     <th class="py-3 text-left">
                         <p class="font-medium text-gray-500 text-theme-xs">Status</p>
                     </th>
-                    
+
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-300">

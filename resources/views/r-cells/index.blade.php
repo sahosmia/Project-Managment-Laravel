@@ -103,7 +103,8 @@
                                         role="menuitem">Edit</a>
 
 
-                                    <form method="POST" action="{{route('r_cells.destroy', $item)}}">
+                                    <form method="POST" action="{{route('r_cells.destroy', $item)}}" class="delete-form"
+                                        onsubmit="return confirm('Are you sure you want to delete this R-Cell?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
