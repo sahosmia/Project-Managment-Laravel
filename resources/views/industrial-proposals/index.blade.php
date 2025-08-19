@@ -30,6 +30,10 @@
                         <p class="font-medium text-gray-500 text-theme-xs">Status</p>
                     </th>
 
+                    <th class="py-3 text-left">
+                        <p class="font-medium text-gray-500 text-theme-xs">Actions</p>
+                    </th>
+
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-300">
@@ -48,14 +52,15 @@
                         <p class="text-gray-500 text-theme-sm">{{ $proposal->supervisor->name }}</p>
                     </td>
                     <td class="py-3">
-                        <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium
+                        <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium inline-block
                             @if($proposal->status == 'pending') bg-yellow-100 text-yellow-800 @endif
                             @if($proposal->status == 'inprogress') bg-blue-100 text-blue-800 @endif
                             @if($proposal->status == 'complete') bg-green-100 text-green-800 @endif
                         ">{{ Str::title($proposal->status) }}</p>
                     </td>
                     <td class="py-3">
-                        <p class="text-gray-500 text-theme-sm">{{ $proposal->created_at->format('d M Y') }}</p>
+                        <a href="{{ route('industrial-proposals.edit', $proposal) }}"
+                            class="text-brand-600 hover:text-brand-700">Edit</a>
                     </td>
                 </tr>
                 @endforeach

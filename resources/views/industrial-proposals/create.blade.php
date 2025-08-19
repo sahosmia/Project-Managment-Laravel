@@ -24,24 +24,47 @@
         <div class="mb-4">
             <label for="skills" class="input_label">Skills (comma-separated)</label>
             <input type="text" id="skills" name="skills" class="input" placeholder="e.g., PHP, Laravel, Vue.js"
-                value="{{ old('skills') }}">
+                value="{{ old('skills', $industrialProposal->skills ?? "") }}">
             @error('skills')
-            <p class="validate_error">{{ $message }}</p>
+            <p class=" validate_error">{{ $message }}</p>
             @enderror
         </div>
-
         <div class="mb-4">
-            <label for="company_id" class="input_label">Company</label>
-            <div class="relative">
-                <select id="company_id" name="company_id" class="input select2">
-                    <option value="">Select Company</option>
-                    @foreach ($companies as $company)
-                    <option value="{{ $company->id }}" @selected(old('company_id') == $company->id)>{{ $company->name }}</option>
-                    @endforeach
-                </select>
-                @error('company_id')
-                <p class="validate_error">{{ $message }}</p>
-                @enderror
+            <label class="input_label">Did you manage an internship on your own?</label>
+            <div class="flex items-center space-x-4">
+                <label class="flex items-center">
+                    <input type="radio" name="manage_own_internship" value="yes"
+                        class="form-radio h-5 w-5 text-brand-600" {{ old('manage_own_internship',
+                        $industrialProposal->company_id ?? '') == 'yes' ? 'checked' : '' }}>
+                    <span class="ml-2 text-gray-700">Yes, I manage</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="manage_own_internship" value="no"
+                        class="form-radio h-5 w-5 text-brand-600" {{ old('manage_own_internship',
+                        $industrialProposal->company_id ?? '') == 'no' ? 'checked' : '' }}>
+                    <span class="ml-2 text-gray-700">No</span>
+                </label>
+            </div>
+        </div>
+
+        <div id="company_selection">
+            <div class="mb-4">
+                <label for="company_id" class="input_label">Company</label>
+                <div class="relative">
+                    <select id="company_id" name="company_id" class="input select2">
+                        <option value="">Select Company</option>
+                        @foreach ($companies as $company)
+                        <option value="{{ $company->id }}" {{ old('company_id', $industrialProposal->company_id ?? '')
+                            ==
+                            $company->id ? 'selected' : '' }}>
+                            {{ $company->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('company_id')
+                    <p class="validate_error">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </div>
 
@@ -51,7 +74,11 @@
                 <select id="supervisor_id" name="supervisor_id" class="input select2">
                     <option value="">Select Supervisor</option>
                     @foreach ($supervisors as $supervisor)
-                    <option value="{{ $supervisor->id }}" @selected(old('supervisor_id') == $supervisor->id)>{{ $supervisor->name }}</option>
+                    <option value="{{ $supervisor->id }}" {{ old('supervisor_id', $industrialProposal->supervisor_id ??
+                        '') ==
+                        $supervisor->id ? 'selected' : '' }}>
+                        {{ $supervisor->name }}
+                    </option>
                     @endforeach
                 </select>
                 @error('supervisor_id')
@@ -75,6 +102,17 @@
         $('.select2').select2({
             width: '100%'
         });
+
+        $('input[name="manage_own_internship"]').on('change', function() {
+            if ($(this).val() === 'yes') {
+                $('#company_selection').show();
+            } else {
+                $('#company_selection').hide();
+            }
+        });
+
+        // Trigger the change event on page load to set the initial state
+        $('input[name="manage_own_internship"]:checked').trigger('change');
     });
 </script>
 @endpush

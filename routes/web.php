@@ -33,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
         Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
         Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
+
+         Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
+        Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');
     });
 
     // admin, supervisor, research_cell role
@@ -46,13 +49,15 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('r_cells', RCellController::class);
         Route::post('/projects/{project}/assign-supervisor', [ProjectController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
         Route::post('/projects/{project}/update-supervisors', [ProjectController::class, 'updateSupervisors'])->name('projects.updateSupervisors');
+
+        Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index');
+        Route::get('/industrial-proposals/{industrial_proposal}/edit', [IndustrialProposalController::class, 'edit'])->name('industrial-proposals.edit');
+        Route::put('/industrial-proposals/{industrial_proposal}', [IndustrialProposalController::class, 'update'])->name('industrial-proposals.update');
     });
+
     Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors')->middleware('auth');
 
-    // Industrial Proposals
-    Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
-    Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');
-    Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index')->middleware('role:admin');
+
 });
 
 require __DIR__ . '/auth.php';
