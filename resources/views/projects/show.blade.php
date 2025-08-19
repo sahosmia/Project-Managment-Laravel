@@ -82,36 +82,7 @@
         </div>
     </div>
 
-    @if(auth()->user()->role == 'admin')
-    <div class="mt-8 pt-4 border-t border-gray-200">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Update Supervisors</h3>
-        <form action="{{ route('projects.updateSupervisors', $project) }}" method="POST">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="supervisor_id" class="text-gray-700 text-sm font-semibold mb-1">Supervisor</label>
-                    <select name="supervisor_id" id="supervisor_id" class="w-full p-2 border rounded-md">
-                        @foreach($supervisors as $supervisor)
-                        <option value="{{ $supervisor->id }}" @if($project->supervisor_id == $supervisor->id) selected @endif>{{ $supervisor->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label for="cosupervisor_id" class="text-gray-700 text-sm font-semibold mb-1">Co-Supervisor</label>
-                    <select name="cosupervisor_id" id="cosupervisor_id" class="w-full p-2 border rounded-md">
-                        <option value="">Select Co-Supervisor</option>
-                        @foreach($cosupervisors as $cosupervisor)
-                        <option value="{{ $cosupervisor->id }}" @if($project->cosupervisor_id == $cosupervisor->id) selected @endif>{{ $cosupervisor->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-end mt-4">
-                <button type="submit" class="px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition duration-200">Update Supervisors</button>
-            </div>
-        </form>
-    </div>
-    @endif
+
 
     {{-- Group Members Section --}}
     <div class="mt-8 pt-4 border-t border-gray-200">

@@ -1,9 +1,13 @@
 @extends('layouts.admin')
-@section('title', 'Edit & Resubmit Profile')
+@section('title')
+{{ auth()->user()->role === 'admin' ? 'Update Proposal' : 'Edit & Resubmit Proposal' }}
+@endsection
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Edit & Resubmit Proposal</h2>
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+        {{ auth()->user()->role === 'admin' ? 'Update Proposal' : 'Edit & Resubmit Proposal' }}
+    </h2>
     <form action="{{ route('projects.update', $project) }}" method="POST">
         @csrf
         @method('PUT')
@@ -253,8 +257,7 @@
         <div class="flex items-center justify-center mt-6">
             <button type="submit"
                 class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-opacity-50 transition duration-200 w-full">
-                Submit Proposal
-            </button>
+                {{ auth()->user()->role === 'admin' ? 'Update Proposal' : 'Edit & Resubmit Proposal' }} </button>
         </div>
     </form>
 </div>

@@ -127,12 +127,16 @@ class ProjectController extends Controller
         return view('projects.show', compact('project', 'supervisors', 'cosupervisors'));
     }
 
-    public function edit(Project $project)
+   public function edit(Project $project)
     {
-        $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
-        if ($project->created_by !== Auth::id() || !in_array($project->status, $rejectedStatuses)) {
-            abort(403, 'You can only edit rejected projects that you created.');
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
+            if ($project->created_by !== $user->id || !in_array($project->status, $rejectedStatuses)) {
+                abort(403, 'You can only edit rejected projects that you created.');
+            }
         }
+
         $students = User::where('role', 'student')->get();
         $currentMembers = $project->members->pluck('id')->toArray();
         $departments = Department::get();
@@ -144,22 +148,32 @@ class ProjectController extends Controller
 
     public function update(StoreProposalRequest $request, Project $project)
     {
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
+            if ($project->created_by !== $user->id || !in_array($project->status, $rejectedStatuses)) {
+                abort(403, 'You can only update rejected projects that you created.');
+            }
+        }
+
+        $newStatus = $project->status;
         $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
-        if ($project->created_by !== Auth::id() || !in_array($project->status, $rejectedStatuses)) {
-            abort(403, 'You can only update rejected projects that you created.');
+
+        if ($user->role == 'student' && in_array($project->status, $rejectedStatuses)) {
+            switch ($project->status) {
+                case 'rejected_research_cell':
+                    $newStatus = 'pending_research_cell';
+                    break;
+                case 'rejected_admin':
+
+                    $newStatus = 'pending_admin';
+                    break;
+                case 'rejected_supervisor':
+                    $newStatus = 'pending_supervisor';
+                    break;
+            }
         }
-        $newStatus = '';
-        switch ($project->status) {
-            case 'rejected_research_cell':
-                $newStatus = 'pending_research_cell';
-                break;
-            case 'rejected_admin':
-                $newStatus = 'pending_admin';
-                break;
-            case 'rejected_supervisor':
-                $newStatus = 'pending_supervisor';
-                break;
-        }
+
 
         $project->update([
             'title' => $request->proposed_title,
@@ -276,7 +290,7 @@ class ProjectController extends Controller
 
     public function updateSupervisors(Request $request, Project $project)
     {
-        $this->authorize('update', $project);
+        // $this->authorize('update', $project);
         $request->validate([
             'supervisor_id' => ['required', 'exists:users,id'],
             'cosupervisor_id' => ['nullable', 'exists:users,id'],

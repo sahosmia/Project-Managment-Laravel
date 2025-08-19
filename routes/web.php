@@ -27,12 +27,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
     // student role
     Route::middleware(['role:student'])->group(function () {
         Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-        Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-        Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
 
          Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
         Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');

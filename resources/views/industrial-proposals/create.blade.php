@@ -35,13 +35,13 @@
                 <label class="flex items-center">
                     <input type="radio" name="manage_own_internship" value="yes"
                         class="form-radio h-5 w-5 text-brand-600" {{ old('manage_own_internship',
-                        $industrialProposal->company_id ?? '') == 'yes' ? 'checked' : '' }}>
+                        $industrialProposal->company_id ?? null) ? 'checked' : '' }}>
                     <span class="ml-2 text-gray-700">Yes, I manage</span>
                 </label>
                 <label class="flex items-center">
                     <input type="radio" name="manage_own_internship" value="no"
                         class="form-radio h-5 w-5 text-brand-600" {{ old('manage_own_internship',
-                        $industrialProposal->company_id ?? '') == 'no' ? 'checked' : '' }}>
+                        $industrialProposal->company_id ?? null) ? '' : 'checked' }}>
                     <span class="ml-2 text-gray-700">No</span>
                 </label>
             </div>

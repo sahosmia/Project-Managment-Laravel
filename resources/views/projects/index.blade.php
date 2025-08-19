@@ -156,12 +156,14 @@
                                             role="menuitem">Approve</button>
                                     </form>
                                     @endif
-                                    @if (auth()->user()->role == 'student')
-                                    @if (in_array($item->status, ['rejected_research_cell', 'rejected_admin',
+                                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'student' &&
+                                    in_array($item->status,
+                                    ['rejected_research_cell', 'rejected_admin',
                                     'rejected_supervisor']))
                                     <a href="{{ route('projects.edit', $item->id) }}"
                                         class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 "
-                                        role="menuitem">Edit & Resubmit</a>
+                                        role="menuitem">{{ auth()->user()->role === 'admin' ? 'Update' : 'Edit
+                                        & Resubmit' }}</a>
                                     <form method="POST" action="{{ route('projects.destroy', $item->id) }}"
                                         class="delete-form"
                                         onsubmit="return confirm('Are you sure you want to delete this project?');">
@@ -171,7 +173,6 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 "
                                             role="menuitem">Delete</button>
                                     </form>
-                                    @endif
                                     @endif
                                 </div>
                             </div>
