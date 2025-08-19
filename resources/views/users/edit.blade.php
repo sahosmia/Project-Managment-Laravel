@@ -2,7 +2,7 @@
 @section('title', 'Edit User')
 @section('content')
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New User</h2>
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Edit User</h2>
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -83,6 +83,15 @@
             <p class="validate_error">{{ $message }}</p>
             @enderror
         </div>
+        {{-- Student Id --}}
+        <div class="mb-6 @if (old('role', $user->role) != 'student') hidden @endif" id="student_id_filed">
+            <label for="student_id" class="input_label">Student ID</label>
+            <input type="text" id="student_id" name="student_id" placeholder="Enter Student ID" class="input"
+                value="{{ old('student_id', $user->student_id) }}">
+            @error('student_id')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+        </div>
         <!-- Submit Button -->
         <div class="flex items-center justify-center">
             <button type="submit"
@@ -101,6 +110,16 @@
                     $('#supervisor-select').addClass('hidden');
                 }
             });
+
+            $('#role').on('change', function() {
+                if ($(this).val() === 'student') {
+                    $('#student_id_filed').removeClass('hidden');
+                } else {
+                    $('#student_id_filed').addClass('hidden');
+                }
+            });
+
+
         });
 </script>
 @endsection

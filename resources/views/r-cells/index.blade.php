@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="w-full overflow-x-auto">
+    <div class="w-full ">
         <table class="min-w-full mb-4">
             <!-- table header start -->
             <thead>

@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="w-full overflow-x-auto">
+    <div class="w-full ">
         <table class="min-w-full mb-4">
             <!-- table header start -->
             <thead>
@@ -156,9 +156,7 @@
                             <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden dark:bg-gray-700"
                                 role="menu" aria-orientation="vertical" aria-labelledby="options-menu-{{ $item->id }}">
                                 <div class="py-1" role="none">
-                                    <a href="{{route('users.show', $item->id)}}"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-600"
-                                        role="menuitem">View</a>
+                                    
 
                                     <a href="{{route('users.edit', $item->id)}}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-600"
@@ -192,10 +190,10 @@
 
 {{-- Filter Modal --}}
 <div id="filterModal"
-    class="fixed inset-0 bg-black/80  overflow-y-auto h-full w-full hidden flex items-center justify-center z-100">
+    class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden flex items-center justify-center z-[99999999999]">
     <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
         <div class="flex justify-between items-center pb-3">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Filter Projects</h3>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 ">Filter Projects</h3>
             <button id="closeFilterModalButton"
                 class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
                 <span class="sr-only">Close</span>

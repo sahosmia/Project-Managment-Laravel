@@ -3,21 +3,20 @@
 @section('content')
 
 
-<div
-    class=" rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 shadow-lg">
+<div class=" rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4  sm:px-6 shadow-lg">
     <div class="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+            <h3 class="text-lg font-semibold text-gray-800 ">
                 Proposal Lists
             </h3>
         </div>
 
         <div class="flex items-center gap-3">
             <button
-                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 "
                 id="openFilterModalButton">
-                <svg class="stroke-current fill-white dark:fill-gray-800" width="20" height="20" viewBox="0 0 20 20"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="stroke-current fill-white " width="20" height="20" viewBox="0 0 20 20" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path d="M2.29004 5.90393H17.7067" stroke="" stroke-width="1.5" stroke-linecap="round"
                         stroke-linejoin="round" />
                     <path d="M17.7075 14.0961H2.29085" stroke="" stroke-width="1.5" stroke-linecap="round"
@@ -40,31 +39,31 @@
         <table class="min-w-full">
             <!-- table header start -->
             <thead>
-                <tr class="border-gray-100 border-y dark:border-gray-800">
+                <tr class="border-gray-100 border-y ">
                     <th class="py-3 text-left">
                         <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                            <p class="font-medium text-gray-500 text-theme-xs ">
                                 Project Title
                             </p>
                         </div>
                     </th>
                     <th class="py-3  text-left">
                         <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                            <p class="font-medium text-gray-500 text-theme-xs ">
                                 Status
                             </p>
                         </div>
                     </th>
                     <th class="py-3  text-left">
                         <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                            <p class="font-medium text-gray-500 text-theme-xs ">
                                 Created By
                             </p>
                         </div>
                     </th>
                     <th class="py-3  text-left">
                         <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                            <p class="font-medium text-gray-500 text-theme-xs ">
                                 Supervisor
                             </p>
                         </div>
@@ -72,7 +71,7 @@
 
                     <th class="py-3  text-left">
                         <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                            <p class="font-medium text-gray-500 text-theme-xs ">
                                 Members
                             </p>
                         </div>
@@ -81,7 +80,7 @@
             </thead>
             <!-- table header end -->
 
-            <tbody class="divide-y divide-gray-300 dark:divide-gray-800">
+            <tbody class="divide-y divide-gray-300 ">
                 @foreach ($projects as $item)
                 <tr class="hover:bg-gray-50">
                     <td class="py-3">
@@ -89,7 +88,7 @@
                             <div class="flex items-center gap-3">
 
                                 <div>
-                                    <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                    <p class="font-medium text-gray-800 text-theme-sm ">
                                         {{ $item->title }} </p>
 
                                 </div>
@@ -106,14 +105,14 @@
                     </td>
                     <td class="py-3">
                         <div class="flex items-center">
-                            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                            <p class="text-gray-500 text-theme-sm ">
                                 {{ $item->creator->name ?? 'N/A' }}
                             </p>
                         </div>
                     </td>
                     <td class="py-3">
                         <div class="flex items-center">
-                            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                            <p class="text-gray-500 text-theme-sm ">
                                 {{ $item->supervisor->name ?? 'N/A' }}
                             </p>
                         </div>
@@ -121,12 +120,11 @@
                     <td class="py-3">
                         <div class="flex  gap-2 flex-col">
                             @forelse ($item->members as $member)
-                            <span
-                                class="rounded-full  px-2 py-0.5 text-theme-xs font-medium text-gray-700  dark:text-gray-300">
+                            <span class="rounded-full  px-2 py-0.5 text-theme-xs font-medium text-gray-700  ">
                                 {{ $member->name }}
                             </span>
                             @empty
-                            <span class="text-gray-500 text-theme-xs dark:text-gray-400">No members</span>
+                            <span class="text-gray-500 text-theme-xs ">No members</span>
                             @endforelse
                         </div>
                     </td>
@@ -134,23 +132,27 @@
                     <td class="py-3 px-4 text-right">
                         <div class="relative inline-block text-left">
                             <button type="button"
-                                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
                                 id="options-menu-{{ $item->id }}" aria-haspopup="true" aria-expanded="true">
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>
 
-                            <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 hidden dark:bg-gray-700"
+                            <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 hidden "
                                 role="menu" aria-orientation="vertical" aria-labelledby="options-menu-{{ $item->id }}">
                                 <div class="py-1" role="none">
                                     <a href="{{ route('projects.show', $item->id) }}"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-600"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 "
                                         role="menuitem">View</a>
-                                    @if (auth()->user()->role == 'research_cell')
-                                    <form method="POST" action="{{ route('projects.approve', $item->id) }}"
+                                    @php $user = auth()->user(); @endphp
+                                    @if(
+                                    ($user->role == 'research_cell' && $item->status == 'pending_research_cell') ||
+                                    ($user->role == 'admin' && $item->status == 'pending_admin') ||
+                                    ($user->role == 'supervisor' && $item->status == 'pending_supervisor')
+                                    ) <form method="POST" action="{{ route('projects.approve', $item->id) }}"
                                         class="approve-form">
                                         @csrf
                                         <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 dark:text-green-300 dark:hover:bg-gray-600"
+                                            class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 "
                                             role="menuitem">Approve</button>
                                     </form>
                                     @endif
@@ -158,14 +160,14 @@
                                     @if (in_array($item->status, ['rejected_research_cell', 'rejected_admin',
                                     'rejected_supervisor']))
                                     <a href="{{ route('projects.edit', $item->id) }}"
-                                        class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 dark:text-blue-300 dark:hover:bg-gray-600"
+                                        class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 "
                                         role="menuitem">Edit & Resubmit</a>
                                     <form method="POST" action="{{ route('projects.destroy', $item->id) }}"
                                         class="delete-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
+                                            class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 "
                                             role="menuitem">Delete</button>
                                     </form>
                                     @endif
@@ -181,16 +183,17 @@
                 <!-- table body end -->
             </tbody>
         </table>
+
+        {{ $projects->links() }}
     </div>
 </div>
 {{-- Filter Modal --}}
 <div id="filterModal"
-    class="fixed inset-0 bg-black/80  overflow-y-auto h-full w-full hidden flex items-center justify-center z-100">
-    <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+    class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden flex items-center justify-center z-[999]">
+    <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white ">
         <div class="flex justify-between items-center pb-3">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Filter Projects</h3>
-            <button id="closeFilterModalButton"
-                class="text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 ">Filter Projects</h3>
+            <button id="closeFilterModalButton" class="text-gray-400 hover:text-gray-500 ">
                 <span class="sr-only">Close</span>
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -205,7 +208,7 @@
                     <input type="text" name="title" id="filter_title" class="input" placeholder="Enter title"
                         value="{{ request('title') }}">
                 </div>
-
+                @if (auth()->user()->role == 'admin')
                 <div class="mb-4">
                     <label for="filter_status" class="input_label">Status</label>
                     <select name="status" id="filter_status" class="input select2">
@@ -232,8 +235,6 @@
                     </select>
                 </div>
 
-                {{-- Supervisor filter (only if user role is not supervisor or student) --}}
-                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'research_cell')
                 <div class="mb-4">
                     <label for="filter_supervisor" class="input_label">Supervisor</label>
                     <select id="supervisor_id" name="supervisor_id" class="input select2">
@@ -251,8 +252,7 @@
 
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button type="button"
-                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 "
                     id="cancelFilterModalButton">Cancel</button>
                 <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Apply
                     Filters</button>

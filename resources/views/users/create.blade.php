@@ -76,6 +76,17 @@
             @enderror
         </div>
 
+
+        {{-- Student Id --}}
+        <div class="mb-6 hidden" id="student_id_filed">
+            <label for="student_id" class="input_label">Student ID</label>
+            <input type="text" id="student_id" name="student_id" placeholder="Enter Student ID" class="input"
+                value="{{ old('student_id') }}">
+            @error('student_id')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+        </div>
+
         <!-- Submit Button -->
         <div class="flex items-center justify-center">
             <button type="submit"
@@ -93,6 +104,15 @@
                     $('#supervisor-select').removeClass('hidden');
                 } else {
                     $('#supervisor-select').addClass('hidden');
+                }
+            });
+        });
+    $(document).ready(function() {
+            $('#role').on('change', function() {
+                if ($(this).val() === 'co-supervisor') {
+                    $('#student_id_filed').removeClass('hidden');
+                } else {
+                    $('#student_id_filed').addClass('hidden');
                 }
             });
         });

@@ -24,6 +24,7 @@ class Project extends Model
         'r_cell_id',
         'supervisor_id',
         'cosupervisor_id',
+        'notes'
     ];
 
     public function rcell()

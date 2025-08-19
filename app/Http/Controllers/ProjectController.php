@@ -21,15 +21,23 @@ class ProjectController extends Controller
         $projectsQuery = Project::query();
         $user = Auth::user();
         $supervisors = User::where('role', 'supervisor')->get();
-
+        $validStatuses = [
+            'pending_research_cell',
+            'rejected_research_cell',
+            'pending_admin',
+            'rejected_admin',
+            'pending_supervisor',
+            'rejected_supervisor',
+            'completed',
+        ];
 
 
         switch ($user->role) {
             case 'admin':
-                $projectsQuery->whereIn('status', ['pending_admin', 'rejected_admin']);
+                $projectsQuery->whereIn('status', $validStatuses);
                 break;
             case 'research_cell':
-                $projectsQuery->where('status', 'pending_research_cell');
+                $projectsQuery->whereIn('status', ['pending_research_cell', 'rejected_research_cell']);
                 break;
             case 'supervisor':
                 $projectsQuery->where('supervisor_id', $user->id);
@@ -52,15 +60,7 @@ class ProjectController extends Controller
         }
 
         if ($request->has('status') && $request->input('status') !== null && $request->input('status') !== '') {
-            $validStatuses = [
-                'pending_research_cell',
-                'rejected_research_cell',
-                'pending_admin',
-                'rejected_admin',
-                'pending_supervisor',
-                'rejected_supervisor',
-                'completed',
-            ];
+
 
             if (in_array($request->input('status'), $validStatuses)) {
                 $projectsQuery->where('status', $request->input('status'));
@@ -77,7 +77,7 @@ class ProjectController extends Controller
 
         $projectsQuery->orderBy('status');
 
-        // Paginate the results and append all current query string parameters to the pagination links
+
         $projects = $projectsQuery->paginate(10)->withQueryString();
 
         return view('projects.index', compact('projects', 'supervisors'));
@@ -136,11 +136,11 @@ class ProjectController extends Controller
         }
         $students = User::where('role', 'student')->get();
         $currentMembers = $project->members->pluck('id')->toArray();
-         $departments = Department::get();
+        $departments = Department::get();
         $rcells = RCell::get();
         $supervisors = User::where('role', 'supervisor')->get();
         $cosupervisors = User::where('role', 'co-supervisor')->get();
-        return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'supervisors', 'cosupervisors', ));
+        return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'supervisors', 'cosupervisors',));
     }
 
     public function update(StoreProposalRequest $request, Project $project)
@@ -179,7 +179,7 @@ class ProjectController extends Controller
             'cosupervisor_id' => $request->cosupervisor_id,
         ]);
 
-             $project->members()->sync(array_column($request->members, 'user_id'));
+        $project->members()->sync(array_column($request->members, 'user_id'));
 
 
 
@@ -209,10 +209,13 @@ class ProjectController extends Controller
                 }
                 break;
             case 'admin':
+
+// only admin can change supervisor and co supervisor, so you have first change in view file then updte it
                 if ($project->status === 'pending_admin') {
                     $project->update(['status' => 'pending_supervisor']);
                     return back()->with('success', 'Project approved and assigned to supervisor.');
                 }
+
                 break;
             case 'supervisor':
                 if ($project->status === 'pending_supervisor') {

@@ -9,7 +9,7 @@
         <div class="mb-4">
             <label for="name" class="input_label">Name</label>
             <input type="text" id="name" name="name" placeholder="Enter r-cell's name" value="{{ old('name') }}"
-                class="input" required>
+                class="input" >
 
             @error('name')
             <p class="validate_error">{{ $message }}</p>
@@ -23,7 +23,7 @@
         <div class="mb-4">
             <label for="description" class="input_label">Description</label>
             <textarea id="description" name="description" placeholder="Enter description" class="input"
-                required>{{ old('description') }}</textarea>
+                >{{ old('description') }}</textarea>
 
             @error('description')
             <p class="validate_error">{{ $message }}</p>
