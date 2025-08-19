@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -41,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('departments', DepartmentController::class);
+        Route::resource('companies', CompanyController::class);
         Route::resource('r_cells', RCellController::class);
         Route::post('/projects/{project}/assign-supervisor', [ProjectController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
         Route::post('/projects/{project}/update-supervisors', [ProjectController::class, 'updateSupervisors'])->name('projects.updateSupervisors');
