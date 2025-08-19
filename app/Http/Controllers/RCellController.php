@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
+use App\Http\Requests\RCellRequest;
 use App\Models\RCell;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class RCellController extends Controller
 {
@@ -34,15 +32,10 @@ class RCellController extends Controller
         return view('r-cells.create');
     }
 
-    public function store(Request $request)
+    public function store(RCellRequest $request)
     {
-       $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
+        $validate = $request->validate();
         RCell::create($validate);
-
 
         return redirect()->route('r_cells.index')->with('success', 'RCell created successfully.');
     }
@@ -57,14 +50,9 @@ class RCellController extends Controller
         return view('r-cells.edit', compact('r_cell'));
     }
 
-    public function update(Request $request, RCell $r_cell)
+    public function update(RCellRequest $request, RCell $r_cell)
     {
-       $validate = $request->validate([
-            'description' => 'nullable|string',
-            'name' => 'required|string|max:255',
-
-        ]);
-
+        $validate = $request->validate();
         $r_cell->update($validate);
 
         return redirect()->route('r_cells.index')->with('success', 'RCell updated successfully.');
@@ -75,8 +63,4 @@ class RCellController extends Controller
         $r_cell->delete();
         return redirect()->route('r_cells.index')->with('success', 'RCell deleted successfully.');
     }
-
-
-
-
 }

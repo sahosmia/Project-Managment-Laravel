@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\IndustrialProposalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RCellController;
@@ -48,6 +48,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/projects/{project}/update-supervisors', [ProjectController::class, 'updateSupervisors'])->name('projects.updateSupervisors');
     });
     Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors')->middleware('auth');
+
+    // Industrial Proposals
+    Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
+    Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');
+    Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index')->middleware('role:admin');
 });
 
 require __DIR__ . '/auth.php';

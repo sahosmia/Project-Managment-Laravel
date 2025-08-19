@@ -11,17 +11,13 @@
         </div>
 
         <div class="flex items-center gap-3">
-
-
             <a href="{{ route('companies.create') }}"
                 class="bg-brand-600 text-white hover:bg-brand-700 transition-all px-5 py-2 rounded font-medium text-sm">Add
                 <i class="fa fa-plus"></i></a>
-
-
         </div>
     </div>
 
-    <div class="w-full overflow-x-auto">
+    <div class="w-full">
         <table class="min-w-full mb-4">
             <!-- table header start -->
             <thead>
@@ -30,6 +26,27 @@
                         <div class="flex items-center">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                 Name
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3 text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Email
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3 text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Phone
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3 text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Location
                             </p>
                         </div>
                     </th>
@@ -64,38 +81,42 @@
                 <tr class="hover:bg-gray-50">
                     <td class="py-3">
                         <div class="flex items-center">
-                            <div class="flex items-center gap-3">
-
-                                <div>
-                                    <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                        {{ $item->name }} </p>
-
-                                </div>
-                            </div>
+                            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                {{ $item->name }} </p>
                         </div>
                     </td>
                     <td class="py-3">
                         <div class="flex items-center">
-                            <div class="flex items-center gap-3">
-
-                                <div>
-                                    <p class=" text-gray-500 text-theme-sm dark:text-white/90">
-                                        {{ $item->description ?? "N/A"}} </p>
-
-                                </div>
-                            </div>
+                            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                {{ $item->email }} </p>
                         </div>
                     </td>
                     <td class="py-3">
                         <div class="flex items-center">
-                            <div class="flex items-center gap-3">
+                            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                {{ $item->phone }} </p>
+                        </div>
+                    </td>
+                    <td class="py-3">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                {{ $item->location }} </p>
+                        </div>
+                    </td>
+                    <td class="py-3">
+                        <div class="flex items-center">
 
-                                <div>
-                                    <p class=" text-gray-500 text-theme-sm dark:text-white/90">
-                                        {{ $item->quantity }} </p>
+                            <p class=" text-gray-500 text-theme-sm dark:text-white/90">
+                                {{ $item->description ?? "N/A"}} </p>
 
-                                </div>
-                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3">
+                        <div class="flex items-center">
+
+                            <p class=" text-gray-500 text-theme-sm dark:text-white/90">
+                                {{ $item->quantity }} </p>
+
                         </div>
                     </td>
 
@@ -117,7 +138,8 @@
                                         role="menuitem">Edit</a>
 
 
-                                    <form method="POST" action="{{route('companies.destroy', $item->id)}}">
+                                    <form method="POST" action="{{route('companies.destroy', $item->id)}}"
+                                        onsubmit="return confirm('Are you sure you want to delete this company?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

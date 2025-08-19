@@ -107,7 +107,7 @@
                 </div>
             </div>
             <div class="flex justify-end mt-4">
-                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200">Update Supervisors</button>
+                <button type="submit" class="px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition duration-200">Update Supervisors</button>
             </div>
         </form>
     </div>

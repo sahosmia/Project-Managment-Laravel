@@ -14,8 +14,6 @@ use Illuminate\Http\Response;
 class ProjectController extends Controller
 {
 
-
-
     public function index(Request $request)
     {
         $projectsQuery = Project::query();
@@ -211,7 +209,8 @@ class ProjectController extends Controller
                 break;
             case 'admin':
 
-// only admin can change supervisor and co supervisor, so you have first change in view file then updte it
+                // only admin can change supervisor and co supervisor, so you have first change in view file then updte it
+
                 if ($project->status === 'pending_admin') {
                     $project->update(['status' => 'pending_supervisor']);
                     return back()->with('success', 'Project approved and assigned to supervisor.');

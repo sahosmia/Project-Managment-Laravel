@@ -156,14 +156,15 @@
                             <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden dark:bg-gray-700"
                                 role="menu" aria-orientation="vertical" aria-labelledby="options-menu-{{ $item->id }}">
                                 <div class="py-1" role="none">
-                                    
+
 
                                     <a href="{{route('users.edit', $item->id)}}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-600"
                                         role="menuitem">Edit</a>
 
 
-                                    <form method="POST" action="{{route('users.destroy', $item->id)}}">
+                                    <form method="POST" action="{{route('users.destroy', $item->id)}}"
+                                        onsubmit="return confirm('Are you sure you want to delete this user?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

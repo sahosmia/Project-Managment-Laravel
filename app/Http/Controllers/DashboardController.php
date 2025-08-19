@@ -18,8 +18,7 @@ class DashboardController extends Controller
     // Common data for all roles
     $totalUsers = User::count();
     $totalProjects = Project::count();
-    // This 'pendingProjects' was originally 'approved_by_research_cell'.
-    // Renamed to globalPendingProjects for clarity to distinguish from admin's pending count.
+
     $globalPendingProjects = Project::where('status', 'approved_by_research_cell')->count();
 
     $research_cells = User::where('role', 'research_cell')->limit(5)->orderBy('created_at')->get();
@@ -53,10 +52,10 @@ class DashboardController extends Controller
     }
 
     return view('dashboard', compact(
-        'user_role', // Pass the user role to the view
+        'user_role',
         'totalUsers',
         'totalProjects',
-        'globalPendingProjects', // Now clearly named
+        'globalPendingProjects',
         'research_cells',
         'supervisors',
         'students',

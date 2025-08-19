@@ -57,6 +57,40 @@
                     @endif
                     @if (auth()->user()->role == 'admin')
                     <li>
+                        <a href="{{ route('industrial-proposals.index') }}"
+                            @click="selected = (selected === 'Industrial-Proposals' ? '':'Industrial-Proposals')"
+                            class="menu-item group" :class="(selected === 'Industrial-Proposals') ||
+                                {{ request()->is('industrial-proposals') ? 'true' : 'false' }} ?
+                                    'menu-item-active' : 'menu-item-inactive'">
+                            <i :class="((selected === 'Industrial-Proposals') ||
+                                    {{ request()->is('industrial-proposals') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-industry"></i>
+
+                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                Industrial Proposals
+                            </span>
+                        </a>
+                    </li>
+                    @endif
+                    @if (auth()->user()->role == 'student')
+                    <li>
+                        <a href="{{ route('industrial-proposals.create') }}"
+                            @click="selected = (selected === 'Industrial-Proposal-Send' ? '':'Industrial-Proposal-Send')"
+                            class="menu-item group" :class="(selected === 'Industrial-Proposal-Send') ||
+                                {{ request()->is('industrial-proposals/create') ? 'true' : 'false' }} ?
+                                    'menu-item-active' : 'menu-item-inactive'">
+                            <i :class="((selected === 'Industrial-Proposal-Send') ||
+                                    {{ request()->is('industrial-proposals/create') ? 'true' : 'false' }}) ?
+                                'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-industry"></i>
+
+                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                Industrial Proposal
+                            </span>
+                        </a>
+                    </li>
+                    @endif
+                    @if (auth()->user()->role == 'admin')
+                    <li>
                         <a href="/companies" @click="selected = (selected === 'Company' ? '':'Company')"
                             class="menu-item group" :class="(selected === 'Company') || {{ request()->is('companies') ? 'true' : 'false' }} ?
                                     'menu-item-active' : 'menu-item-inactive'">

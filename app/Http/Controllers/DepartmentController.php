@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -33,15 +34,10 @@ class DepartmentController extends Controller
         return view('departments.create');
     }
 
-    public function store(Request $request)
+    public function store(DepartmentRequest $request)
     {
-       $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
+$validate = $request->validate();
         Department::create($validate);
-
 
         return redirect()->route('departments.index')->with('success', 'Department created successfully.');
     }
@@ -56,14 +52,9 @@ class DepartmentController extends Controller
         return view('departments.edit', compact('department'));
     }
 
-    public function update(Request $request, Department $department)
+    public function update(DepartmentRequest $request, Department $department)
     {
-       $validate = $request->validate([
-            'description' => 'nullable|string',
-            'name' => 'required|string|max:255',
-
-        ]);
-
+       $validate = $request->validate();
         $department->update($validate);
 
         return redirect()->route('departments.index')->with('success', 'Department updated successfully.');

@@ -17,13 +17,36 @@
 
         </div>
 
-        <!-- description Field -->
-        <div class="mb-4">
-            <label for="description" class="input_label">Description</label>
-            <textarea id="description" name="description" placeholder="Enter description" class="input"
-                >{{ old('description') }}</textarea>
 
-            @error('description')
+        <!-- Phone Field -->
+        <div class="mb-4">
+            <label for="phone" class="input_label">Phone</label>
+            <input type="text" id="phone" name="phone" placeholder="Enter phone" value="{{ old('phone') }}"
+                class="input" required>
+
+            @error('phone')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+
+        </div>
+        <!-- Email Field -->
+        <div class="mb-4">
+            <label for="email" class="input_label">Email</label>
+            <input type="text" id="email" name="email" placeholder="Enter email" value="{{ old('email') }}"
+                class="input" required>
+
+            @error('email')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+
+        </div>
+        <!-- Location Field -->
+        <div class="mb-4">
+            <label for="location" class="input_label">Location</label>
+            <input type="text" id="location" name="location" placeholder="Enter location" value="{{ old('location') }}"
+                class="input" required>
+
+            @error('location')
             <p class="validate_error">{{ $message }}</p>
             @enderror
 
@@ -32,14 +55,28 @@
         <!-- Quantity Field -->
         <div class="mb-4">
             <label for="quantity" class="input_label">Quantity</label>
-            <input type="number" id="quantity" name="quantity" placeholder="Enter quantity" value="{{ old('quantity') }}"
-                class="input" required>
+            <input type="number" id="quantity" name="quantity" placeholder="Enter quantity"
+                value="{{ old('quantity') }}" class="input" required>
 
             @error('quantity')
             <p class="validate_error">{{ $message }}</p>
             @enderror
 
         </div>
+
+        <!-- description Field -->
+        <div class="mb-4">
+            <label for="description" class="input_label">Description</label>
+            <textarea id="description" name="description" placeholder="Enter description"
+                class="input">{{ old('description') }}</textarea>
+
+            @error('description')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+
+        </div>
+
+
 
         <!-- Submit Button -->
         <div class="flex items-center justify-center">

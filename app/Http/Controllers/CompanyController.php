@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class CompanyController extends Controller
 {
 
-      public function index(Request $request)
+    public function index(Request $request)
     {
         $companiesQuery = Company::query();
 
@@ -27,16 +26,10 @@ class CompanyController extends Controller
         return view('companies.create');
     }
 
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-       $validate = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'quantity' => 'required|integer',
-        ]);
-
+        $validate = $request->validated();
         Company::create($validate);
-
 
         return redirect()->route('companies.index')->with('success', 'Company created successfully.');
     }
@@ -51,14 +44,9 @@ class CompanyController extends Controller
         return view('companies.edit', compact('company'));
     }
 
-    public function update(Request $request, Company $company)
+    public function update(CompanyRequest $request, Company $company)
     {
-       $validate = $request->validate([
-            'description' => 'nullable|string',
-            'name' => 'required|string|max:255',
-            'quantity' => 'required|integer',
-        ]);
-
+        $validate = $request->validated();
         $company->update($validate);
 
         return redirect()->route('companies.index')->with('success', 'Company updated successfully.');
