@@ -81,7 +81,7 @@
             <!-- table header end -->
 
             <tbody class="divide-y divide-gray-300 ">
-                @foreach ($projects as $item)
+                @forelse ($projects as $item)
                 <tr class="hover:bg-gray-50">
                     <td class="py-3">
                         <div class="flex items-center">
@@ -180,7 +180,13 @@
                     </td>
 
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="6" class="py-4 text-center text-gray-500 ">
+                        No projects found.
+                    </td>
+                </tr>
+                @endforelse
 
                 <!-- table body end -->
             </tbody>

@@ -53,7 +53,7 @@
             <!-- table header end -->
 
             <tbody class="divide-y divide-gray-300 dark:divide-gray-800">
-                @foreach ($departments as $item)
+                @forelse ($departments as $item)
                 <tr class="hover:bg-gray-50">
                     <td class="py-3">
                         <div class="flex items-center">
@@ -79,15 +79,6 @@
                             </div>
                         </div>
                     </td>
-
-
-
-
-
-
-
-
-
 
                     <td class="py-3 px-4 text-right">
                         <div class="relative inline-block text-left">
@@ -122,7 +113,13 @@
                     </td>
 
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="3" class="py-4 text-center text-gray-500 dark:text-gray-400">
+                        No departments found.
+                    </td>
+                </tr>
+                @endforelse
 
                 <!-- table body end -->
             </tbody>

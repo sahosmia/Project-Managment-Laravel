@@ -17,7 +17,7 @@ class IndustrialProposalController extends Controller
         if($user->role == 'supervisor'){
             $query->where('supervisor_id', $user->id);
         }
-        $proposals = $query->get();
+        $proposals = $query->paginate(10)->withQueryString();
         return view('industrial-proposals.index', compact('proposals'));
     }
 

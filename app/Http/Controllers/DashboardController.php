@@ -29,28 +29,27 @@ class DashboardController extends Controller
         $students = User::where('role', 'student')->limit(10)->orderBy('created_at')->get();
 
 
-$pendingProjectsRc = null;
-$rejectProjectsRc = null;
-$pendingProjectsCoSupervisor = null;
-$pendingProjectsSupervisor = null;
-$rejectProjectsSupervisor = null;
+        $pendingProjectsRc = null;
+        $rejectProjectsRc = null;
+        $pendingProjectsCoSupervisor = null;
+        $pendingProjectsSupervisor = null;
+        $rejectProjectsSupervisor = null;
 
 
-            $pendingProjectsRc = Project::where('status', 'pending_research_cell')->count();
-            $rejectProjectsRc = Project::where('status', 'rejected_research_cell')->count();
+        $pendingProjectsRc = Project::where('status', 'pending_research_cell')->count();
+        $rejectProjectsRc = Project::where('status', 'rejected_research_cell')->count();
 
-            // $pendingProjectsCount = Project::where('status', 'pending_research_cell')->count();
-            // $approvedProjectsCount = Project::where('status', 'approved_by_research_cell')->count();
+       
 
-            $supervisorId = Auth::id();
+        $supervisorId = Auth::id();
 
-            $pendingProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'pending_supervisor']])->count();
-            $rejectProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'rejected_supervisor']])->count();
+        $pendingProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'pending_supervisor']])->count();
+        $rejectProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'rejected_supervisor']])->count();
 
-            $pendingProjectsCoSupervisor = Project::where('cosupervisor_id', $supervisorId)->count();
+        $pendingProjectsCoSupervisor = Project::where('cosupervisor_id', $supervisorId)->count();
 
-            $studentId = Auth::id();
-            $studentMyProjectsCount = Project::where('created_by', $studentId)->count();
+        $studentId = Auth::id();
+        $studentMyProjectsCount = Project::where('created_by', $studentId)->count();
 
         return view('dashboard', compact(
             'user_role',

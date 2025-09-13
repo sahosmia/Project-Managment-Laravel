@@ -37,7 +37,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-300">
-                @foreach ($proposals as $proposal)
+                @forelse ($proposals as $proposal)
                 <tr class="hover:bg-gray-50">
                     <td class="py-3">
                         <p class="text-gray-800 text-theme-sm">{{ $proposal->user->name }}</p>
@@ -66,9 +66,16 @@
                     </td>
                     @endif
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="6" class="py-4 text-center text-gray-500">
+                        No industrial proposals found.
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
+        {{ $proposals->links() }}
     </div>
 </div>
 @endsection
