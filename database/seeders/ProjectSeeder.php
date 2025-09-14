@@ -58,6 +58,7 @@ class ProjectSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
+            'approved' => 1,
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
@@ -78,6 +79,8 @@ class ProjectSeeder extends Seeder
             'email' => 'full@example.com',
             'password' => Hash::make('password'),
             'role' => 'supervisor',
+                        'approved' => 1,
+
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
@@ -88,6 +91,8 @@ class ProjectSeeder extends Seeder
             'email' => 'manik@example.com',
             'password' => Hash::make('password'),
             'role' => 'supervisor',
+                        'approved' => 1,
+
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
@@ -131,6 +136,8 @@ class ProjectSeeder extends Seeder
             'role' => 'student',
             'student_id' => 'S12345',
             'phone' => '01711111111',
+                        'approved' => 1,
+
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),

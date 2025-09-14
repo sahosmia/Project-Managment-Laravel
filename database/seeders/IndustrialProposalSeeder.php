@@ -26,7 +26,7 @@ class IndustrialProposalSeeder extends Seeder
                 IndustrialProposal::create([
                     'user_id' => $student->id,
                     'skills' => implode(', ', $faker->words(3)),
-                    'company_id' => $company->id,
+                    'company' =>"abc",
                     'supervisor_id' => $supervisor->id,
                     'status' => $faker->randomElement(['pending', 'inprogress', 'complete']),
                 ]);

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->text('description')->nullable();
             $table->integer('quantity');
+            $table->integer('current_quantity')->default(0);
             $table->timestamps();
         });
     }

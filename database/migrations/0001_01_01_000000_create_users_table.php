@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('student_id')->nullable();
             $table->string('phone')->nullable();
+                        $table->boolean('approved')->default(false);
+
             $table->rememberToken();
             $table->enum('role', ['admin', 'research_cell', 'supervisor', 'co-supervisor', 'student'])->default('student');
             $table->unsignedBigInteger('parent_id')->nullable();

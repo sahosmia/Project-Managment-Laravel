@@ -25,7 +25,7 @@ class UserController extends Controller
             }
         }
 
-        $users = $usersQuery->paginate(10)->withQueryString();
+        $users = $usersQuery->latest()->paginate(10)->withQueryString();
         return view('users.index', compact('users'));
     }
 
@@ -156,4 +156,12 @@ class UserController extends Controller
         $coSupervisors = $supervisor->coSupervisors;
         return response()->json($coSupervisors);
     }
+
+
+    public function approve(User $user)
+    {
+        $user->update(['approved' => true]);
+        return redirect()->route('users.index')->with('success', 'User approved successfully.');
+    }
+
 }

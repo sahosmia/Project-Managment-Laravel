@@ -46,7 +46,7 @@
                         <p class="text-gray-500 text-theme-sm">{{ $proposal->skills }}</p>
                     </td>
                     <td class="py-3">
-                        <p class="text-gray-500 text-theme-sm">{{ $proposal->company->name }}</p>
+                        <p class="text-gray-500 text-theme-sm">{{ $proposal->company }}</p>
                     </td>
                     <td class="py-3">
                         <p class="text-gray-500 text-theme-sm">{{ $proposal->supervisor->name }}</p>

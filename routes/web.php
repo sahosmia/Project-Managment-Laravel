@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index');
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
+        Route::post('/users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
         Route::resource('departments', DepartmentController::class);
         Route::resource('companies', CompanyController::class);
         Route::resource('r_cells', RCellController::class);

@@ -22,7 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-                'parent_id'
+        'parent_id',
+        'student_id',
+        'phone',
+        'approved',
 
     ];
 

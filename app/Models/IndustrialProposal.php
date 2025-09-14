@@ -9,8 +9,11 @@ class IndustrialProposal extends Model
     protected $fillable = [
         'user_id',
         'skills',
-        'company_id',
+        'company',
         'supervisor_id',
+        'industrial_supervisor_name',
+        'industrial_supervisor_phone',
+        'industrial_supervisor_email',
         'status',
     ];
 

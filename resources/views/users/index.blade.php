@@ -65,6 +65,13 @@
                             </p>
                         </div>
                     </th>
+                    <th class="py-3  text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Approved
+                            </p>
+                        </div>
+                    </th>
                     <th class="py-3  w-5">
                         <div class="flex items-center ">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -140,7 +147,22 @@
                         </div>
                     </td>
 
+                    <td class="py-3">
+                        @if ($item->approved == 0)
 
+                        <div class="flex items-center">
+                            <div class="flex items-center gap-3">
+
+                                <div>
+                                    <p
+                                        class=" rounded-full px-2 py-0.5 text-theme-xs font-medium bg-yellow-50 text-yellow-600">
+                                        Unapproved </p>
+
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </td>
 
 
 
@@ -163,6 +185,15 @@
                                         role="menuitem">Edit</a>
 
 
+                                    <form method="POST" action="{{route('users.approve', $item->id)}}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="block w-full text-left px-4 py-2 text-sm text-yellow-700 hover:bg-gray-100 hover:text-yellow-900 dark:text-red-300 dark:hover:bg-gray-600"
+                                            role="menuitem">Approve</button>
+                                    </form>
+                                    
+
+                                    {{-- delete --}}
                                     <form method="POST" action="{{route('users.destroy', $item->id)}}"
                                         onsubmit="return confirm('Are you sure you want to delete this user?');">
                                         @csrf
@@ -171,6 +202,9 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
                                             role="menuitem">Delete</button>
                                     </form>
+
+
+
 
                                 </div>
                             </div>

@@ -26,7 +26,7 @@ class IndustrialProposalController extends Controller
     {
         $industrialProposal = IndustrialProposal::where('user_id', auth()->id())->first();
         $user = auth()->user();
-        $companies = Company::all();
+$companies = Company::whereColumn('quantity', '>', 'current_quantity')->get();
         $supervisors = User::where('role', 'supervisor')->get();
         return view('industrial-proposals.create', compact('user', 'companies', 'supervisors', 'industrialProposal'));
     }
@@ -36,19 +36,22 @@ class IndustrialProposalController extends Controller
     $validatedData = $request->validate([
         'skills' => 'required|string',
         'manage_own_internship' => 'required|in:yes,no',
-        'company_id' => 'required_if:manage_own_internship,yes|nullable|exists:companies,id',
+        'industrial_supervisor_name' => 'required_if:manage_own_internship,yes|nullable',
+        'industrial_supervisor_phone' => 'required_if:manage_own_internship,yes|nullable',
+        'industrial_supervisor_email' => 'required_if:manage_own_internship,yes|nullable',
+        'company' => 'required_if:manage_own_internship,yes|nullable',
+        'company_id' => 'required_if:manage_own_internship,no|nullable|exists:companies,id',
         'supervisor_id' => 'required|exists:users,id',
     ]);
 
-    if ($validatedData['manage_own_internship'] === 'yes') {
-        $total_company_interested = IndustrialProposal::where('company_id', $validatedData['company_id'])
-            ->where('status', 'pending')
-            ->count();
+    if ($validatedData['manage_own_internship'] === 'no') {
 
         $company = Company::findOrFail($validatedData['company_id']);
 
-        if ($company->quantity <= $total_company_interested) {
+        if ($company->quantity <= $company->current_quantity) {
             return redirect()->back()->with('error', 'Company has no available seat.');
+        }else{
+            $company->update(['current_quantity'=> ($company->current_quantity+1)]);
         }
     }
 
@@ -59,8 +62,11 @@ class IndustrialProposalController extends Controller
         if ($existingProposal->status === 'pending') {
             $existingProposal->update([
                 'skills' => $validatedData['skills'],
-                'company_id' => $validatedData['company_id'],
+                'company' => $validatedData['company'],
                 'supervisor_id' => $validatedData['supervisor_id'],
+                'industrial_supervisor_name' => $validatedData['industrial_supervisor_name'],
+                'industrial_supervisor_phone' => $validatedData['industrial_supervisor_phone'],
+                'industrial_supervisor_email' => $validatedData['industrial_supervisor_email'],
             ]);
 
             return redirect()->route('dashboard')->with('success', 'Industrial proposal updated successfully.');
@@ -68,11 +74,15 @@ class IndustrialProposalController extends Controller
             return redirect()->back()->with('error', 'You have already submitted an industrial proposal which is not pending.');
         }
     } else {
+        $company = Company::findOrFail($validatedData['company_id']);
         IndustrialProposal::create([
             'user_id' => auth()->id(),
             'skills' => $validatedData['skills'],
-            'company_id' => $validatedData['company_id'],
+            'company' => $company->name,
             'supervisor_id' => $validatedData['supervisor_id'],
+            'industrial_supervisor_name' => $validatedData['industrial_supervisor_name'],
+            'industrial_supervisor_phone' => $validatedData['industrial_supervisor_phone'],
+            'industrial_supervisor_email' => $validatedData['industrial_supervisor_email'],
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Industrial proposal submitted successfully.');
@@ -91,20 +101,20 @@ class IndustrialProposalController extends Controller
     public function update(Request $request, IndustrialProposal $industrial_proposal)
     {
         $request->validate([
-            'company_id' => 'required|exists:companies,id',
+            // 'company_id' => 'required|exists:companies,id',
             'supervisor_id' => 'required|exists:users,id',
             'status' => 'required|in:pending,inprogress,complete',
         ]);
 
-        $company = Company::find($request->company_id);
-        $assigned_count = IndustrialProposal::where('company_id', $company->id)->count();
+        // $company = Company::find($request->company_id);
+        // $assigned_count = IndustrialProposal::where('company_id', $company->id)->count();
 
-        if ($assigned_count >= $company->quantity) {
-            return redirect()->back()->with('error', 'The selected company has reached its maximum capacity for interns.');
-        }
+        // if ($assigned_count >= $company->quantity) {
+        //     return redirect()->back()->with('error', 'The selected company has reached its maximum capacity for interns.');
+        // }
 
         $industrial_proposal->update([
-            'company_id' => $request->company_id,
+            // 'company_id' => $request->company_id,
             'supervisor_id' => $request->supervisor_id,
             'status' => $request->status,
         ]);
