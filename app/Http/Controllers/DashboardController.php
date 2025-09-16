@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IndustrialProposal;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\RCell;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -39,7 +40,7 @@ class DashboardController extends Controller
         $pendingProjectsRc = Project::where('status', 'pending_research_cell')->count();
         $rejectProjectsRc = Project::where('status', 'rejected_research_cell')->count();
 
-       
+
 
         $supervisorId = Auth::id();
 
@@ -51,6 +52,9 @@ class DashboardController extends Controller
         $studentId = Auth::id();
         $studentMyProjectsCount = Project::where('created_by', $studentId)->count();
 
+                $rCellCounts = RCell::withCount('projects')->get();
+
+
         return view('dashboard', compact(
             'user_role',
             'totalUsers',
@@ -59,6 +63,8 @@ class DashboardController extends Controller
             'research_cells',
             'supervisors',
             'students',
+                        'rCellCounts',
+
 
             'studentMyProjectsCount',
 

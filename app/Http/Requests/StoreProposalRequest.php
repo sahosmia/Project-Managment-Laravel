@@ -27,7 +27,16 @@ class StoreProposalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'department_id' => ['required', 'exists:departments,id'],
+            'department_id' => [
+                'required',
+                'exists:departments,id',
+                function ($attribute, $value, $fail) {
+                    $user = auth()->user();
+                    if ($user->createdProjects()->exists() || $user->memberOfProjects()->exists()) {
+                        $fail('You are already associated with a project and cannot create a new one.');
+                    }
+                }
+            ],
             'academic_year' => ['required', 'integer', 'min:' . (date('Y') - 5), 'max:' . (date('Y') + 1)],
             'semester' => ['required', Rule::in(['Fall', 'Summer', 'Spring'])],
             'course_type' => ['required', Rule::in(['Project', 'Thesis'])],

@@ -7,6 +7,7 @@ use App\Http\Controllers\IndustrialProposalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RCellController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/industrial-proposals/{industrial_proposal}/edit', [IndustrialProposalController::class, 'edit'])->name('industrial-proposals.edit');
         Route::put('/industrial-proposals/{industrial_proposal}', [IndustrialProposalController::class, 'update'])->name('industrial-proposals.update');
+
+         Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+        Route::put('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
     });
 
     Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors')->middleware('auth');

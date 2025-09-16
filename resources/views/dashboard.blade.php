@@ -121,7 +121,7 @@
 
 
         <!-- Supervisor Specific Statistics -->
-        @if ($user_role == 'supervisor' )
+        @if ($user_role == 'supervisor')
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
                 <h2 class="text-lg font-medium text-gray-500">Pending (Supervisor)</h2>
@@ -151,7 +151,7 @@
         </div>
         @endif
 
-        @if ($user_role == 'co-supervisor' )
+        @if ($user_role == 'co-supervisor')
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
                 <h2 class="text-lg font-medium text-gray-500">My Project </h2>
@@ -166,12 +166,10 @@
                 </svg>
             </div>
         </div>
-
         @endif
 
         <!-- Student Specific Statistics -->
         @if ($user_role == 'student')
-
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
                 <h2 class="text-lg font-medium text-gray-500">My Projects</h2>
@@ -186,18 +184,51 @@
                 </svg>
             </div>
         </div>
-
-
         @endif
 
     </section>
 
     <!-- Supervisors and Students Lists Section (Visible to Admin, or adjust as needed) -->
-    @if ($user_role == 'admin')
+    @if ($user_role == 'admin' || $user_role == "research_cell")
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="flex gap-5 flex-col">
 
-            <!-- Supervisors List -->
+            <!-- R-Cell Project Counts -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">R-Cell Project Counts</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">
+                                    R-Cell Name</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">
+                                    Total Projects</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($rCellCounts as $rCell)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ $rCell->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $rCell->projects_count }}
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No
+                                    R-Cells found.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @if ($user_role == 'admin')
+            <!-- Research Cell List -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Research Cells</h2>
                 <div class="overflow-x-auto">
@@ -231,6 +262,12 @@
                     </table>
                 </div>
             </div>
+            @endif
+
+        </div>
+
+        <div class="flex gap-5 flex-col">
+            @if ($user_role == 'admin')
             <!-- Supervisors List -->
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Supervisors</h2>
@@ -265,45 +302,49 @@
                     </table>
                 </div>
             </div>
-        </div>
-
-        <!-- Students List -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Students</h2>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">
-                                Name</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">
-                                Email</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($students as $student)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ $student->name }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $student->email }}
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No
-                                students found.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            @endif
+            @if ($user_role == 'admin')
+            <!-- Students List -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Students</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">
+                                    Name</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">
+                                    Email</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($students as $student)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ $student->name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $student->email }}
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No
+                                    students found.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            @endif
         </div>
     </section>
     @endif
+
+
 
     <!-- Message for other roles or if no specific data is shown -->
     @if (!in_array($user_role, ['admin', 'supervisor', 'student']))

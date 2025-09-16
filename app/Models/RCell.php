@@ -9,4 +9,9 @@ class RCell extends Model
     protected $fillable = [
         'name', 'description',
     ];
+
+     public function projects()
+    {
+        return $this->hasMany(Project::class, 'r_cell_id');
+    }
 }

@@ -14,7 +14,7 @@ class IndustrialProposalController extends Controller
     {
         $user = Auth::user();
         $query = IndustrialProposal::with(['user', 'company', 'supervisor']);
-        if($user->role == 'supervisor'){
+        if ($user->role == 'supervisor') {
             $query->where('supervisor_id', $user->id);
         }
         $proposals = $query->paginate(10)->withQueryString();
@@ -26,68 +26,71 @@ class IndustrialProposalController extends Controller
     {
         $industrialProposal = IndustrialProposal::where('user_id', auth()->id())->first();
         $user = auth()->user();
-$companies = Company::whereColumn('quantity', '>', 'current_quantity')->get();
+        $companies = Company::whereColumn('quantity', '>', 'current_quantity')->get()->map(function ($company) {
+            $company->available_quantity = $company->quantity - $company->current_quantity;
+            return $company;
+        });
         $supervisors = User::where('role', 'supervisor')->get();
         return view('industrial-proposals.create', compact('user', 'companies', 'supervisors', 'industrialProposal'));
     }
 
- public function store(Request $request)
-{
-    $validatedData = $request->validate([
-        'skills' => 'required|string',
-        'manage_own_internship' => 'required|in:yes,no',
-        'industrial_supervisor_name' => 'required_if:manage_own_internship,yes|nullable',
-        'industrial_supervisor_phone' => 'required_if:manage_own_internship,yes|nullable',
-        'industrial_supervisor_email' => 'required_if:manage_own_internship,yes|nullable',
-        'company' => 'required_if:manage_own_internship,yes|nullable',
-        'company_id' => 'required_if:manage_own_internship,no|nullable|exists:companies,id',
-        'supervisor_id' => 'required|exists:users,id',
-    ]);
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'skills' => 'required|string',
+            'manage_own_internship' => 'required|in:yes,no',
+            'industrial_supervisor_name' => 'required_if:manage_own_internship,yes|nullable',
+            'industrial_supervisor_phone' => 'required_if:manage_own_internship,yes|nullable',
+            'industrial_supervisor_email' => 'required_if:manage_own_internship,yes|nullable',
+            'company' => 'required_if:manage_own_internship,yes|nullable',
+            'company_id' => 'required_if:manage_own_internship,no|nullable|exists:companies,id',
+            'supervisor_id' => 'required|exists:users,id',
+        ]);
 
-    if ($validatedData['manage_own_internship'] === 'no') {
+        if ($validatedData['manage_own_internship'] === 'no') {
 
-        $company = Company::findOrFail($validatedData['company_id']);
+            $company = Company::findOrFail($validatedData['company_id']);
 
-        if ($company->quantity <= $company->current_quantity) {
-            return redirect()->back()->with('error', 'Company has no available seat.');
-        }else{
-            $company->update(['current_quantity'=> ($company->current_quantity+1)]);
+            if ($company->quantity <= $company->current_quantity) {
+                return redirect()->back()->with('error', 'Company has no available seat.');
+            } else {
+                $company->update(['current_quantity' => ($company->current_quantity + 1)]);
+            }
         }
-    }
 
-    $existingProposal = IndustrialProposal::where('user_id', auth()->id())->first();
+        $existingProposal = IndustrialProposal::where('user_id', auth()->id())->first();
 
-    if ($existingProposal) {
+        if ($existingProposal) {
 
-        if ($existingProposal->status === 'pending') {
-            $existingProposal->update([
+            if ($existingProposal->status === 'pending') {
+                $existingProposal->update([
+                    'skills' => $validatedData['skills'],
+                    'company' => $validatedData['company'],
+                    'supervisor_id' => $validatedData['supervisor_id'],
+                    'industrial_supervisor_name' => $validatedData['industrial_supervisor_name'],
+                    'industrial_supervisor_phone' => $validatedData['industrial_supervisor_phone'],
+                    'industrial_supervisor_email' => $validatedData['industrial_supervisor_email'],
+                ]);
+
+                return redirect()->route('dashboard')->with('success', 'Industrial proposal updated successfully.');
+            } else {
+                return redirect()->back()->with('error', 'You have already submitted an industrial proposal which is not pending.');
+            }
+        } else {
+            $company = Company::findOrFail($validatedData['company_id']);
+            IndustrialProposal::create([
+                'user_id' => auth()->id(),
                 'skills' => $validatedData['skills'],
-                'company' => $validatedData['company'],
+                'company' => $company->name,
                 'supervisor_id' => $validatedData['supervisor_id'],
                 'industrial_supervisor_name' => $validatedData['industrial_supervisor_name'],
                 'industrial_supervisor_phone' => $validatedData['industrial_supervisor_phone'],
                 'industrial_supervisor_email' => $validatedData['industrial_supervisor_email'],
             ]);
 
-            return redirect()->route('dashboard')->with('success', 'Industrial proposal updated successfully.');
-        } else {
-            return redirect()->back()->with('error', 'You have already submitted an industrial proposal which is not pending.');
+            return redirect()->route('dashboard')->with('success', 'Industrial proposal submitted successfully.');
         }
-    } else {
-        $company = Company::findOrFail($validatedData['company_id']);
-        IndustrialProposal::create([
-            'user_id' => auth()->id(),
-            'skills' => $validatedData['skills'],
-            'company' => $company->name,
-            'supervisor_id' => $validatedData['supervisor_id'],
-            'industrial_supervisor_name' => $validatedData['industrial_supervisor_name'],
-            'industrial_supervisor_phone' => $validatedData['industrial_supervisor_phone'],
-            'industrial_supervisor_email' => $validatedData['industrial_supervisor_email'],
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Industrial proposal submitted successfully.');
     }
-}
 
 
 

@@ -204,6 +204,18 @@
                             </ul>
                         </div>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.settings.index') }}" @click="selected = (selected === 'Settings' ? '':'Settings')"
+                            class="menu-item group" :class="(selected === 'Settings') || {{ request()->is('settings*') ? 'true' : 'false' }} ?
+                                                        'menu-item-active' : 'menu-item-inactive'">
+                            <i :class="((selected === 'Settings') || {{ request()->is('settings*') ? 'true' : 'false' }}) ?
+                                                    'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-cog"></i>
+
+                            <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                                Settings
+                            </span>
+                        </a>
+                    </li>
                     @endif
                 </ul>
             </div>

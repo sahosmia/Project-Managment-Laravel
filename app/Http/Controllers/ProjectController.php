@@ -88,7 +88,10 @@ class ProjectController extends Controller
     {
         $departments = Department::get();
         $rcells = RCell::get();
-        $students = User::where('role', 'student')->get();
+        $students = User::where('role', 'student')
+            ->whereDoesntHave('createdProjects')
+            ->whereDoesntHave('memberOfProjects')
+            ->get();
         $supervisors = User::where('role', 'supervisor')->get();
         $cosupervisors = User::where('role', 'co-supervisor')->get();
         return view('projects.create', compact('students', 'departments', 'rcells', 'supervisors', 'cosupervisors'));
@@ -113,6 +116,9 @@ class ProjectController extends Controller
             'supervisor_id' => $request->supervisor_id,
             'cosupervisor_id' => $request->cosupervisor_id,
         ]);
+        if (count($request->members) > get_setting('max_member', 5)) {
+            return back()->withErrors(['members' => 'You can only add a maximum of ' . get_setting('max_member', 5) . ' members.'])->withInput();
+        }
 
         foreach ($request->members as $memberData) {
             $project->members()->attach($memberData['user_id']);
@@ -130,7 +136,7 @@ class ProjectController extends Controller
         return view('projects.show', compact('project', 'supervisors', 'cosupervisors'));
     }
 
-   public function edit(Project $project)
+    public function edit(Project $project)
     {
         $user = Auth::user();
         if ($user->role !== 'admin') {
@@ -140,8 +146,14 @@ class ProjectController extends Controller
             }
         }
 
-        $students = User::where('role', 'student')->get();
-        $currentMembers = $project->members->pluck('id')->toArray();
+ $currentMemberIds = $project->members->pluck('id');
+        $students = User::where('role', 'student')
+            ->where(function ($query) use ($currentMemberIds) {
+                $query->whereDoesntHave('createdProjects')
+                    ->whereDoesntHave('memberOfProjects')
+                    ->orWhereIn('id', $currentMemberIds);
+            })
+            ->get();        $currentMembers = $project->members->pluck('id')->toArray();
         $departments = Department::get();
         $rcells = RCell::get();
         $supervisors = User::where('role', 'supervisor')->get();
@@ -194,6 +206,10 @@ class ProjectController extends Controller
             'supervisor_id' => $request->supervisor_id,
             'cosupervisor_id' => $request->cosupervisor_id,
         ]);
+
+         if (count($request->members) > get_setting('max_member', 5)) {
+            return back()->withErrors(['members' => 'You can only add a maximum of ' . get_setting('max_member', 5) . ' members.'])->withInput();
+        }
 
         $project->members()->sync(array_column($request->members, 'user_id'));
 

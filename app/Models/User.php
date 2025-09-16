@@ -70,6 +70,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Project::class, 'project_members', 'student_id', 'project_id');
     }
 
+      public function industrialProposals()
+    {
+        return $this->hasMany(IndustrialProposal::class, 'user_id');
+    }
 
 
     // helper roll check
