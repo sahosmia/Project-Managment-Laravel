@@ -34,7 +34,7 @@ class RCellController extends Controller
 
     public function store(RCellRequest $request)
     {
-        $validate = $request->validate();
+$validate = $request->validated();
         RCell::create($validate);
 
         return redirect()->route('r_cells.index')->with('success', 'RCell created successfully.');
@@ -52,7 +52,7 @@ class RCellController extends Controller
 
     public function update(RCellRequest $request, RCell $r_cell)
     {
-        $validate = $request->validate();
+$validate = $request->validated();
         $r_cell->update($validate);
 
         return redirect()->route('r_cells.index')->with('success', 'RCell updated successfully.');

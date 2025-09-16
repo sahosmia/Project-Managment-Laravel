@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 class DepartmentController extends Controller
 {
 
-      public function index(Request $request)
+    public function index(Request $request)
     {
         $departmentsQuery = Department::query();
 
@@ -36,7 +36,7 @@ class DepartmentController extends Controller
 
     public function store(DepartmentRequest $request)
     {
-$validate = $request->validate();
+        $validate = $request->validated();
         Department::create($validate);
 
         return redirect()->route('departments.index')->with('success', 'Department created successfully.');
@@ -54,7 +54,7 @@ $validate = $request->validate();
 
     public function update(DepartmentRequest $request, Department $department)
     {
-       $validate = $request->validate();
+        $validate = $request->validated();
         $department->update($validate);
 
         return redirect()->route('departments.index')->with('success', 'Department updated successfully.');
