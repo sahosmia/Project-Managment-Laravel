@@ -24,7 +24,7 @@
 </style>
 
 <body class="font-sans text-gray-900 antialiased">
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-900/50 ">
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-900/70 ">
         <div>
             <a href="/">
                 <img class=" w-36 flex items-center justify-center"
@@ -34,7 +34,7 @@
         </div>
 
         <div
-            class="w-full sm:max-w-lg mt-6 px-8 py-6 bg-white/30  shadow-xl overflow-hidden sm:rounded-2xl backdrop-blur-sm">
+            class="w-full sm:max-w-lg mt-6 px-8 py-6 bg-white/80  shadow-xl overflow-hidden sm:rounded-2xl backdrop-blur-sm">
             {{ $slot }}
         </div>
     </div>

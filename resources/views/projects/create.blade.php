@@ -1,9 +1,9 @@
 @extends('layouts.admin')
-@section('title', 'Proposal Submit')
+@section('title', 'Project & Thesis Proposal Submit')
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create New Proposal</h2>
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create New Project & Thesis Proposal</h2>
     <form action="{{route('projects.store')}}" method="POST">
         @csrf
 

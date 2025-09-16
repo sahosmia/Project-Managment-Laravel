@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('title')
-{{ auth()->user()->role === 'admin' ? 'Update Proposal' : 'Edit & Resubmit Proposal' }}
+{{ auth()->user()->role === 'admin' ? 'Update Project & Thesis Proposal' : 'Edit & Resubmit Project & Thesis Proposal' }}
 @endsection
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto">
     <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
-        {{ auth()->user()->role === 'admin' ? 'Update Proposal' : 'Edit & Resubmit Proposal' }}
+        {{ auth()->user()->role === 'admin' ? 'Update Project & Thesis Proposal' : 'Edit & Resubmit Project & Thesis Proposal' }}
     </h2>
     <form action="{{ route('projects.update', $project) }}" method="POST">
         @csrf

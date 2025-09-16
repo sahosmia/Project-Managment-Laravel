@@ -22,10 +22,10 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="company" class="input_label">Company</label>
-                    <input type="text" id="company" name="company" class="input"
-                        value="{{ $industrial_proposal->company }}" readonly>
-                    @error('company')
+                    <label for="skills" class="input_label">Skills</label>
+                    <input type="text" id="skills" name="skills" class="input"
+                        value="{{ $industrial_proposal->skills }}" readonly>
+                    @error('skills')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
                 </div>

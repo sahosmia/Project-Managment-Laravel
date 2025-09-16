@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Proposal Lists')
+@section('title', 'Project & Thesis Proposal Lists')
 @section('content')
 
 
@@ -7,7 +7,7 @@
     <div class="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h3 class="text-lg font-semibold text-gray-800 ">
-                Proposal Lists
+                Project & Thesis Proposal Lists
             </h3>
         </div>
 

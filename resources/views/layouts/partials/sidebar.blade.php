@@ -146,7 +146,7 @@
                             'menu-item-icon-active' : 'menu-item-icon-inactive'" class="fa-solid fa-table"></i>
 
                             <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
-                                Proposal
+                                Project & Thesis
                             </span>
 
                             <i :class="[(selected === 'Projects') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive',
@@ -161,7 +161,7 @@
                                 <li>
                                     <a href="/projects" class="menu-dropdown-item group" :class="{{ request()->is('projects') ? 'true' : 'false' }} ?
                                             'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
-                                        Proposal List </a>
+                                        Project & Thesis List </a>
                                 </li>
 
                             </ul>
@@ -200,7 +200,7 @@
                                         User Create
                                     </a>
                                 </li>
-                               
+
                             </ul>
                         </div>
                     </li>
