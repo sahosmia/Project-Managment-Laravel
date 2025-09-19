@@ -196,7 +196,7 @@
 </div>
 {{-- Filter Modal --}}
 <div id="filterModal"
-    class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden flex items-center justify-center z-[99999999999]">
+    class="fixed inset-0 bg-black/60  overflow-hidden h-full w-full hidden flex items-center justify-center z-[99999999999]">
     <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white ">
         <div class="flex justify-between items-center pb-3">
             <h3 class="text-lg leading-6 font-medium text-gray-900 ">Filter Projects</h3>
@@ -216,26 +216,31 @@
                         value="{{ request('title') }}">
                 </div>
                 @if (auth()->user()->role == 'admin')
-                <div class="mb-4">
-                    <label for="filter_status" class="input_label">Status</label>
-                    <select name="status" id="filter_status" class="input select2">
-                        <option value="">All Statuses</option>
-                        <option @selected(request('status')=='pending_admin' ) value="pending_admin">
-                            Pending Admin
-                        </option>
-                        <option @selected(request('status')=='rejected_admin' ) value="rejected_admin">
-                            Rejected Admin</option>
-                        <option @selected(request('status')=='pending_supervisor' ) value="pending_supervisor">
-                            Pending Supervisor
-                        </option>
-                        <option @selected(request('status')=='rejected_supervisor' ) value="rejected_supervisor">
-                            Rejected Supervisor</option>
+            <div class="mb-4">
+                <label for="filter_status" class="input_label">Status</label>
+                <select name="status" id="filter_status" class="input select2">
+                    <option value="">All Statuses</option>
+                    <option @selected(request('status')=='pending_research_cell' ) value="pending_research_cell">
+                        Pending Research Cell
+                    </option>
+                    <option @selected(request('status')=='rejected_research_cell' ) value="rejected_research_cell">
+                        Rejected Research Cell</option>
+                    <option @selected(request('status')=='pending_admin' ) value="pending_admin">
+                        Pending Admin
+                    </option>
+                    <option @selected(request('status')=='rejected_admin' ) value="rejected_admin">
+                        Rejected Admin</option>
+                    <option @selected(request('status')=='pending_supervisor' ) value="pending_supervisor">
+                        Pending Supervisor
+                    </option>
+                    <option @selected(request('status')=='rejected_supervisor' ) value="rejected_supervisor">
+                        Rejected Supervisor</option>
 
 
 
-                        <option @selected(request('status')=='completed' ) value="completed">Completed</option>
-                    </select>
-                </div>
+                    <option @selected(request('status')=='completed' ) value="completed">Completed</option>
+                </select>
+            </div>
 
                 <div class="mb-4">
                     <label for="filter_supervisor" class="input_label">Faculty Member</label>
@@ -265,8 +270,8 @@
 
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 "
-                    id="cancelFilterModalButton">Cancel</button>
+                {{-- <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 "
+                    id="cancelFilterModalButton">Cancel</button> --}}
                 <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Apply
                     Filters</button>
             </div>
