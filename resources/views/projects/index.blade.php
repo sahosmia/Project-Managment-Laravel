@@ -12,6 +12,16 @@
         </div>
 
         <div class="flex items-center gap-3">
+            <button id="approve-all"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800"
+                disabled>
+                Approve All
+            </button>
+            <button id="delete-all"
+                class="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-red-500 text-white px-4 py-2.5 text-theme-sm font-medium shadow-theme-xs hover:bg-red-600"
+                disabled>
+                Delete All
+            </button>
             <button
                 class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 "
                 id="openFilterModalButton">
@@ -36,160 +46,171 @@
     </div>
 
     <div class="w-full ">
-        <table class="min-w-full">
-            <!-- table header start -->
-            <thead>
-                <tr class="border-gray-100 border-y ">
-                    <th class="py-3 text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs ">
-                                Project Title
-                            </p>
-                        </div>
-                    </th>
-                    <th class="py-3  text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs ">
-                                Status
-                            </p>
-                        </div>
-                    </th>
-                    <th class="py-3  text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs ">
-                                Created By
-                            </p>
-                        </div>
-                    </th>
-                    <th class="py-3  text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs ">
-                                Supervisor
-                            </p>
-                        </div>
-                    </th>
+        <form id="bulk-action-form" method="POST">
+            @csrf
+            <table class="min-w-full">
+                <!-- table header start -->
+                <thead>
+                    <tr class="border-gray-100 border-y ">
+                        <th class="py-3 px-4 text-left">
+                            <input type="checkbox" id="select-all" class="rounded">
+                        </th>
+                        <th class="py-3 text-left">
+                            <div class="flex items-center">
+                                <p class="font-medium text-gray-500 text-theme-xs ">
+                                    Project Title
+                                </p>
+                            </div>
+                        </th>
+                        <th class="py-3  text-left">
+                            <div class="flex items-center">
+                                <p class="font-medium text-gray-500 text-theme-xs ">
+                                    Status
+                                </p>
+                            </div>
+                        </th>
+                        <th class="py-3  text-left">
+                            <div class="flex items-center">
+                                <p class="font-medium text-gray-500 text-theme-xs ">
+                                    Created By
+                                </p>
+                            </div>
+                        </th>
+                        <th class="py-3  text-left">
+                            <div class="flex items-center">
+                                <p class="font-medium text-gray-500 text-theme-xs ">
+                                    Supervisor
+                                </p>
+                            </div>
+                        </th>
 
-                    <th class="py-3  text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs ">
-                                Members
-                            </p>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <!-- table header end -->
+                        <th class="py-3  text-left">
+                            <div class="flex items-center">
+                                <p class="font-medium text-gray-500 text-theme-xs ">
+                                    Members
+                                </p>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <!-- table header end -->
 
-            <tbody class="divide-y divide-gray-300 ">
-                @forelse ($projects as $item)
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3">
-                        <div class="flex items-center">
-                            <div class="flex items-center gap-3">
+                <tbody class="divide-y divide-gray-300 ">
+                    @forelse ($projects as $item)
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4">
+                            <input type="checkbox" name="project_ids[]" value="{{ $item->id }}"
+                                class="rounded project-checkbox">
+                        </td>
+                        <td class="py-3">
+                            <div class="flex items-center">
+                                <div class="flex items-center gap-3">
 
-                                <div>
-                                    <p class="font-medium text-gray-800 text-theme-sm ">
-                                        {{ $item->title }} </p>
+                                    <div>
+                                        <p class="font-medium text-gray-800 text-theme-sm ">
+                                            {{ $item->title }} </p>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
+                        </td>
 
-                    <td class="py-3">
-                        <div class="flex items-center">
-                            <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium {{ $item->status_class }}">
-                                {{ Str::title(str_replace('_', ' ', $item->status)) }}
-                            </p>
-                        </div>
-                    </td>
-                    <td class="py-3">
-                        <div class="flex items-center">
-                            <p class="text-gray-500 text-theme-sm ">
-                                {{ $item->creator->name ?? 'N/A' }}
-                            </p>
-                        </div>
-                    </td>
-                    <td class="py-3">
-                        <div class="flex items-center">
-                            <p class="text-gray-500 text-theme-sm ">
-                                {{ $item->supervisor->name ?? 'N/A' }}
-                            </p>
-                        </div>
-                    </td>
-                    <td class="py-3">
-                        <div class="flex  gap-2 flex-col">
-                            @forelse ($item->members as $member)
-                            <span class="rounded-full  px-2 py-0.5 text-theme-xs font-medium text-gray-700  ">
-                                {{ $member->name }}
-                            </span>
-                            @empty
-                            <span class="text-gray-500 text-theme-xs ">No members</span>
-                            @endforelse
-                        </div>
-                    </td>
+                        <td class="py-3">
+                            <div class="flex items-center">
+                                <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium {{ $item->status_class }}">
+                                    {{ Str::title(str_replace('_', ' ', $item->status)) }}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <div class="flex items-center">
+                                <p class="text-gray-500 text-theme-sm ">
+                                    {{ $item->creator->name ?? 'N/A' }}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <div class="flex items-center">
+                                <p class="text-gray-500 text-theme-sm ">
+                                    {{ $item->supervisor->name ?? 'N/A' }}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <div class="flex  gap-2 flex-col">
+                                @forelse ($item->members as $member)
+                                <span class="rounded-full  px-2 py-0.5 text-theme-xs font-medium text-gray-700  ">
+                                    {{ $member->name }}
+                                </span>
+                                @empty
+                                <span class="text-gray-500 text-theme-xs ">No members</span>
+                                @endforelse
+                            </div>
+                        </td>
 
-                    <td class="py-3 px-4 text-right">
-                        <div class="relative inline-block text-left">
-                            <button type="button"
-                                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
-                                id="options-menu-{{ $item->id }}" aria-haspopup="true" aria-expanded="true">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
+                        <td class="py-3 px-4 text-right">
+                            <div class="relative inline-block text-left">
+                                <button type="button"
+                                    class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
+                                    id="options-menu-{{ $item->id }}" aria-haspopup="true" aria-expanded="true">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
 
-                            <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 hidden "
-                                role="menu" aria-orientation="vertical" aria-labelledby="options-menu-{{ $item->id }}">
-                                <div class="py-1" role="none">
-                                    <a href="{{ route('projects.show', $item->id) }}"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 "
-                                        role="menuitem">View</a>
-                                    @php $user = auth()->user(); @endphp
-                                    @if(
-                                    ($user->role == 'admin' && $item->status == 'pending_admin') ||
-                                    ($user->role == 'faculty_member' && $item->status == 'pending_supervisor')
-                                    ) <form method="POST" action="{{ route('projects.approve', $item->id) }}"
-                                        class="approve-form">
-                                        @csrf
-                                        <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 "
-                                            role="menuitem">Approve</button>
-                                    </form>
-                                    @endif
-                                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'student' &&
-                                    in_array($item->status,
-                                    ['rejected_admin',
-                                    'rejected_supervisor']))
-                                    <a href="{{ route('projects.edit', $item->id) }}"
-                                        class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 "
-                                        role="menuitem">{{ auth()->user()->role === 'admin' ? 'Update' : 'Edit
-                                        & Resubmit' }}</a>
-                                    <form method="POST" action="{{ route('projects.destroy', $item->id) }}"
-                                        class="delete-form"
-                                        onsubmit="return confirm('Are you sure you want to delete this project?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 "
-                                            role="menuitem">Delete</button>
-                                    </form>
-                                    @endif
+                                <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 hidden "
+                                    role="menu" aria-orientation="vertical"
+                                    aria-labelledby="options-menu-{{ $item->id }}">
+                                    <div class="py-1" role="none">
+                                        <a href="{{ route('projects.show', $item->id) }}"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 "
+                                            role="menuitem">View</a>
+                                        @php $user = auth()->user(); @endphp
+                                        @if(
+                                        ($user->role == 'admin' && $item->status == 'pending_admin') ||
+                                        ($user->role == 'faculty_member' && $item->status == 'pending_supervisor')
+                                        ) <form method="POST" action="{{ route('projects.approve', $item->id) }}"
+                                            class="approve-form">
+                                            @csrf
+                                            <button type="submit"
+                                                class="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 hover:text-green-900 "
+                                                role="menuitem">Approve</button>
+                                        </form>
+                                        @endif
+                                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'student' &&
+                                        in_array($item->status,
+                                        ['rejected_admin',
+                                        'rejected_supervisor']))
+                                        <a href="{{ route('projects.edit', $item->id) }}"
+                                            class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 "
+                                            role="menuitem">{{ auth()->user()->role === 'admin' ? 'Update' : 'Edit
+                                            & Resubmit' }}</a>
+                                        <form method="POST" action="{{ route('projects.destroy', $item->id) }}"
+                                            class="delete-form"
+                                            onsubmit="return confirm('Are you sure you want to delete this project?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 "
+                                                role="menuitem">Delete</button>
+                                        </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
+                        </td>
 
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="py-4 text-center text-gray-500 ">
-                        No projects found.
-                    </td>
-                </tr>
-                @endforelse
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="py-4 text-center text-gray-500 ">
+                            No projects found.
+                        </td>
+                    </tr>
+                    @endforelse
 
-                <!-- table body end -->
-            </tbody>
-        </table>
+                    <!-- table body end -->
+                </tbody>
+            </table>
+        </form>
 
         {{ $projects->links() }}
     </div>
@@ -216,36 +237,36 @@
                         value="{{ request('title') }}">
                 </div>
                 @if (auth()->user()->role == 'admin')
-            <div class="mb-4">
-                <label for="filter_status" class="input_label">Status</label>
-                <select name="status" id="filter_status" class="input select2">
-                    <option value="">All Statuses</option>
-                    <option @selected(request('status')=='pending_research_cell' ) value="pending_research_cell">
-                        Pending Research Cell
-                    </option>
-                    <option @selected(request('status')=='rejected_research_cell' ) value="rejected_research_cell">
-                        Rejected Research Cell</option>
-                    <option @selected(request('status')=='pending_admin' ) value="pending_admin">
-                        Pending Admin
-                    </option>
-                    <option @selected(request('status')=='rejected_admin' ) value="rejected_admin">
-                        Rejected Admin</option>
-                    <option @selected(request('status')=='pending_supervisor' ) value="pending_supervisor">
-                        Pending Supervisor
-                    </option>
-                    <option @selected(request('status')=='rejected_supervisor' ) value="rejected_supervisor">
-                        Rejected Supervisor</option>
+                <div class="mb-4">
+                    <label for="filter_status" class="input_label">Status</label>
+                    <select name="status" id="filter_status" class="input select2">
+                        <option value="">All Statuses</option>
+                        <option @selected(request('status')=='pending_research_cell' ) value="pending_research_cell">
+                            Pending Research Cell
+                        </option>
+                        <option @selected(request('status')=='rejected_research_cell' ) value="rejected_research_cell">
+                            Rejected Research Cell</option>
+                        <option @selected(request('status')=='pending_admin' ) value="pending_admin">
+                            Pending Admin
+                        </option>
+                        <option @selected(request('status')=='rejected_admin' ) value="rejected_admin">
+                            Rejected Admin</option>
+                        <option @selected(request('status')=='pending_supervisor' ) value="pending_supervisor">
+                            Pending Supervisor
+                        </option>
+                        <option @selected(request('status')=='rejected_supervisor' ) value="rejected_supervisor">
+                            Rejected Supervisor</option>
 
 
 
-                    <option @selected(request('status')=='completed' ) value="completed">Completed</option>
-                </select>
-            </div>
+                        <option @selected(request('status')=='completed' ) value="completed">Completed</option>
+                    </select>
+                </div>
 
                 <div class="mb-4">
-                    <label for="filter_supervisor" class="input_label">Faculty Member</label>
+                    <label for="filter_supervisor" class="input_label">Supervisor</label>
                     <select id="supervisor_id" name="supervisor_id" class="input select2">
-                        <option value="">Select Faculty Member</option>
+                        <option value="">Select Supervisor</option>
                         @foreach ($faculty_members as $faculty)
                         <option value="{{ $faculty->id }}" @selected(old('supervisor_id')==$faculty->id)>
                             {{ $faculty->name }}</option>
@@ -255,6 +276,33 @@
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="mb-4">
+                    <label for="semester" class="input_label">Semester</label>
+                    <select id="semester" name="semester" class="input select2">
+                        <option value="">Select Semester</option>
+                        <option value="spring" @selected(request('semester')=='spring' )>Spring</option>
+                        <option value="summer" @selected(request('semester')=='summer' )>Summer</option>
+                        <option value="fall" @selected(request('semester')=='fall' )>Fall</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="academic_year" class="input_label">Academic Year</label>
+                    <select id="academic_year" name="academic_year" class="input select2">
+                        <option value="">Select Academic Year</option>
+                        @php
+                        $currentYear = date('Y');
+                        for ($i = $currentYear + 1; $i >= $currentYear - 5; $i--) {
+                        echo "<option value='{$i}' " . (request('academic_year') == $i ? 'selected' : '') . ">{$i}</option>";
+                        }
+                        @endphp
+                    </select>
+                </div>
+
+
+
+
 
                 <div class="mb-4">
                     <label for="r_cell_id" class="input_label">R-Cell</label>
@@ -286,66 +334,120 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-            $('.select2').select2({
-                width: '100%'
-            });
-            // Handle Delete Confirmation
-            document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    })
-                });
-            });
+        $('.select2').select2({
+            width: '100%'
+        });
 
-            // Handle Approve Confirmation
-            document.querySelectorAll('.approve-form').forEach(form => {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    Swal.fire({
-                        title: 'Do you want to approve this project?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#28a745',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, approve it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    })
-                });
-            });
+        const selectAllCheckbox = document.getElementById('select-all');
+        const projectCheckboxes = document.querySelectorAll('.project-checkbox');
+        const approveAllButton = document.getElementById('approve-all');
+        const deleteAllButton = document.getElementById('delete-all');
+        const bulkActionForm = document.getElementById('bulk-action-form');
 
-            // Handle Reject Confirmation
-            document.querySelectorAll('.reject-form').forEach(form => {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    Swal.fire({
-                        title: 'Do you want to reject this project?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, reject it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    })
-                });
+        function toggleButtons() {
+            const anyChecked = Array.from(projectCheckboxes).some(c => c.checked);
+            approveAllButton.disabled = !anyChecked;
+            deleteAllButton.disabled = !anyChecked;
+        }
+
+        selectAllCheckbox.addEventListener('change', function() {
+            projectCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            toggleButtons();
+        });
+
+        projectCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (!this.checked) {
+                    selectAllCheckbox.checked = false;
+                } else if (Array.from(projectCheckboxes).every(c => c.checked)) {
+                    selectAllCheckbox.checked = true;
+                }
+                toggleButtons();
             });
         });
+
+        approveAllButton.addEventListener('click', function() {
+            bulkActionForm.action = "{{ route('projects.approve_all') }}";
+            bulkActionForm.submit();
+        });
+
+        deleteAllButton.addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete them!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    bulkActionForm.action = "{{ route('projects.delete_all') }}";
+                    bulkActionForm.submit();
+                }
+            })
+        });
+
+
+        // Handle Delete Confirmation
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+
+        // Handle Approve Confirmation
+        document.querySelectorAll('.approve-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Do you want to approve this project?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approve it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+
+        // Handle Reject Confirmation
+        document.querySelectorAll('.reject-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Do you want to reject this project?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, reject it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+    });
 </script>
 @endpush

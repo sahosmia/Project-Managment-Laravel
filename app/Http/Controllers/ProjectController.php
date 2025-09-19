@@ -66,12 +66,18 @@ class ProjectController extends Controller
             $projectsQuery->where('supervisor_id', $request->input('supervisor_id'));
         }
 
-
-
         $projectsQuery->with('creator', 'supervisor', 'members');
 
         if ($request->has('r_cell_id') && $request->input('r_cell_id') !== null && $request->input('r_cell_id') !== '') {
             $projectsQuery->where('r_cell_id', $request->input('r_cell_id'));
+        }
+
+         if ($request->has('semester') && $request->input('semester') !== null && $request->input('semester') !== '') {
+            $projectsQuery->where('semester', $request->input('semester'));
+        }
+
+        if ($request->has('academic_year') && $request->input('academic_year') !== null && $request->input('academic_year') !== '') {
+            $projectsQuery->where('academic_year', $request->input('academic_year'));
         }
 
         $projectsQuery->orderBy('status')->latest();
@@ -262,5 +268,41 @@ class ProjectController extends Controller
         }
 
         abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
+    }
+
+    public function approveAll(Request $request)
+    {
+        $projectIds = $request->input('project_ids', []);
+        $user = auth()->user();
+        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
+
+        foreach ($projectIds as $projectId) {
+            $project = Project::find($projectId);
+            if ($project) {
+                if ($user->role === 'admin') {
+                    if ($project->status === 'pending_admin') {
+                        $project->update(['status' => 'pending_research_cell']);
+                    }
+                } elseif ($is_research_cell_member) {
+                    if ($project->status === 'pending_research_cell') {
+                        $project->update(['status' => 'pending_supervisor']);
+                    }
+                } elseif ($user->role === 'faculty_member') {
+                    if ($project->status === 'pending_supervisor') {
+                        $project->update(['status' => 'completed']);
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', 'Selected projects have been approved.');
+    }
+
+    public function deleteAll(Request $request)
+    {
+        $projectIds = $request->input('project_ids', []);
+        Project::whereIn('id', $projectIds)->delete();
+
+        return back()->with('success', 'Selected projects have been deleted.');
     }
 }
