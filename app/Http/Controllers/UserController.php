@@ -25,6 +25,10 @@ class UserController extends Controller
             }
         }
 
+        if ($request->has('approved') && $request->input('approved') !== null && $request->input('approved') !== '') {
+            $usersQuery->where('approved', $request->input('approved'));
+        }
+
         $users = $usersQuery->latest()->paginate(10)->withQueryString();
         return view('users.index', compact('users'));
     }

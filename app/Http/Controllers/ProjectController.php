@@ -70,12 +70,17 @@ class ProjectController extends Controller
 
         $projectsQuery->with('creator', 'supervisor', 'members');
 
+        if ($request->has('r_cell_id') && $request->input('r_cell_id') !== null && $request->input('r_cell_id') !== '') {
+            $projectsQuery->where('r_cell_id', $request->input('r_cell_id'));
+        }
+
         $projectsQuery->orderBy('status')->latest();
 
 
         $projects = $projectsQuery->paginate(10)->withQueryString();
+        $rcells = RCell::get();
 
-        return view('projects.index', compact('projects', 'faculty_members'));
+        return view('projects.index', compact('projects', 'faculty_members', 'rcells'));
     }
 
     public function create()
