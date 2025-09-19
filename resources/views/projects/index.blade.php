@@ -196,7 +196,7 @@
 </div>
 {{-- Filter Modal --}}
 <div id="filterModal"
-    class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden flex items-center justify-center z-[999]">
+    class="fixed inset-0 bg-black/60  overflow-y-auto h-full w-full hidden flex items-center justify-center z-[99999999999]">
     <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white ">
         <div class="flex justify-between items-center pb-3">
             <h3 class="text-lg leading-6 font-medium text-gray-900 ">Filter Projects</h3>
@@ -249,6 +249,17 @@
                     @error('supervisor_id')
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label for="r_cell_id" class="input_label">R-Cell</label>
+                    <select id="r_cell_id" name="r_cell_id" class="input select2">
+                        <option value="">Select R-Cell</option>
+                        @foreach ($rcells as $rcell)
+                        <option value="{{ $rcell->id }}" @selected(request('r_cell_id')==$rcell->id)>
+                            {{ $rcell->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 @endif
 
