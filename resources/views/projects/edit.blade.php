@@ -207,8 +207,8 @@
                     <select id="rcell_id" name="rcell_id" class="input select2">
                         <option value="">Select Research Cell</option>
                         @foreach ($rcells as $rcell)
-                        <option value="{{ $rcell->id }}" @selected(old('rcell_id', $project->r_cell_id) ==
-                            $rcell->id)>{{ $rcell->name }}
+                        <option value="{{ $rcell->id }}" @selected(old('rcell_id', $project->r_cell_id) == $rcell->id)>
+                            {{ $rcell->name . ' (' . ($rcell->researchCellHead->name ?? 'N/A') . ')' }}
                         </option>
                         @endforeach
                     </select>

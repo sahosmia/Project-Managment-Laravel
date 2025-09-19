@@ -66,7 +66,7 @@ class ProjectController extends Controller
             $projectsQuery->where('supervisor_id', $request->input('supervisor_id'));
         }
 
-        $projectsQuery->with('creator', 'supervisor', 'members');
+        $projectsQuery->with('creator', 'supervisor', 'members', 'rcell.researchCellHead');
 
         if ($request->has('r_cell_id') && $request->input('r_cell_id') !== null && $request->input('r_cell_id') !== '') {
             $projectsQuery->where('r_cell_id', $request->input('r_cell_id'));
@@ -84,7 +84,7 @@ class ProjectController extends Controller
 
 
         $projects = $projectsQuery->paginate(10)->withQueryString();
-        $rcells = RCell::get();
+        $rcells = RCell::with('researchCellHead')->get();
 
         return view('projects.index', compact('projects', 'faculty_members', 'rcells'));
     }
@@ -92,7 +92,7 @@ class ProjectController extends Controller
     public function create()
     {
         $departments = Department::get();
-        $rcells = RCell::get();
+        $rcells = RCell::with('researchCellHead')->get();
         $students = User::where('role', 'student')
             ->where('approved', true)
             ->whereDoesntHave('createdProjects')
@@ -136,6 +136,8 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+        $project->load('rcell.researchCellHead');
+
         $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('projects.show', compact('project', 'faculty_members'));
     }
@@ -160,8 +162,10 @@ class ProjectController extends Controller
             })
             ->get();        $currentMembers = $project->members->pluck('id')->toArray();
         $departments = Department::get();
-        $rcells = RCell::get();
+        $rcells = RCell::with('researchCellHead')->get();
         $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
+                $project->load('rcell.researchCellHead');
+
         return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'faculty_members'));
     }
 
@@ -274,23 +278,23 @@ class ProjectController extends Controller
     {
         $projectIds = $request->input('project_ids', []);
         $user = auth()->user();
-        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
+        $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
 
-        foreach ($projectIds as $projectId) {
-            $project = Project::find($projectId);
-            if ($project) {
-                if ($user->role === 'admin') {
-                    if ($project->status === 'pending_admin') {
-                        $project->update(['status' => 'pending_research_cell']);
-                    }
-                } elseif ($is_research_cell_member) {
-                    if ($project->status === 'pending_research_cell') {
-                        $project->update(['status' => 'pending_supervisor']);
-                    }
-                } elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id) {
-                    if ($project->status === 'pending_supervisor') {
-                        $project->update(['status' => 'completed']);
-                    }
+
+        $projects = Project::whereIn('id', $projectIds)->get();
+
+        foreach ($projects as $project) {
+            if ($user->role === 'admin') {
+                if ($project->status === 'pending_admin') {
+                    $project->update(['status' => 'pending_research_cell']);
+                }
+            } elseif ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id) {
+                if ($project->status === 'pending_research_cell') {
+                    $project->update(['status' => 'pending_supervisor']);
+                }
+            } elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id) {
+                if ($project->status === 'pending_supervisor') {
+                    $project->update(['status' => 'completed']);
                 }
             }
         }

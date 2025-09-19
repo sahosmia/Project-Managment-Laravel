@@ -51,8 +51,14 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
             <div>
-                <p class="text-gray-700 text-sm font-semibold mb-1">Intended Research Cell:</p>
-                <p class="text-gray-900">{{ $project->rCell->name ?? 'N/A' }}</p>
+                <p class="text-gray-900">
+                    {{ $project->rcell->name ?? 'N/A' }}
+                    @if ($project->rcell && $project->rcell->researchCellHead)
+                    <span class="text-gray-500 text-sm">
+                        ({{ $project->rcell->researchCellHead->name }})
+                    </span>
+                    @endif
+                </p>
             </div>
             <div>
                 <p class="text-gray-700 text-sm font-semibold mb-1">Assigned Supervisor:</p>
