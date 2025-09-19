@@ -53,7 +53,7 @@
         </div>
 
         <!-- Student ID -->
-        <div class="mt-4">
+        <div class="mt-4" id="student_id_field">
             <x-input-label for="student_id" :value="__('Student ID (Optional)')" />
             <x-text-input id="student_id" class="block mt-1 w-full input" type="text" name="student_id"
                 :value="old('student_id')" />
@@ -95,4 +95,22 @@
             </x-primary-button>
         </div>
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentIdField = document.getElementById('student_id_field');
+            const roleStudent = document.getElementById('role_student');
+            const roleFaculty = document.getElementById('role_faculty');
+
+            function toggleStudentIdField() {
+                if (roleStudent.checked) {
+                    studentIdField.style.display = 'block';
+                } else {
+                    studentIdField.style.display = 'none';
+                }
+            }
+            toggleStudentIdField();
+            roleStudent.addEventListener('change', toggleStudentIdField);
+            roleFaculty.addEventListener('change', toggleStudentIdField);
+        });
+    </script>
 </x-guest-layout>

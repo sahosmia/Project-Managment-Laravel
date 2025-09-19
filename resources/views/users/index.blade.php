@@ -252,7 +252,7 @@
                 <div class="mb-4">
                     <label for="role" class="input_label">Role</label>
                     <div class="relative">
-                        <select id="role" name="role" class="input">
+                        <select id="role" name="role" class="input select2">
                             <option value="">Select a role</option>
                             <option @selected(request('role')=='admin' ) value="admin">Admin</option>
                             <option @selected(request('role')=='faculty_member' ) value="faculty_member">Faculty Member

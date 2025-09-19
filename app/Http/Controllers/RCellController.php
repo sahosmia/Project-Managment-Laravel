@@ -18,13 +18,13 @@ class RCellController extends Controller
             $rCellsQuery->where('name', 'like', '%' . $request->input('name') . '%');
         }
 
-        $r_cells = $rCellsQuery->paginate(10)->withQueryString();
+        $r_cells = $rCellsQuery->latest()->paginate(10)->withQueryString();
         return view('r-cells.index', compact('r_cells'));
     }
 
     public function create()
     {
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('r-cells.create', compact('faculty_members'));
     }
 
@@ -43,7 +43,7 @@ class RCellController extends Controller
 
     public function edit(RCell $r_cell)
     {
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('r-cells.edit', compact('r_cell', 'faculty_members'));
     }
 

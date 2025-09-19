@@ -99,8 +99,8 @@ class UserController extends Controller
 
     public function editProject(Project $project)
     {
-        $faculty_members = User::where('role', 'faculty_member')->get();
-        $students = User::where('role', 'student')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
+        $students = User::where('role', 'student')->where('approved', true)->get();
         return view('admin.projects.edit', compact('project', 'faculty_members', 'students'));
     }
 

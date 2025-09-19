@@ -25,7 +25,7 @@ class DepartmentController extends Controller
             }
         }
 
-        $departments = $departmentsQuery->paginate(10)->withQueryString();
+        $departments = $departmentsQuery->latest()->paginate(10)->withQueryString();
         return view('departments.index', compact('departments'));
     }
 

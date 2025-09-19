@@ -17,7 +17,7 @@ class CompanyController extends Controller
             $companiesQuery->where('name', 'like', '%' . $request->input('name') . '%');
         }
 
-        $companies = $companiesQuery->paginate(10)->withQueryString();
+        $companies = $companiesQuery->latest()->paginate(10)->withQueryString();
         return view('companies.index', compact('companies'));
     }
 

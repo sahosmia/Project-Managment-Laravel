@@ -52,7 +52,7 @@
         <div class="mb-6">
             <label for="role" class="input_label">Role</label>
             <div class="relative">
-                <select id="role" name="role" class="input block appearance-none pr-8" required>
+                <select id="role" name="role" class="input select2 block appearance-none pr-8" required>
                     <option value="">Select a role</option>
                     <option value="admin" @selected(old('role', $user->role) == 'admin')>Admin</option>
                     <option value="student" @selected(old('role', $user->role) == 'student')>Student</option>

@@ -20,7 +20,7 @@
         <!-- Research Cell Head Field -->
         <div class="mb-4">
             <label for="research_cell_head" class="input_label">Research Cell Head</label>
-            <select id="research_cell_head" name="research_cell_head" class="input">
+            <select id="research_cell_head" name="research_cell_head" class="input select2">
                 <option value="">Select a faculty member</option>
                 @foreach ($faculty_members as $faculty)
                 <option value="{{ $faculty->id }}" {{ old('research_cell_head')==$faculty->id ? 'selected' : '' }}>{{

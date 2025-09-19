@@ -17,7 +17,7 @@ class IndustrialProposalController extends Controller
         if ($user->role == 'faculty_member') {
             $query->where('supervisor_id', $user->id);
         }
-        $proposals = $query->paginate(10)->withQueryString();
+        $proposals = $query->latest()->paginate(10)->withQueryString();
         return view('industrial-proposals.index', compact('proposals'));
     }
 
@@ -30,7 +30,7 @@ class IndustrialProposalController extends Controller
             $company->available_quantity = $company->quantity - $company->current_quantity;
             return $company;
         });
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('industrial-proposals.create', compact('user', 'companies', 'faculty_members', 'industrialProposal'));
     }
 
@@ -97,7 +97,7 @@ class IndustrialProposalController extends Controller
     public function edit(IndustrialProposal $industrial_proposal)
     {
         $companies = Company::all();
-          $faculty_members = User::where('role', 'faculty_member')->get();
+          $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('industrial-proposals.edit', compact('industrial_proposal', 'companies', 'faculty_members'));
     }
 

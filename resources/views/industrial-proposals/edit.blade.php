@@ -49,7 +49,7 @@
                 <div class="mb-4">
                     <label for="status" class="input_label">Status</label>
                     <div class="relative">
-                        <select id="status" name="status" class="input">
+                        <select id="status" name="status" class="input select2">
                             <option value="pending" @selected($industrial_proposal->status == 'pending')>Pending
                             </option>
                             <option value="inprogress" @selected($industrial_proposal->status == 'inprogress')>In

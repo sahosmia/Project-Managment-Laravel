@@ -69,18 +69,21 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        @if(Session::has('success'))
+        @if (Session::has('success'))
             toastr.success("{{ Session::get('success') }}");
         @endif
-        @if(Session::has('error'))
+        @if (Session::has('error'))
             toastr.error("{{ Session::get('error') }}");
         @endif
-        @if(Session::has('info'))
+        @if (Session::has('info'))
             toastr.info("{{ Session::get('info') }}");
         @endif
-        @if(Session::has('warning'))
+        @if (Session::has('warning'))
             toastr.warning("{{ Session::get('warning') }}");
         @endif
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
     </script>
     @stack('scripts')
 </body>

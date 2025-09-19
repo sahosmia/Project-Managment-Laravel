@@ -44,7 +44,7 @@
                 <x-required />
             </label>
             <div class="relative">
-                <select id="role" name="role" class="input">
+                <select id="role" name="role" class="input select2">
                     <option value="">Select a role</option>
                     <option @selected(old('role')=='admin' ) value="admin">Admin</option>
                     <option @selected(old('role')=='faculty_member' ) value="faculty_member">Faculty Member</option>

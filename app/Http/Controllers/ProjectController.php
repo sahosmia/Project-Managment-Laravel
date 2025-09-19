@@ -18,7 +18,7 @@ class ProjectController extends Controller
     {
         $projectsQuery = Project::query();
         $user = Auth::user();
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         $validStatuses = [
             'pending_research_cell',
             'rejected_research_cell',
@@ -71,7 +71,7 @@ class ProjectController extends Controller
 
         $projectsQuery->with('creator', 'supervisor', 'members');
 
-        $projectsQuery->orderBy('status');
+        $projectsQuery->orderBy('status')->latest();
 
 
         $projects = $projectsQuery->paginate(10)->withQueryString();
@@ -84,10 +84,11 @@ class ProjectController extends Controller
         $departments = Department::get();
         $rcells = RCell::get();
         $students = User::where('role', 'student')
+            ->where('approved', true)
             ->whereDoesntHave('createdProjects')
             ->whereDoesntHave('memberOfProjects')
             ->get();
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('projects.create', compact('students', 'departments', 'rcells', 'faculty_members'));
     }
 
@@ -125,7 +126,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('projects.show', compact('project', 'faculty_members'));
     }
 
@@ -141,6 +142,7 @@ class ProjectController extends Controller
 
  $currentMemberIds = $project->members->pluck('id');
         $students = User::where('role', 'student')
+            ->where('approved', true)
             ->where(function ($query) use ($currentMemberIds) {
                 $query->whereDoesntHave('createdProjects')
                     ->whereDoesntHave('memberOfProjects')
@@ -149,7 +151,7 @@ class ProjectController extends Controller
             ->get();        $currentMembers = $project->members->pluck('id')->toArray();
         $departments = Department::get();
         $rcells = RCell::get();
-        $faculty_members = User::where('role', 'faculty_member')->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
         return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'faculty_members'));
     }
 
