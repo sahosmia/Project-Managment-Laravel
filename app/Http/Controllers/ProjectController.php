@@ -287,7 +287,7 @@ class ProjectController extends Controller
                     if ($project->status === 'pending_research_cell') {
                         $project->update(['status' => 'pending_supervisor']);
                     }
-                } elseif ($user->role === 'faculty_member') {
+                } elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id) {
                     if ($project->status === 'pending_supervisor') {
                         $project->update(['status' => 'completed']);
                     }
