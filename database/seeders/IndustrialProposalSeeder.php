@@ -19,15 +19,15 @@ class IndustrialProposalSeeder extends Seeder
 
         $student = User::where('role', 'student')->first();
         $company = Company::first();
-        $supervisor = User::where('role', 'supervisor')->first();
+        $faculty_member = User::where('role', 'faculty_member')->first();
 
-        if ($student && $company && $supervisor) {
+        if ($student && $company && $faculty_member) {
             for ($i = 0; $i < 5; $i++) {
                 IndustrialProposal::create([
                     'user_id' => $student->id,
                     'skills' => implode(', ', $faker->words(3)),
                     'company' =>"abc",
-                    'supervisor_id' => $supervisor->id,
+                    'supervisor_id' => $faculty_member->id,
                     'status' => $faker->randomElement(['pending', 'inprogress', 'complete']),
                 ]);
             }

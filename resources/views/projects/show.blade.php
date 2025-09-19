@@ -59,10 +59,6 @@
                 <p class="text-gray-900">{{ $project->supervisor->name ?? 'N/A' }}</p>
             </div>
             <div>
-                <p class="text-gray-700 text-sm font-semibold mb-1">Assigned Co-Supervisor:</p>
-                <p class="text-gray-900">{{ $project->coSupervisor->name ?? 'N/A' }}</p>
-            </div>
-            <div>
                 <p class="text-gray-700 text-sm font-semibold mb-1">Status:</p>
                 <p class="rounded-full px-2 py-0.5 text-theme-xs font-medium {{ $project->status_class }}">
                     {{ Str::title(str_replace('_', ' ', $project->status)) }}
@@ -133,9 +129,8 @@
         @php $user = auth()->user(); @endphp
 
         @if(
-        ($user->role == 'research_cell' && $project->status == 'pending_research_cell') ||
         ($user->role == 'admin' && $project->status == 'pending_admin') ||
-        ($user->role == 'supervisor' && $project->status == 'pending_supervisor')
+        ($user->role == 'faculty_member' && $project->status == 'pending_supervisor')
         )
         <form action="{{ route('projects.approve', $project) }}" method="POST">
             @csrf
@@ -156,9 +151,8 @@
 </div>
 
 
-@if(($user->role == 'research_cell' && $project->status == 'pending_research_cell') ||
-($user->role == 'admin' && $project->status == 'pending_admin') ||
-($user->role == 'supervisor' && $project->status == 'pending_supervisor'))
+@if(($user->role == 'admin' && $project->status == 'pending_admin') ||
+($user->role == 'faculty_member' && $project->status == 'pending_supervisor'))
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl mx-auto my-8 z-10">
     <section class="space-y-6">
         <header>
@@ -213,42 +207,3 @@
 @endif
 
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const supervisorSelect = document.getElementById('supervisor_id');
-        const coSupervisorSelect = document.getElementById('cosupervisor_id');
-        const userRole = "{{ auth()->user()->role }}";
-
-        function fetchCoSupervisors(supervisorId) {
-            if (supervisorId) {
-                fetch(`/supervisors/${supervisorId}/co-supervisors`)
-                    .then(response => response.json())
-                    .then(data => {
-                        coSupervisorSelect.innerHTML = '<option value="">Select Co-Supervisor</option>';
-                        data.forEach(coSupervisor => {
-                            const option = document.createElement('option');
-                            option.value = coSupervisor.id;
-                            option.textContent = coSupervisor.name;
-                            coSupervisorSelect.appendChild(option);
-                        });
-                    });
-            } else {
-                coSupervisorSelect.innerHTML = '<option value="">Select Co-Supervisor</option>';
-            }
-        }
-
-        if (userRole !== 'admin') {
-            supervisorSelect.addEventListener('change', function () {
-                fetchCoSupervisors(this.value);
-            });
-
-            // Initial fetch
-            if (supervisorSelect.value) {
-                fetchCoSupervisors(supervisorSelect.value);
-            }
-        }
-    });
-</script>
-@endpush

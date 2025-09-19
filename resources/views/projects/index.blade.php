@@ -145,9 +145,8 @@
                                         role="menuitem">View</a>
                                     @php $user = auth()->user(); @endphp
                                     @if(
-                                    ($user->role == 'research_cell' && $item->status == 'pending_research_cell') ||
                                     ($user->role == 'admin' && $item->status == 'pending_admin') ||
-                                    ($user->role == 'supervisor' && $item->status == 'pending_supervisor')
+                                    ($user->role == 'faculty_member' && $item->status == 'pending_supervisor')
                                     ) <form method="POST" action="{{ route('projects.approve', $item->id) }}"
                                         class="approve-form">
                                         @csrf
@@ -158,7 +157,7 @@
                                     @endif
                                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'student' &&
                                     in_array($item->status,
-                                    ['rejected_research_cell', 'rejected_admin',
+                                    ['rejected_admin',
                                     'rejected_supervisor']))
                                     <a href="{{ route('projects.edit', $item->id) }}"
                                         class="block px-4 py-2 text-sm text-blue-700 hover:bg-gray-100 hover:text-blue-900 "
@@ -221,11 +220,6 @@
                     <label for="filter_status" class="input_label">Status</label>
                     <select name="status" id="filter_status" class="input select2">
                         <option value="">All Statuses</option>
-                        <option @selected(request('status')=='pending_research_cell' ) value="pending_research_cell">
-                            Pending Research Cell
-                        </option>
-                        <option @selected(request('status')=='rejected_research_cell' ) value="rejected_research_cell">
-                            Rejected Research Cell</option>
                         <option @selected(request('status')=='pending_admin' ) value="pending_admin">
                             Pending Admin
                         </option>
@@ -244,12 +238,12 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="filter_supervisor" class="input_label">Supervisor</label>
+                    <label for="filter_supervisor" class="input_label">Faculty Member</label>
                     <select id="supervisor_id" name="supervisor_id" class="input select2">
-                        <option value="">Select Supervisor</option>
-                        @foreach ($supervisors as $supervisor)
-                        <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>
-                            {{ $supervisor->name }}</option>
+                        <option value="">Select Faculty Member</option>
+                        @foreach ($faculty_members as $faculty)
+                        <option value="{{ $faculty->id }}" @selected(old('supervisor_id')==$faculty->id)>
+                            {{ $faculty->name }}</option>
                         @endforeach
                     </select>
                     @error('supervisor_id')

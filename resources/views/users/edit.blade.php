@@ -56,30 +56,11 @@
                     <option value="">Select a role</option>
                     <option value="admin" @selected(old('role', $user->role) == 'admin')>Admin</option>
                     <option value="student" @selected(old('role', $user->role) == 'student')>Student</option>
-                    <option value="supervisor" @selected(old('role', $user->role) == 'supervisor')>Supervisor</option>
-                    <option value="co-supervisor" @selected(old('role', $user->role) == 'co-supervisor')>Co-Supervisor
-                    </option>
-                    <option value="research_cell" @selected(old('role', $user->role) == 'research_cell')>Research Cell
-                    </option>
+                    <option value="faculty_member" @selected(old('role', $user->role) == 'faculty_member')>Faculty
+                        Member</option>
                 </select>
             </div>
             @error('role')
-            <p class="validate_error">{{ $message }}</p>
-            @enderror
-        </div>
-        <div class="mb-6 @if (old('role', $user->role) != 'co-supervisor') hidden @endif" id="supervisor-select">
-            <label for="parent_id" class="input_label">Parent Supervisor</label>
-            <div class="relative">
-                <select id="parent_id" name="parent_id" class="input">
-                    <option value="">Select a supervisor</option>
-                    @foreach ($supervisors as $supervisor)
-                    <option @selected(old('parent_id', $user->parent_id) == $supervisor->id) value="{{ $supervisor->id
-                        }}">{{ $supervisor->name }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            @error('parent_id')
             <p class="validate_error">{{ $message }}</p>
             @enderror
         </div>
@@ -103,14 +84,6 @@
 </div>
 <script>
     $(document).ready(function() {
-            $('#role').on('change', function() {
-                if ($(this).val() === 'co-supervisor') {
-                    $('#supervisor-select').removeClass('hidden');
-                } else {
-                    $('#supervisor-select').addClass('hidden');
-                }
-            });
-
             $('#role').on('change', function() {
                 if ($(this).val() === 'student') {
                     $('#student_id_filed').removeClass('hidden');

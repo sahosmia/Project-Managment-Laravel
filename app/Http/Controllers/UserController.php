@@ -19,7 +19,7 @@ class UserController extends Controller
             $usersQuery->where('name', 'like', '%' . $request->input('name') . '%');
         }
         if ($request->has('role') && $request->input('role') !== null && $request->input('role') !== '') {
-            $validRoles = ['admin', 'student', 'supervisor', 'research_cell'];
+            $validRoles = ['admin', 'student', 'faculty_member'];
             if (in_array($request->input('role'), $validRoles)) {
                 $usersQuery->where('role', $request->input('role'));
             }
@@ -31,8 +31,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $supervisors = User::where('role', 'supervisor')->get();
-        return view('users.create', compact('supervisors'));
+        return view('users.create');
     }
 
     public function store(Request $request)
@@ -41,9 +40,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
-            'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],
-
+            'role' => ['required', Rule::in(['admin', 'faculty_member', 'student'])],
         ]);
 
         User::create([
@@ -51,8 +48,6 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'parent_id' => $request->parent_id,
-
         ]);
 
 
@@ -66,8 +61,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $supervisors = User::where('role', 'supervisor')->get();
-        return view('users.edit', compact('user', 'supervisors'));
+        return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
@@ -76,9 +70,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:8'],
-
-            'role' => ['required', Rule::in(['admin', 'research_cell', 'supervisor', 'student', 'co-supervisor'])],
-            'parent_id' => ['nullable', 'required_if:role,co-supervisor', 'exists:users,id'],
+            'role' => ['required', Rule::in(['admin', 'faculty_member', 'student'])],
         ]);
 
         if ($request->filled('password')) {
@@ -88,8 +80,6 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
-            'parent_id' => $request->parent_id,
-
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
@@ -109,9 +99,9 @@ class UserController extends Controller
 
     public function editProject(Project $project)
     {
-        $supervisors = User::where('role', 'supervisor')->get();
+        $faculty_members = User::where('role', 'faculty_member')->get();
         $students = User::where('role', 'student')->get();
-        return view('admin.projects.edit', compact('project', 'supervisors', 'students'));
+        return view('admin.projects.edit', compact('project', 'faculty_members', 'students'));
     }
 
     public function updateProject(Request $request, Project $project)
@@ -120,7 +110,7 @@ class UserController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => ['required', Rule::in(['pending_research_cell', 'rejected_research_cell', 'approved_by_research_cell', 'pending_admin_review', 'assigned_to_supervisor', 'in_progress', 'completed', 'cancelled'])],
-            'supervisor_id' => ['nullable', 'exists:users,id', Rule::in(User::where('role', 'supervisor')->pluck('id'))],
+            'supervisor_id' => ['nullable', 'exists:users,id', Rule::in(User::where('role', 'faculty_member')->pluck('id'))],
             'members' => 'nullable|array',
             'members.*' => 'exists:users,id',
         ]);
@@ -139,7 +129,7 @@ class UserController extends Controller
     public function assignSupervisor(Request $request, Project $project)
     {
         $request->validate([
-            'supervisor_id' => ['required', 'exists:users,id', Rule::in(User::where('role', 'supervisor')->pluck('id'))],
+            'supervisor_id' => ['required', 'exists:users,id', Rule::in(User::where('role', 'faculty_member')->pluck('id'))],
         ]);
 
         $project->update([
@@ -148,13 +138,6 @@ class UserController extends Controller
         ]);
 
         return back()->with('success', 'Supervisor assigned successfully.');
-    }
-
-
-    public function getCoSupervisors(User $supervisor)
-    {
-        $coSupervisors = $supervisor->coSupervisors;
-        return response()->json($coSupervisors);
     }
 
 

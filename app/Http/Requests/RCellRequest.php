@@ -28,6 +28,7 @@ class RCellRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'research_cell_head' => 'nullable|exists:users,id',
         ];
     }
 

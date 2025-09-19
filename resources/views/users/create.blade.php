@@ -47,31 +47,13 @@
                 <select id="role" name="role" class="input">
                     <option value="">Select a role</option>
                     <option @selected(old('role')=='admin' ) value="admin">Admin</option>
-                    <option @selected(old('role')=='research_cell' ) value="research_cell">Research Cell</option>
-                    <option @selected(old('role')=='supervisor' ) value="supervisor">Supervisor</option>
-                    <option @selected(old('role')=='co-supervisor' ) value="co-supervisor">Co-Supervisor</option>
+                    <option @selected(old('role')=='faculty_member' ) value="faculty_member">Faculty Member</option>
                     <option @selected(old('role')=='student' ) value="student">Student</option>
                 </select>
 
             </div>
 
             @error('role')
-            <p class="validate_error">{{ $message }}</p>
-            @enderror
-        </div>
-        <div class="mb-6 hidden" id="supervisor-select">
-            <label for="parent_id" class="input_label">Parent Supervisor</label>
-            <div class="relative">
-                <select id="parent_id" name="parent_id" class="input">
-                    <option value="">Select a supervisor</option>
-                    @foreach ($supervisors as $supervisor)
-                    <option @selected(old('parent_id')==$supervisor->id) value="{{ $supervisor->id }}">{{
-                        $supervisor->name }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            @error('parent_id')
             <p class="validate_error">{{ $message }}</p>
             @enderror
         </div>
@@ -100,16 +82,7 @@
 <script>
     $(document).ready(function() {
             $('#role').on('change', function() {
-                if ($(this).val() === 'co-supervisor') {
-                    $('#supervisor-select').removeClass('hidden');
-                } else {
-                    $('#supervisor-select').addClass('hidden');
-                }
-            });
-        });
-    $(document).ready(function() {
-            $('#role').on('change', function() {
-                if ($(this).val() === 'co-supervisor') {
+                if ($(this).val() === 'student') {
                     $('#student_id_filed').removeClass('hidden');
                 } else {
                     $('#student_id_filed').addClass('hidden');

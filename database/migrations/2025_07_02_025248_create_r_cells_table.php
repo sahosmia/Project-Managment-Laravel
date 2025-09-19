@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('r_cells', function (Blueprint $table) {
             $table->id();
-              $table->string('name');
+            $table->string('name');
             $table->text('description')->nullable();
+            $table->unsignedBigInteger('research_cell_head')->nullable();
+            $table->foreign('research_cell_head')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

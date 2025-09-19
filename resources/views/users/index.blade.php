@@ -119,15 +119,11 @@
                             @php
                             $statusClass = '';
                             switch ($item->role) {
-                            case 'research_cell':
-                            $statusClass =
-                            'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/15 dark:text-yellow-500';
-                            break;
                             case 'admin':
                             $statusClass =
                             'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-500';
                             break;
-                            case 'supervisor':
+                            case 'faculty_member':
                             $statusClass =
                             'bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-500';
                             break;
@@ -191,7 +187,7 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-yellow-700 hover:bg-gray-100 hover:text-yellow-900 dark:text-red-300 dark:hover:bg-gray-600"
                                             role="menuitem">Approve</button>
                                     </form>
-                                    
+
 
                                     {{-- delete --}}
                                     <form method="POST" action="{{route('users.destroy', $item->id)}}"
@@ -259,9 +255,8 @@
                         <select id="role" name="role" class="input">
                             <option value="">Select a role</option>
                             <option @selected(request('role')=='admin' ) value="admin">Admin</option>
-                            <option @selected(request('role')=='research_cell' ) value="research_cell">Research Cell
+                            <option @selected(request('role')=='faculty_member' ) value="faculty_member">Faculty Member
                             </option>
-                            <option @selected(request('role')=='supervisor' ) value="supervisor">Supervisor</option>
                             <option @selected(request('role')=='student' ) value="student">Student</option>
                         </select>
                         <div

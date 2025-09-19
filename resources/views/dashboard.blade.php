@@ -89,7 +89,7 @@
         @endif
 
         <!-- Admin Specific Statistics -->
-        @if ($user_role == 'research_cell' || $user_role == 'admin')
+        @if ($user_role == 'admin')
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
                 <h2 class="text-lg font-medium text-gray-500">Pending (RC)</h2>
@@ -120,8 +120,8 @@
         @endif
 
 
-        <!-- Supervisor Specific Statistics -->
-        @if ($user_role == 'supervisor')
+        <!-- faculty_member Specific Statistics -->
+        @if ($user_role == 'faculty_member')
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
                 <h2 class="text-lg font-medium text-gray-500">Pending (Supervisor)</h2>
@@ -151,23 +151,6 @@
         </div>
         @endif
 
-        @if ($user_role == 'co-supervisor')
-        <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
-            <div>
-                <h2 class="text-lg font-medium text-gray-500">My Project </h2>
-                <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $pendingProjectsCoSupervisor }}</p>
-            </div>
-            <div class="p-3 bg-indigo-100 rounded-full text-indigo-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                    </path>
-                </svg>
-            </div>
-        </div>
-        @endif
-
         <!-- Student Specific Statistics -->
         @if ($user_role == 'student')
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
@@ -189,7 +172,7 @@
     </section>
 
     <!-- Supervisors and Students Lists Section (Visible to Admin, or adjust as needed) -->
-    @if ($user_role == 'admin' || $user_role == "research_cell")
+    @if ($user_role == 'admin')
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="flex gap-5 flex-col">
 
@@ -227,50 +210,13 @@
                     </table>
                 </div>
             </div>
-            @if ($user_role == 'admin')
-            <!-- Research Cell List -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Research Cells</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">
-                                    Name</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">
-                                    Email</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($research_cells as $research_cell)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $research_cell->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $research_cell->email }}
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No
-                                    research cell found.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @endif
-
         </div>
 
         <div class="flex gap-5 flex-col">
             @if ($user_role == 'admin')
-            <!-- Supervisors List -->
+            <!-- Faculty Members List -->
             <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Supervisors</h2>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Faculty Members</h2>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -284,18 +230,18 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($supervisors as $supervisor)
+                            @forelse($faculty_members as $faculty)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $supervisor->name }}</td>
+                                    {{ $faculty->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $supervisor->email }}
+                                    {{ $faculty->email }}
                                 </td>
                             </tr>
                             @empty
                             <tr>
                                 <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No
-                                    supervisors found.</td>
+                                    faculty members found.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -347,7 +293,7 @@
 
 
     <!-- Message for other roles or if no specific data is shown -->
-    @if (!in_array($user_role, ['admin', 'supervisor', 'student']))
+    @if (!in_array($user_role, ['admin', 'faculty_member', 'student']))
     <section class="bg-white rounded-lg shadow-md p-6 text-center text-gray-600">
         <p>Welcome to your dashboard! No specific role-based data to display at this time.</p>
     </section>

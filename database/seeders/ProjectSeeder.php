@@ -64,21 +64,11 @@ class ProjectSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $researchCellUser = DB::table('users')->insertGetId([
-            'name' => 'Research Cell Head',
-            'email' => 'rcell@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'research_cell',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        $supervisor1 = DB::table('users')->insertGetId([
+        $faculty1 = DB::table('users')->insertGetId([
             'name' => 'Dr. Full Name',
             'email' => 'full@example.com',
             'password' => Hash::make('password'),
-            'role' => 'supervisor',
+            'role' => 'faculty_member',
                         'approved' => 1,
 
             'email_verified_at' => now(),
@@ -86,11 +76,11 @@ class ProjectSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $supervisor2 = DB::table('users')->insertGetId([
+        $faculty2 = DB::table('users')->insertGetId([
             'name' => 'Dr. Manik',
             'email' => 'manik@example.com',
             'password' => Hash::make('password'),
-            'role' => 'supervisor',
+            'role' => 'faculty_member',
                         'approved' => 1,
 
             'email_verified_at' => now(),
@@ -98,32 +88,11 @@ class ProjectSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $supervisor3 = DB::table('users')->insertGetId([
+        $faculty3 = DB::table('users')->insertGetId([
             'name' => 'Dr. Abid',
             'email' => 'abid@example.com',
             'password' => Hash::make('password'),
-            'role' => 'supervisor',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // New Co-Supervisor added
-        $coSupervisor1 = DB::table('users')->insertGetId([
-            'name' => 'Dr. Co-Supervisor 1',
-            'email' => 'cosupervisor1@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'co-supervisor',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        $coSupervisor2 = DB::table('users')->insertGetId([
-            'name' => 'Dr. Co-Supervisor 2',
-            'email' => 'cosupervisor2@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'co-supervisor',
+            'role' => 'faculty_member',
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
@@ -181,6 +150,10 @@ class ProjectSeeder extends Seeder
 
 
         // 4. Seed Projects
+        DB::table('r_cells')->where('id', $aiRcellId)->update(['research_cell_head' => $faculty1]);
+        DB::table('r_cells')->where('id', $webRcellId)->update(['research_cell_head' => $faculty2]);
+        DB::table('r_cells')->where('id', $cybersecurityRcellId)->update(['research_cell_head' => $faculty3]);
+
         $projectId1 = DB::table('projects')->insertGetId([
             'title' => 'AI-Powered Chatbot for University Support',
             'academic_year' => '2024',
@@ -194,8 +167,8 @@ class ProjectSeeder extends Seeder
             'created_by' => $student1,
             'department_id' => $cseDepartmentId,
             'r_cell_id' => $aiRcellId,
-            'supervisor_id' => $supervisor1,
-            'cosupervisor_id' => $coSupervisor1, // Assigned the new co-supervisor here
+            'supervisor_id' => $faculty1,
+            'cosupervisor_id' => $faculty2,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -213,8 +186,8 @@ class ProjectSeeder extends Seeder
             'created_by' => $student2,
             'department_id' => $cseDepartmentId,
             'r_cell_id' => $webRcellId,
-            'supervisor_id' => $supervisor2,
-            'cosupervisor_id' => $coSupervisor1,
+            'supervisor_id' => $faculty2,
+            'cosupervisor_id' => $faculty1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -232,8 +205,8 @@ class ProjectSeeder extends Seeder
             'created_by' => $student1,
             'department_id' => $eeeDepartmentId,
             'r_cell_id' => null,
-            'supervisor_id' => $supervisor3,
-            'cosupervisor_id' => $coSupervisor2,
+            'supervisor_id' => $faculty3,
+            'cosupervisor_id' => $faculty2,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -252,8 +225,8 @@ class ProjectSeeder extends Seeder
             'created_by' => $student3,
             'department_id' => $cseDepartmentId,
             'r_cell_id' => $cybersecurityRcellId,
-            'supervisor_id' => $supervisor1,
-            'cosupervisor_id' => $coSupervisor2,
+            'supervisor_id' => $faculty1,
+            'cosupervisor_id' => $faculty2,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -271,7 +244,7 @@ class ProjectSeeder extends Seeder
             'created_by' => $student4,
             'department_id' => $cseDepartmentId,
             'r_cell_id' => $webRcellId,
-            'supervisor_id' => $supervisor2,
+            'supervisor_id' => $faculty2,
             'cosupervisor_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
@@ -290,8 +263,8 @@ class ProjectSeeder extends Seeder
             'created_by' => $student1,
             'department_id' => $eeeDepartmentId,
             'r_cell_id' => null,
-            'supervisor_id' => $supervisor3,
-            'cosupervisor_id' => $coSupervisor1,
+            'supervisor_id' => $faculty3,
+            'cosupervisor_id' => $faculty1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

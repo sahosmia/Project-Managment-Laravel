@@ -41,6 +41,13 @@
                             </p>
                         </div>
                     </th>
+                    <th class="py-3  text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                Head
+                            </p>
+                        </div>
+                    </th>
 
                     <th class="py-3  w-5">
                         <div class="flex items-center ">
@@ -76,6 +83,19 @@
                                 <div>
                                     <p class=" text-gray-500 text-theme-sm dark:text-white/90">
                                         {{ $item->description ?? "N/A" }} </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="py-3">
+                        <div class="flex items-center">
+                            <div class="flex items-center gap-3">
+
+                                <div>
+                                    <p class=" text-gray-500 text-theme-sm dark:text-white/90">
+                                        {{ $item->researchCellHead->name ?? "N/A" }} </p>
 
                                 </div>
                             </div>

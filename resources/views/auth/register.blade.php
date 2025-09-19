@@ -31,11 +31,32 @@
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
         </div>
 
+        <!-- User Type -->
+        <div class="mt-4">
+            <x-input-label :value="__('Register as')" />
+            <div class="flex mt-2">
+                <div class="flex items-center me-4">
+                    <input id="role_student" type="radio" value="student" name="role"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        checked>
+                    <label for="role_student"
+                        class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Student</label>
+                </div>
+                <div class="flex items-center">
+                    <input id="role_faculty" type="radio" value="faculty_member" name="role"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="role_faculty" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Faculty
+                        Member</label>
+                </div>
+            </div>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
+
         <!-- Student ID -->
         <div class="mt-4">
-            <x-input-label for="student_id" :value="__('Student ID')" />
+            <x-input-label for="student_id" :value="__('Student ID (Optional)')" />
             <x-text-input id="student_id" class="block mt-1 w-full input" type="text" name="student_id"
-                :value="old('student_id')" required />
+                :value="old('student_id')" />
             <x-input-error :messages="$errors->get('student_id')" class="mt-2" />
         </div>
 

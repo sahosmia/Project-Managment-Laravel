@@ -31,13 +31,13 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="supervisor_id" class="input_label">Supervisor</label>
+                    <label for="supervisor_id" class="input_label">Faculty Member</label>
                     <div class="relative">
                         <select id="supervisor_id" name="supervisor_id" class="input select2">
-                            <option value="">Select Supervisor</option>
-                            @foreach ($supervisors as $supervisor)
-                            <option value="{{ $supervisor->id }}" @selected($industrial_proposal->supervisor_id ==
-                                $supervisor->id)>{{ $supervisor->name }}</option>
+                            <option value="">Select Faculty Member</option>
+                            @foreach ($faculty_members as $faculty)
+                            <option value="{{ $faculty->id }}" @selected($industrial_proposal->supervisor_id ==
+                                $faculty->id)>{{ $faculty->name }}</option>
                             @endforeach
                         </select>
                         @error('supervisor_id')

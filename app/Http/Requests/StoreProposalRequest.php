@@ -47,10 +47,10 @@ class StoreProposalRequest extends FormRequest
             'motivation' => ['required', 'string'],
             'rcell_id' => ['required', 'exists:r_cells,id'], // Ensure r_cells table exists
             'supervisor_id' => ['required', 'exists:users,id', Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'supervisor');
+                $query->where('role', 'faculty_member');
             })],
             'cosupervisor_id' => ['nullable', 'exists:users,id', Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'co-supervisor');
+                $query->where('role', 'faculty_member');
             })],
 
             // Validation for dynamic group members
@@ -92,10 +92,6 @@ class StoreProposalRequest extends FormRequest
             'motivation.required' => 'The motivation field is required.',
             'rcell_id.required' => 'The research cell field is required.',
             'rcell_id.exists' => 'The selected research cell is invalid.',
-            'supervisor_id.required' => 'The assigned supervisor field is required.',
-            'supervisor_id.exists' => 'The selected supervisor is invalid.',
-            'cosupervisor_id.exists' => 'The selected co-supervisor is invalid.',
-
             'members.required' => 'At least one group member is required.',
             'members.array' => 'Group members data must be an array.',
             'members.min' => 'At least one group member is required.',

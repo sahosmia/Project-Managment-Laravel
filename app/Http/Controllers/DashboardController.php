@@ -25,14 +25,16 @@ class DashboardController extends Controller
         $pendingAdmin = Project::where('status', 'pending_admin')->count();
         $rejectAdmin = Project::where('status', 'rejected_admin')->count();
 
-        $research_cells = User::where('role', 'research_cell')->limit(5)->orderBy('created_at')->get();
-        $supervisors = User::where('role', 'supervisor')->limit(5)->orderBy('created_at')->get();
+        // $research_cells = User::where('role', 'research_cell')->limit(5)->orderBy('created_at')->get();
+        // $supervisors = User::where('role', 'supervisor')->limit(5)->orderBy('created_at')->get();
+        $faculty_members = User::where('role', 'faculty_member')->limit(5)->orderBy('created_at')->get();
+
         $students = User::where('role', 'student')->limit(10)->orderBy('created_at')->get();
 
 
         $pendingProjectsRc = null;
         $rejectProjectsRc = null;
-        $pendingProjectsCoSupervisor = null;
+        // $pendingProjectsCoSupervisor = null;
         $pendingProjectsSupervisor = null;
         $rejectProjectsSupervisor = null;
 
@@ -47,12 +49,12 @@ class DashboardController extends Controller
         $pendingProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'pending_supervisor']])->count();
         $rejectProjectsSupervisor = Project::where([['supervisor_id', $supervisorId], ['status', 'rejected_supervisor']])->count();
 
-        $pendingProjectsCoSupervisor = Project::where('cosupervisor_id', $supervisorId)->count();
+        // $pendingProjectsCoSupervisor = Project::where('cosupervisor_id', $supervisorId)->count();
 
         $studentId = Auth::id();
         $studentMyProjectsCount = Project::where('created_by', $studentId)->count();
 
-                $rCellCounts = RCell::withCount('projects')->get();
+        $rCellCounts = RCell::withCount('projects')->get();
 
 
         return view('dashboard', compact(
@@ -60,10 +62,12 @@ class DashboardController extends Controller
             'totalUsers',
             'totalIndustrialProposal',
             'totalProjects',
-            'research_cells',
-            'supervisors',
+            // 'research_cells',
+            // 'supervisors',
+                        'faculty_members',
+
             'students',
-                        'rCellCounts',
+            'rCellCounts',
 
 
             'studentMyProjectsCount',
@@ -76,7 +80,7 @@ class DashboardController extends Controller
 
             'pendingProjectsSupervisor',
             'rejectProjectsSupervisor',
-            'pendingProjectsCoSupervisor'
+            // 'pendingProjectsCoSupervisor'
         ));
     }
 }

@@ -1,12 +1,14 @@
 @extends('layouts.admin')
 @section('title')
-{{ auth()->user()->role === 'admin' ? 'Update Project & Thesis Proposal' : 'Edit & Resubmit Project & Thesis Proposal' }}
+{{ auth()->user()->role === 'admin' ? 'Update Project & Thesis Proposal' : 'Edit & Resubmit Project & Thesis Proposal'
+}}
 @endsection
 @section('content')
 
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-6xl mx-auto">
     <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
-        {{ auth()->user()->role === 'admin' ? 'Update Project & Thesis Proposal' : 'Edit & Resubmit Project & Thesis Proposal' }}
+        {{ auth()->user()->role === 'admin' ? 'Update Project & Thesis Proposal' : 'Edit & Resubmit Project & Thesis
+        Proposal' }}
     </h2>
     <form action="{{ route('projects.update', $project) }}" method="POST">
         @csrf
@@ -222,10 +224,10 @@
                 <div class="relative">
                     <select id="supervisor_id" name="supervisor_id" class="input select2">
                         <option value="">Select Supervisor</option>
-                        @foreach ($supervisors as $supervisor)
-                        <option value="{{ $supervisor->id }}" @selected(old('supervisor_id', $project->supervisor_id) ==
-                            $supervisor->id)>{{
-                            $supervisor->name }}</option>
+                        @foreach ($faculty_members as $faculty)
+                        <option value="{{ $faculty->id }}" @selected(old('supervisor_id', $project->supervisor_id) ==
+                            $faculty->id)>{{
+                            $faculty->name }}</option>
                         @endforeach
                     </select>
                     @error('supervisor_id')
@@ -240,10 +242,10 @@
                 <div class="relative">
                     <select id="cosupervisor_id" name="cosupervisor_id" class="input select2">
                         <option value="">Select Co-Supervisor</option>
-                        @foreach ($cosupervisors as $cosupervisor)
-                        <option value="{{ $cosupervisor->id }}" @selected(old('cosupervisor_id', $project->
-                            cosupervisor_id) == $cosupervisor->id)>{{
-                            $cosupervisor->name }}</option>
+                        @foreach ($faculty_members as $faculty)
+                        <option value="{{ $faculty->id }}" @selected(old('cosupervisor_id', $project->
+                            cosupervisor_id) == $faculty->id)>{{
+                            $faculty->name }}</option>
                         @endforeach
                     </select>
                     @error('cosupervisor_id')
@@ -352,27 +354,6 @@
         // Initialize select2 for all existing select elements
         $('.select2').select2({
             width: '100%'
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('#supervisor_id').on('change', function() {
-            var supervisorId = $(this).val();
-            var coSupervisorSelect = $('#cosupervisor_id');
-            coSupervisorSelect.empty().append('<option value="">Select Co-Supervisor</option>');
-
-            if (supervisorId) {
-                $.ajax({
-                    url: '/supervisors/' + supervisorId + '/co-supervisors',
-                    type: 'GET',
-                    success: function(data) {
-                        $.each(data, function(key, value) {
-                            coSupervisorSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
-                        });
-                    }
-                });
-            }
         });
     });
 </script>

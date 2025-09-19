@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');
     });
 
-    // admin, supervisor, research_cell role
+    // admin, faculty_member role
     Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
     Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 
@@ -50,8 +50,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('departments', DepartmentController::class);
         Route::resource('companies', CompanyController::class);
         Route::resource('r_cells', RCellController::class);
-        Route::post('/projects/{project}/assign-supervisor', [ProjectController::class, 'assignSupervisor'])->name('projects.assignSupervisor');
-        Route::post('/projects/{project}/update-supervisors', [ProjectController::class, 'updateSupervisors'])->name('projects.updateSupervisors');
 
         Route::get('/industrial-proposals/{industrial_proposal}/edit', [IndustrialProposalController::class, 'edit'])->name('industrial-proposals.edit');
         Route::put('/industrial-proposals/{industrial_proposal}', [IndustrialProposalController::class, 'update'])->name('industrial-proposals.update');
@@ -59,8 +57,6 @@ Route::middleware(['auth'])->group(function () {
          Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
         Route::put('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
     });
-
-    Route::get('/supervisors/{supervisor}/co-supervisors', [UserController::class, 'getCoSupervisors'])->name('supervisors.co-supervisors')->middleware('auth');
 
 
 });

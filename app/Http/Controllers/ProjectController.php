@@ -18,7 +18,7 @@ class ProjectController extends Controller
     {
         $projectsQuery = Project::query();
         $user = Auth::user();
-        $supervisors = User::where('role', 'supervisor')->get();
+        $faculty_members = User::where('role', 'faculty_member')->get();
         $validStatuses = [
             'pending_research_cell',
             'rejected_research_cell',
@@ -34,14 +34,9 @@ class ProjectController extends Controller
             case 'admin':
                 $projectsQuery->whereIn('status', $validStatuses);
                 break;
-            case 'research_cell':
-                $projectsQuery->whereIn('status', ['pending_research_cell', 'rejected_research_cell']);
-                break;
-            case 'supervisor':
-                $projectsQuery->where('supervisor_id', $user->id);
-                break;
-            case 'co-supervisor':
-                $projectsQuery->where('cosupervisor_id', $user->id);
+            case 'faculty_member':
+                $projectsQuery->where('supervisor_id', $user->id)
+                    ->orWhere('cosupervisor_id', $user->id);
                 break;
             case 'student':
                 $projectsQuery->where(function ($q) use ($user) {
@@ -68,7 +63,7 @@ class ProjectController extends Controller
             }
         }
 
-        if (($user->role == 'admin' || $user->role == 'research_cell') && $request->has('supervisor_id') && $request->input('supervisor_id') !== null && $request->input('supervisor_id') !== '') {
+        if (($user->role == 'admin') && $request->has('supervisor_id') && $request->input('supervisor_id') !== null && $request->input('supervisor_id') !== '') {
             $projectsQuery->where('supervisor_id', $request->input('supervisor_id'));
         }
 
@@ -81,7 +76,7 @@ class ProjectController extends Controller
 
         $projects = $projectsQuery->paginate(10)->withQueryString();
 
-        return view('projects.index', compact('projects', 'supervisors'));
+        return view('projects.index', compact('projects', 'faculty_members'));
     }
 
     public function create()
@@ -92,9 +87,8 @@ class ProjectController extends Controller
             ->whereDoesntHave('createdProjects')
             ->whereDoesntHave('memberOfProjects')
             ->get();
-        $supervisors = User::where('role', 'supervisor')->get();
-        $cosupervisors = User::where('role', 'co-supervisor')->get();
-        return view('projects.create', compact('students', 'departments', 'rcells', 'supervisors', 'cosupervisors'));
+        $faculty_members = User::where('role', 'faculty_member')->get();
+        return view('projects.create', compact('students', 'departments', 'rcells', 'faculty_members'));
     }
 
     public function store(StoreProposalRequest $request)
@@ -131,9 +125,8 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $supervisors = User::where('role', 'supervisor')->get();
-        $cosupervisors = User::where('role', 'co-supervisor')->get();
-        return view('projects.show', compact('project', 'supervisors', 'cosupervisors'));
+        $faculty_members = User::where('role', 'faculty_member')->get();
+        return view('projects.show', compact('project', 'faculty_members'));
     }
 
     public function edit(Project $project)
@@ -156,9 +149,8 @@ class ProjectController extends Controller
             ->get();        $currentMembers = $project->members->pluck('id')->toArray();
         $departments = Department::get();
         $rcells = RCell::get();
-        $supervisors = User::where('role', 'supervisor')->get();
-        $cosupervisors = User::where('role', 'co-supervisor')->get();
-        return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'supervisors', 'cosupervisors',));
+        $faculty_members = User::where('role', 'faculty_member')->get();
+        return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'faculty_members'));
     }
 
     public function update(StoreProposalRequest $request, Project $project)
@@ -171,23 +163,6 @@ class ProjectController extends Controller
             }
         }
 
-        $newStatus = $project->status;
-        $rejectedStatuses = ['rejected_research_cell', 'rejected_admin', 'rejected_supervisor'];
-
-        if ($user->role == 'student' && in_array($project->status, $rejectedStatuses)) {
-            switch ($project->status) {
-                case 'rejected_research_cell':
-                    $newStatus = 'pending_research_cell';
-                    break;
-                case 'rejected_admin':
-
-                    $newStatus = 'pending_admin';
-                    break;
-                case 'rejected_supervisor':
-                    $newStatus = 'pending_supervisor';
-                    break;
-            }
-        }
 
 
         $project->update([
@@ -199,7 +174,7 @@ class ProjectController extends Controller
             'motivation' => $request->motivation,
             'course_type' => $request->course_type,
             'semester' => $request->semester,
-            'status' => $newStatus,
+            'status' => 'pending_research_cell',
             'notes' => null,
             'department_id' => $request->department_id,
             'r_cell_id' => $request->rcell_id,
@@ -234,23 +209,13 @@ class ProjectController extends Controller
         $user = auth()->user();
 
         switch ($user->role) {
-            case 'research_cell':
-                if ($project->status === 'pending_research_cell') {
-                    $project->update(['status' => 'pending_admin']);
-                    return back()->with('success', 'Project approved and sent to Admin for review.');
-                }
-                break;
             case 'admin':
-
-                // only admin can change supervisor and co supervisor, so you have first change in view file then updte it
-
                 if ($project->status === 'pending_admin') {
-                    $project->update(['status' => 'pending_supervisor']);
-                    return back()->with('success', 'Project approved and assigned to supervisor.');
+                    $project->update(['status' => 'completed']);
+                    return back()->with('success', 'Project has been completed.');
                 }
-
                 break;
-            case 'supervisor':
+            case 'faculty_member':
                 if ($project->status === 'pending_supervisor') {
                     $project->update(['status' => 'completed']);
                     return back()->with('success', 'Project has been completed.');
@@ -270,19 +235,13 @@ class ProjectController extends Controller
         $request->validate(['notes' => 'required|string']);
 
         switch ($user->role) {
-            case 'research_cell':
-                if ($project->status === 'pending_research_cell') {
-                    $project->update(['status' => 'rejected_research_cell', 'notes' => $request->notes]);
-                    return back()->with('success', 'Project has been rejected.');
-                }
-                break;
             case 'admin':
                 if ($project->status === 'pending_admin') {
                     $project->update(['status' => 'rejected_admin', 'notes' => $request->notes]);
                     return back()->with('success', 'Project has been rejected by admin.');
                 }
                 break;
-            case 'supervisor':
+            case 'faculty_member':
                 if ($project->status === 'pending_supervisor') {
                     $project->update(['status' => 'rejected_supervisor', 'notes' => $request->notes]);
                     return back()->with('success', 'Project has been rejected by supervisor.');
@@ -291,35 +250,5 @@ class ProjectController extends Controller
         }
 
         abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
-    }
-
-    public function assignSupervisor(Request $request, Project $project)
-    {
-        $request->validate([
-            'supervisor_id' => ['required', 'exists:users,id', Rule::in(User::where('role', 'supervisor')->pluck('id'))],
-        ]);
-
-        $project->update([
-            'supervisor_id' => $request->supervisor_id,
-            'status' => 'assigned_to_supervisor',
-        ]);
-
-        return back()->with('success', 'Supervisor assigned successfully.');
-    }
-
-    public function updateSupervisors(Request $request, Project $project)
-    {
-        // $this->authorize('update', $project);
-        $request->validate([
-            'supervisor_id' => ['required', 'exists:users,id'],
-            'cosupervisor_id' => ['nullable', 'exists:users,id'],
-        ]);
-
-        $project->update([
-            'supervisor_id' => $request->supervisor_id,
-            'cosupervisor_id' => $request->cosupervisor_id,
-        ]);
-
-        return back()->with('success', 'Supervisors updated successfully.');
     }
 }

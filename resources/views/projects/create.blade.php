@@ -186,9 +186,9 @@
                 <div class="relative">
                     <select id="supervisor_id" name="supervisor_id" class="input select2">
                         <option value="">Select Supervisor</option>
-                        @foreach ($supervisors as $supervisor)
-                        <option value="{{ $supervisor->id }}" @selected(old('supervisor_id')==$supervisor->id)>{{
-                            $supervisor->name }}</option>
+                        @foreach ($faculty_members as $faculty)
+                        <option value="{{ $faculty->id }}" @selected(old('supervisor_id')==$faculty->id)>{{
+                            $faculty->name }}</option>
                         @endforeach
                     </select>
                     @error('supervisor_id')
@@ -203,6 +203,10 @@
                 <div class="relative">
                     <select id="cosupervisor_id" name="cosupervisor_id" class="input select2">
                         <option value="">Select Co-Supervisor</option>
+                        @foreach ($faculty_members as $faculty)
+                        <option value="{{ $faculty->id }}" @selected(old('cosupervisor_id')==$faculty->id)>{{
+                            $faculty->name }}</option>
+                        @endforeach
                     </select>
                     @error('cosupervisor_id')
                     <p class="validate_error">{{ $message }}</p>
@@ -325,27 +329,6 @@
         // Initialize Select2 for all existing select elements
         $('.select2').select2({
             width: '100%'
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('#supervisor_id').on('change', function() {
-            var supervisorId = $(this).val();
-            var coSupervisorSelect = $('#cosupervisor_id');
-            coSupervisorSelect.empty().append('<option value="">Select Co-Supervisor</option>');
-
-            if (supervisorId) {
-                $.ajax({
-                    url: '/supervisors/' + supervisorId + '/co-supervisors',
-                    type: 'GET',
-                    success: function(data) {
-                        $.each(data, function(key, value) {
-                            coSupervisorSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
-                        });
-                    }
-                });
-            }
         });
     });
 </script>
