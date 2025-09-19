@@ -23,7 +23,8 @@ return new class extends Migration
 
             $table->enum('course_type', ['project', 'thesis'])->default('project');
             $table->enum('semester', ['fall', 'summer', 'spring'])->nullable();
-            $table->enum('status', ['pending_research_cell', 'rejected_research_cell', 'pending_admin', 'rejected_admin', 'pending_supervisor', 'rejected_supervisor', 'completed'])->default('pending_research_cell');
+            $table->enum('status', ['pending_research_cell', 'rejected_research_cell', 'pending_admin', 'rejected_admin', 'pending_supervisor', 'rejected_supervisor', 'completed'])->default('pending_admin');
+
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('r_cell_id')->nullable();

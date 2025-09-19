@@ -30,25 +30,24 @@ class ProjectController extends Controller
         ];
 
 
-        switch ($user->role) {
-            case 'admin':
-                $projectsQuery->whereIn('status', $validStatuses);
-                break;
-            case 'faculty_member':
-                $projectsQuery->where('supervisor_id', $user->id)
-                    ->orWhere('cosupervisor_id', $user->id);
-                break;
-            case 'student':
-                $projectsQuery->where(function ($q) use ($user) {
-                    $q->where('created_by', $user->id)
-                        ->orWhereHas('members', function ($query) use ($user) {
-                            $query->where('project_members.student_id', $user->id);
-                        });
-                });
-                break;
-            default:
-                abort(Response::HTTP_FORBIDDEN, 'You do not have permission to view projects.');
-                break;
+        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
+
+        if ($user->role === 'admin') {
+            $projectsQuery->whereIn('status', $validStatuses);
+        } elseif ($is_research_cell_member) {
+            $projectsQuery->where('status', '!=', 'pending_admin');
+        } elseif ($user->role === 'faculty_member') {
+            $projectsQuery->where('supervisor_id', $user->id)
+                ->orWhere('cosupervisor_id', $user->id);
+        } elseif ($user->role === 'student') {
+            $projectsQuery->where(function ($q) use ($user) {
+                $q->where('created_by', $user->id)
+                    ->orWhereHas('members', function ($query) use ($user) {
+                        $query->where('project_members.student_id', $user->id);
+                    });
+            });
+        } else {
+            abort(Response::HTTP_FORBIDDEN, 'You do not have permission to view projects.');
         }
 
         if ($request->has('title') && $request->input('title') !== null) {
@@ -104,7 +103,7 @@ class ProjectController extends Controller
             'motivation' => $request->motivation,
             'course_type' => $request->course_type,
             'semester' => $request->semester,
-            'status' => 'pending_research_cell',
+            'status' => 'pending_admin',
             'created_by' => Auth::id(),
             'department_id' => $request->department_id,
             'r_cell_id' => $request->rcell_id,
@@ -176,7 +175,7 @@ class ProjectController extends Controller
             'motivation' => $request->motivation,
             'course_type' => $request->course_type,
             'semester' => $request->semester,
-            'status' => 'pending_research_cell',
+            'status' => 'pending_admin',
             'notes' => null,
             'department_id' => $request->department_id,
             'r_cell_id' => $request->rcell_id,
@@ -209,20 +208,23 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         $user = auth()->user();
+        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
 
-        switch ($user->role) {
-            case 'admin':
-                if ($project->status === 'pending_admin') {
-                    $project->update(['status' => 'completed']);
-                    return back()->with('success', 'Project has been completed.');
-                }
-                break;
-            case 'faculty_member':
-                if ($project->status === 'pending_supervisor') {
-                    $project->update(['status' => 'completed']);
-                    return back()->with('success', 'Project has been completed.');
-                }
-                break;
+        if ($user->role === 'admin') {
+            if ($project->status === 'pending_admin') {
+                $project->update(['status' => 'pending_research_cell']);
+                return back()->with('success', 'Project has been approved by admin.');
+            }
+        } elseif ($is_research_cell_member) {
+            if ($project->status === 'pending_research_cell') {
+                $project->update(['status' => 'pending_supervisor']);
+                return back()->with('success', 'Project has been approved by research cell.');
+            }
+        } elseif ($user->role === 'faculty_member') {
+            if ($project->status === 'pending_supervisor') {
+                $project->update(['status' => 'completed']);
+                return back()->with('success', 'Project has been completed.');
+            }
         }
 
         abort(403, "You are not authorized to perform this action or the project is not in a valid state for approval.");
@@ -233,22 +235,25 @@ class ProjectController extends Controller
     public function reject(Request $request, Project $project)
     {
         $user = auth()->user();
+        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
 
         $request->validate(['notes' => 'required|string']);
 
-        switch ($user->role) {
-            case 'admin':
-                if ($project->status === 'pending_admin') {
-                    $project->update(['status' => 'rejected_admin', 'notes' => $request->notes]);
-                    return back()->with('success', 'Project has been rejected by admin.');
-                }
-                break;
-            case 'faculty_member':
-                if ($project->status === 'pending_supervisor') {
-                    $project->update(['status' => 'rejected_supervisor', 'notes' => $request->notes]);
-                    return back()->with('success', 'Project has been rejected by supervisor.');
-                }
-                break;
+        if ($user->role === 'admin') {
+            if ($project->status === 'pending_admin') {
+                $project->update(['status' => 'rejected_admin', 'notes' => $request->notes]);
+                return back()->with('success', 'Project has been rejected by admin.');
+            }
+        } elseif ($is_research_cell_member) {
+            if ($project->status === 'pending_research_cell') {
+                $project->update(['status' => 'rejected_research_cell', 'notes' => $request->notes]);
+                return back()->with('success', 'Project has been rejected by research cell.');
+            }
+        } elseif ($user->role === 'faculty_member') {
+            if ($project->status === 'pending_supervisor') {
+                $project->update(['status' => 'rejected_supervisor', 'notes' => $request->notes]);
+                return back()->with('success', 'Project has been rejected by supervisor.');
+            }
         }
 
         abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
