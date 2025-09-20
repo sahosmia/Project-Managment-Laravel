@@ -41,8 +41,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // admin, faculty_member role
-    Route::post('/projects/approve-all', [ProjectController::class, 'approveAll'])->name('projects.approve_all');
-    Route::post('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.delete_all');
+
     Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
     Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 

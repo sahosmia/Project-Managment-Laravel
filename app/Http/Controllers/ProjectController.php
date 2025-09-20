@@ -313,7 +313,7 @@ class ProjectController extends Controller
 
     public function deleteAll(Request $request)
     {
-    dd($request->all());
+    // dd($request->all());
         $projectIds = $request->input('project_ids', []);
         Project::whereIn('id', $projectIds)->delete();
 

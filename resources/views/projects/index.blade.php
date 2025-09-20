@@ -397,29 +397,9 @@
                 });
             });
 
-            approveAllButton.addEventListener('click', function() {
-                bulkActionForm.action = '/projects/approve-all';
-                bulkActionForm.submit();
-            });
 
-            deleteAllButton.addEventListener('click', function() {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete them!'
-                }).then((result) => {
-                    console.log("yes");
 
-                    if (result.isConfirmed) {
-                        bulkActionForm.action = '/projects/delete-all';
-                        bulkActionForm.submit();
-                    }
-                })
-            });
+
 
 
             // Handle Delete Confirmation
