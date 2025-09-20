@@ -330,6 +330,43 @@
         $('.select2').select2({
             width: '100%'
         });
+
+        const rcellSelect = document.getElementById('rcell_id');
+        const supervisorSelect = document.getElementById('supervisor_id');
+        const oldSupervisorId = '{{ old('supervisor_id') }}';
+
+        rcellSelect.addEventListener('change', function() {
+            const rcellId = this.value;
+            supervisorSelect.innerHTML = '<option value="">Loading...</option>'; // Clear existing options
+
+            if (rcellId) {
+                fetch(`/api/rcells/${rcellId}/supervisors`)
+                    .then(response => response.json())
+                    .then(supervisors => {
+                        supervisorSelect.innerHTML = '<option value="">Select Supervisor</option>';
+                        supervisors.forEach(supervisor => {
+                            const option = document.createElement('option');
+                            option.value = supervisor.id;
+                            option.textContent = supervisor.name;
+                            if (supervisor.id == oldSupervisorId) {
+                                option.selected = true;
+                            }
+                            supervisorSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching supervisors:', error);
+                        supervisorSelect.innerHTML = '<option value="">Could not load supervisors</option>';
+                    });
+            } else {
+                supervisorSelect.innerHTML = '<option value="">Select Research Cell First</option>';
+            }
+        });
+
+        // Trigger change event if a research cell was already selected (e.g., due to validation failure)
+        if (rcellSelect.value) {
+            rcellSelect.dispatchEvent(new Event('change'));
+        }
     });
 </script>
 @endsection
