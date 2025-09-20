@@ -51,13 +51,7 @@
                             </p>
                         </div>
                     </th>
-                    <th class="py-3  text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                R-Cell
-                            </p>
-                        </div>
-                    </th>
+
                     <th class="py-3  text-left">
                         <div class="flex items-center">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -69,6 +63,14 @@
                         <div class="flex items-center">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                 Role
+                            </p>
+                        </div>
+                    </th>
+
+                    <th class="py-3  text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                R-Cell
                             </p>
                         </div>
                     </th>

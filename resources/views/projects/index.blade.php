@@ -15,12 +15,12 @@
             <button id="approve-all"
                 class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800"
                 disabled>
-                Approve All
+                Approve
             </button>
             <button id="delete-all"
                 class="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-red-500 text-white px-4 py-2.5 text-theme-sm font-medium shadow-theme-xs hover:bg-red-600"
                 disabled>
-                Delete All
+                Delete
             </button>
             <button
                 class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 "
@@ -257,6 +257,11 @@
                         value="{{ request('title') }}">
                 </div>
                 @if (auth()->user()->role == 'admin')
+                @endif
+
+                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'faculty_member')
+
+                {{-- status --}}
                 <div class="mb-4">
                     <label for="filter_status" class="input_label">Status</label>
                     <select name="status" id="filter_status" class="input select2">
@@ -283,6 +288,19 @@
                     </select>
                 </div>
 
+                {{-- Rcell --}}
+                <div class="mb-4">
+                    <label for="r_cell_id" class="input_label">R-Cell</label>
+                    <select id="r_cell_id" name="r_cell_id" class="input select2">
+                        <option value="">Select R-Cell</option>
+                        @foreach ($rcells as $rcell)
+                        <option value="{{ $rcell->id }}" @selected(request('r_cell_id')==$rcell->id)>
+                            {{ $rcell->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- supervisor --}}
                 <div class="mb-4">
                     <label for="filter_supervisor" class="input_label">Supervisor</label>
                     <select id="supervisor_id" name="supervisor_id" class="input select2">
@@ -296,7 +314,7 @@
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
                 </div>
-
+                {{-- semester --}}
                 <div class="mb-4">
                     <label for="semester" class="input_label">Semester</label>
                     <select id="semester" name="semester" class="input select2">
@@ -307,6 +325,7 @@
                     </select>
                 </div>
 
+                {{-- academic year --}}
                 <div class="mb-4">
                     <label for="academic_year" class="input_label">Academic Year</label>
                     <select id="academic_year" name="academic_year" class="input select2">
@@ -324,19 +343,6 @@
                 </div>
 
 
-
-
-
-                <div class="mb-4">
-                    <label for="r_cell_id" class="input_label">R-Cell</label>
-                    <select id="r_cell_id" name="r_cell_id" class="input select2">
-                        <option value="">Select R-Cell</option>
-                        @foreach ($rcells as $rcell)
-                        <option value="{{ $rcell->id }}" @selected(request('r_cell_id')==$rcell->id)>
-                            {{ $rcell->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
                 @endif
 
             </div>
@@ -392,7 +398,8 @@
             });
 
             approveAllButton.addEventListener('click', function() {
-bulkActionForm.action = '/projects/approve-all';              bulkActionForm.submit();
+                bulkActionForm.action = '/projects/approve-all';
+                bulkActionForm.submit();
             });
 
             deleteAllButton.addEventListener('click', function() {
@@ -405,6 +412,8 @@ bulkActionForm.action = '/projects/approve-all';              bulkActionForm.sub
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete them!'
                 }).then((result) => {
+                    console.log("yes");
+
                     if (result.isConfirmed) {
                         bulkActionForm.action = '/projects/delete-all';
                         bulkActionForm.submit();
