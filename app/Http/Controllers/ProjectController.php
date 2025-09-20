@@ -318,4 +318,14 @@ class ProjectController extends Controller
 
         return back()->with('success', 'Selected projects have been deleted.');
     }
+
+    public function getSupervisorsByRcell(RCell $rcell)
+    {
+        $supervisors = User::where('role', 'faculty_member')
+            ->where('r_cell_id', $rcell->id)
+            ->where('approved', true)
+            ->get();
+
+        return response()->json($supervisors);
+    }
 }

@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}/update', [ProjectController::class, 'update'])->name('projects.update');
+
     // student role
     Route::middleware(['role:student'])->group(function () {
         Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');

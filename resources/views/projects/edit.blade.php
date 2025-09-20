@@ -355,6 +355,71 @@
         $('.select2').select2({
             width: '100%'
         });
+
+        const rcellSelect = document.getElementById('rcell_id');
+        const supervisorSelect = document.getElementById('supervisor_id');
+        let currentSupervisorId = '{{ old('supervisor_id', $project->supervisor_id) }}';
+
+        function fetchSupervisors(rcellId) {
+            supervisorSelect.innerHTML = '<option value="">Loading...</option>';
+
+            if (rcellId) {
+                fetch(`/api/rcells/${rcellId}/supervisors`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(supervisors => {
+                        supervisorSelect.innerHTML = '<option value="">Select Supervisor</option>';
+                        let isSupervisorInList = false;
+                        supervisors.forEach(supervisor => {
+                            const option = document.createElement('option');
+                            option.value = supervisor.id;
+                            option.textContent = supervisor.name;
+                            if (supervisor.id == currentSupervisorId) {
+                                option.selected = true;
+                                isSupervisorInList = true;
+                            }
+                            supervisorSelect.appendChild(option);
+                        });
+
+                        // If the current supervisor is not in the new list,
+                        // add them to the list and select them.
+                        // This handles the case where the project has a supervisor from a different rcell.
+                        if (currentSupervisorId && !isSupervisorInList) {
+                            // Find the supervisor from the original faculty_members list
+                             const allFaculty = @json($faculty_members);
+                             const currentSupervisor = allFaculty.find(f => f.id == currentSupervisorId);
+                             if(currentSupervisor) {
+                                const option = document.createElement('option');
+                                option.value = currentSupervisor.id;
+                                option.textContent = currentSupervisor.name;
+                                option.selected = true;
+                                supervisorSelect.appendChild(option);
+                             }
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('Error fetching supervisors:', error);
+                        supervisorSelect.innerHTML = '<option value="">Could not load supervisors</option>';
+                    });
+            } else {
+                supervisorSelect.innerHTML = '<option value="">Select Research Cell First</option>';
+            }
+        }
+
+        rcellSelect.addEventListener('change', function() {
+            currentSupervisorId = '{{ old('supervisor_id') }}';
+            fetchSupervisors(this.value);
+        });
+
+        // Initial load
+        if (rcellSelect.value) {
+            fetchSupervisors(rcellSelect.value);
+        }
     });
 </script>
 @endsection
