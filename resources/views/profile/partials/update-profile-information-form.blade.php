@@ -64,6 +64,21 @@
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
+        @if (auth()->user()->hasRole('faculty_member'))
+        <div>
+            <x-input-label for="r_cell_id" :value="__('R-Cell')" />
+            <select id="r_cell_id" name="r_cell_id" class="mt-1 block w-full input">
+                <option value="">Select R-Cell</option>
+                @foreach ($rCells as $rCell)
+                <option value="{{ $rCell->id }}" @selected(old('r_cell_id', $user->r_cell_id) == $rCell->id)>
+                    {{ $rCell->name }}
+                </option>
+                @endforeach
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('r_cell_id')" />
+        </div>
+        @endif
+
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>

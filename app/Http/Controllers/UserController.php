@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RCell;
 use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -35,7 +36,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        $rCells = RCell::all();
+        return view('users.create', compact('rCells'));
     }
 
     public function store(Request $request)
@@ -45,6 +47,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role' => ['required', Rule::in(['admin', 'faculty_member', 'student'])],
+            'r_cell_id' => ['nullable', 'exists:r_cells,id'],
         ]);
 
         User::create([
@@ -52,6 +55,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'r_cell_id' => $request->r_cell_id,
         ]);
 
 
@@ -65,7 +69,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $rCells = RCell::all();
+        return view('users.edit', compact('user', 'rCells'));
     }
 
     public function update(Request $request, User $user)
@@ -75,6 +80,7 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['required', Rule::in(['admin', 'faculty_member', 'student'])],
+            'r_cell_id' => ['nullable', 'exists:r_cells,id'],
         ]);
 
         if ($request->filled('password')) {
@@ -84,6 +90,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+            'r_cell_id' => $request->r_cell_id,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');

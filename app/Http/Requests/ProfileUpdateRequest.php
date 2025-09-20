@@ -26,7 +26,8 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'student_id'=>['nullable', Rule::unique(User::class)->ignore($this->user()->id),],
-            'phone' => ['required' ]
+            'phone' => ['required' ],
+            'r_cell_id' => ['nullable', 'exists:r_cells,id'],
         ];
     }
 }

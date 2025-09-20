@@ -40,6 +40,13 @@
                         <x-input-label for="phone" :value="__('Phone')" />
                         <p class="mt-1 text-lg text-gray-900 dark:text-gray-100">{{ $user->phone }}</p>
                     </div>
+
+                    @if ($user->role == 'faculty_member' && $user->rCell)
+                    <div>
+                        <x-input-label for="r_cell" :value="__('R-Cell')" />
+                        <p class="mt-1 text-lg text-gray-900 dark:text-gray-100">{{ $user->rCell->name }}</p>
+                    </div>
+                    @endif
                 </div>
 
                 <div class="flex items-center gap-4 mt-6">

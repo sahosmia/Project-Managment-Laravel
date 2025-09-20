@@ -54,6 +54,13 @@
                     <th class="py-3  text-left">
                         <div class="flex items-center">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                R-Cell
+                            </p>
+                        </div>
+                    </th>
+                    <th class="py-3  text-left">
+                        <div class="flex items-center">
+                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                 Email
                             </p>
                         </div>
@@ -142,6 +149,15 @@
                             </p>
                         </div>
                     </td>
+                    <td class="py-3">
+                        <div class="flex items-center">
+                            @if ($item->role == 'faculty_member' && $item->rCell)
+                            <p class="text-gray-500 text-theme-sm dark:text-white/90">
+                                {{ $item->rCell->name }}
+                            </p>
+                            @endif
+                        </div>
+                    </td>
 
                     <td class="py-3">
                         @if ($item->approved == 0)
@@ -153,7 +169,6 @@
                                     <p
                                         class=" rounded-full px-2 py-0.5 text-theme-xs font-medium bg-yellow-50 text-yellow-600">
                                         Unapproved </p>
-
                                 </div>
                             </div>
                         </div>
@@ -200,10 +215,6 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 hover:text-red-900 dark:text-red-300 dark:hover:bg-gray-600"
                                             role="menuitem">Delete</button>
                                     </form>
-
-
-
-
                                 </div>
                             </div>
                         </div>
@@ -221,8 +232,6 @@
                 <!-- table body end -->
             </tbody>
         </table>
-
-
         {{ $users->links() }}
     </div>
 </div>
@@ -247,8 +256,6 @@
                     <label for="name" class="input_label">Project
                         Name</label>
                     <input type="text" name="name" id="name" class="input" value="{{ request('name') }}">
-
-
                 </div>
 
                 <div class="mb-4">
@@ -285,13 +292,7 @@
                             </svg>
                         </div>
                     </div>
-
-
                 </div>
-
-
-
-
             </div>
             <div class="mt-4 flex justify-end gap-2">
                 <button type="button"

@@ -26,7 +26,7 @@ class User extends Authenticatable
         'student_id',
         'phone',
         'approved',
-
+        'r_cell_id',
     ];
 
     /**
@@ -91,5 +91,10 @@ class User extends Authenticatable
     public function coSupervisors()
     {
         return $this->hasMany(User::class, 'parent_id');
+    }
+
+    public function rCell()
+    {
+        return $this->belongsTo(RCell::class, 'r_cell_id');
     }
 }

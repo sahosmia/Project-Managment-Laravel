@@ -64,6 +64,21 @@
             <p class="validate_error">{{ $message }}</p>
             @enderror
         </div>
+        {{-- R-Cell Dropdown --}}
+        <div class="mb-6 @if (old('role', $user->role) != 'faculty_member') hidden @endif" id="r_cell_field">
+            <label for="r_cell_id" class="input_label">R-Cell</label>
+            <select id="r_cell_id" name="r_cell_id" class="input select2">
+                <option value="">Select R-Cell</option>
+                @foreach ($rCells as $rCell)
+                <option value="{{ $rCell->id }}" @selected(old('r_cell_id', $user->r_cell_id) == $rCell->id)>{{
+                    $rCell->name }}</option>
+                @endforeach
+            </select>
+            @error('r_cell_id')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+        </div>
+
         {{-- Student Id --}}
         <div class="mb-6 @if (old('role', $user->role) != 'student') hidden @endif" id="student_id_filed">
             <label for="student_id" class="input_label">Student ID</label>
@@ -87,8 +102,13 @@
             $('#role').on('change', function() {
                 if ($(this).val() === 'student') {
                     $('#student_id_filed').removeClass('hidden');
+                    $('#r_cell_field').addClass('hidden');
+                } else if ($(this).val() === 'faculty_member') {
+                    $('#student_id_filed').addClass('hidden');
+                    $('#r_cell_field').removeClass('hidden');
                 } else {
                     $('#student_id_filed').addClass('hidden');
+                    $('#r_cell_field').addClass('hidden');
                 }
             });
 

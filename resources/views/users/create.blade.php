@@ -59,6 +59,20 @@
         </div>
 
 
+        {{-- R-Cell Dropdown --}}
+        <div class="mb-6 hidden" id="r_cell_field">
+            <label for="r_cell_id" class="input_label">R-Cell</label>
+            <select id="r_cell_id" name="r_cell_id" class="input select2">
+                <option value="">Select R-Cell</option>
+                @foreach ($rCells as $rCell)
+                <option value="{{ $rCell->id }}">{{ $rCell->name }}</option>
+                @endforeach
+            </select>
+            @error('r_cell_id')
+            <p class="validate_error">{{ $message }}</p>
+            @enderror
+        </div>
+
         {{-- Student Id --}}
         <div class="mb-6 hidden" id="student_id_filed">
             <label for="student_id" class="input_label">Student ID</label>
@@ -84,8 +98,13 @@
             $('#role').on('change', function() {
                 if ($(this).val() === 'student') {
                     $('#student_id_filed').removeClass('hidden');
+                    $('#r_cell_field').addClass('hidden');
+                } else if ($(this).val() === 'faculty_member') {
+                    $('#student_id_filed').addClass('hidden');
+                    $('#r_cell_field').removeClass('hidden');
                 } else {
                     $('#student_id_filed').addClass('hidden');
+                    $('#r_cell_field').addClass('hidden');
                 }
             });
         });

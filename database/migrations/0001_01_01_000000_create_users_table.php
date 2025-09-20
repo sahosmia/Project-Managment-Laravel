@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'faculty_member', 'student'])->default('student');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('users')->onDelete('cascade');
+        
 
             $table->timestamps();
         });

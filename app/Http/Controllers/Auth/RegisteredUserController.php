@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\RCell;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $rCells = RCell::all();
+        return view('auth.register', compact('rCells'));
     }
 
     /**
@@ -35,6 +37,7 @@ class RegisteredUserController extends Controller
             'phone' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'in:student,faculty_member'],
             'student_id' => ['nullable', 'string', 'max:255', 'unique:' . User::class],
+            'r_cell_id' => ['nullable', 'exists:r_cells,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -43,6 +46,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'student_id' => $request->student_id,
+            'r_cell_id' => $request->r_cell_id,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'approved' => false,

@@ -52,6 +52,18 @@
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
+        <!-- R-Cell Dropdown -->
+        <div class="mt-4" id="r_cell_field" style="display: none;">
+            <x-input-label for="r_cell_id" :value="__('R-Cell')" />
+            <select id="r_cell_id" name="r_cell_id" class="block mt-1 w-full input select2">
+                <option value="">Select R-Cell</option>
+                @foreach ($rCells as $rCell)
+                <option value="{{ $rCell->id }}">{{ $rCell->name }}</option>
+                @endforeach
+            </select>
+            <x-input-error :messages="$errors->get('r_cell_id')" class="mt-2" />
+        </div>
+
         <!-- Student ID -->
         <div class="mt-4" id="student_id_field">
             <x-input-label for="student_id" :value="__('Student ID (Optional)')" />
@@ -98,19 +110,22 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const studentIdField = document.getElementById('student_id_field');
+            const rCellField = document.getElementById('r_cell_field');
             const roleStudent = document.getElementById('role_student');
             const roleFaculty = document.getElementById('role_faculty');
 
-            function toggleStudentIdField() {
+            function toggleFields() {
                 if (roleStudent.checked) {
                     studentIdField.style.display = 'block';
+                    rCellField.style.display = 'none';
                 } else {
                     studentIdField.style.display = 'none';
+                    rCellField.style.display = 'block';
                 }
             }
-            toggleStudentIdField();
-            roleStudent.addEventListener('change', toggleStudentIdField);
-            roleFaculty.addEventListener('change', toggleStudentIdField);
+            toggleFields();
+            roleStudent.addEventListener('change', toggleFields);
+            roleFaculty.addEventListener('change', toggleFields);
         });
     </script>
 </x-guest-layout>
