@@ -49,9 +49,9 @@ class StoreProposalRequest extends FormRequest
             'supervisor_id' => ['required', 'exists:users,id', Rule::exists('users', 'id')->where(function ($query) {
                 $query->where('role', 'faculty_member');
             })],
-            'cosupervisor_id' => ['nullable', 'exists:users,id', Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'faculty_member');
-            })],
+            // 'cosupervisor_id' => ['nullable', 'exists:users,id', Rule::exists('users', 'id')->where(function ($query) {
+            //     $query->where('role', 'faculty_member');
+            // })],
 
             // Validation for dynamic group members
             'members' => ['required', 'array', 'min:1'], // At least one member is required

@@ -198,7 +198,7 @@
             </div>
 
             <!-- Assigned Co-Supervisor -->
-            <div>
+            {{-- <div>
                 <label for="cosupervisor_id" class="input_label">Assigned Co-Supervisor (optional)</label>
                 <div class="relative">
                     <select id="cosupervisor_id" name="cosupervisor_id" class="input select2">
@@ -212,7 +212,7 @@
                     <p class="validate_error">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Submit Button -->

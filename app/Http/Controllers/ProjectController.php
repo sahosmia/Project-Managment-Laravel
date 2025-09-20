@@ -7,12 +7,21 @@ use App\Models\Project;
 use App\Models\Department;
 use App\Models\RCell;
 use App\Models\User;
+use App\Services\CommonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
+
+        protected $commonService;
+
+    public function __construct(CommonService $commonService)
+    {
+        $this->commonService = $commonService;
+    }
+
 
     public function index(Request $request)
     {
@@ -119,10 +128,10 @@ class ProjectController extends Controller
             'department_id' => $request->department_id,
             'r_cell_id' => $request->rcell_id,
             'supervisor_id' => $request->supervisor_id,
-            'cosupervisor_id' => $request->cosupervisor_id,
+            // 'cosupervisor_id' => $request->cosupervisor_id,
         ]);
-        if (count($request->members) > get_setting('max_member', 5)) {
-            return back()->withErrors(['members' => 'You can only add a maximum of ' . get_setting('max_member', 5) . ' members.'])->withInput();
+        if (count($request->members) > $this->commonService->getSetting('max_member', 5)) {
+            return back()->withErrors(['members' => 'You can only add a maximum of ' . $this->commonService->getSetting('max_member', 5) . ' members.'])->withInput();
         }
 
         foreach ($request->members as $memberData) {
@@ -198,8 +207,8 @@ class ProjectController extends Controller
             'cosupervisor_id' => $request->cosupervisor_id,
         ]);
 
-         if (count($request->members) > get_setting('max_member', 5)) {
-            return back()->withErrors(['members' => 'You can only add a maximum of ' . get_setting('max_member', 5) . ' members.'])->withInput();
+         if (count($request->members) > $this->commonService->getSetting('max_member', 5)) {
+            return back()->withErrors(['members' => 'You can only add a maximum of ' . $this->commonService->getSetting('max_member', 5) . ' members.'])->withInput();
         }
 
         $project->members()->sync(array_column($request->members, 'user_id'));
