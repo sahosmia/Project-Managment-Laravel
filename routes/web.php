@@ -34,7 +34,6 @@ Route::middleware(['auth'])->group(function () {
     // student role
     Route::middleware(['role:student'])->group(function () {
         Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');
-        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
          Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
         Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');
@@ -45,12 +44,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
     Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 
-    Route::post('/projects/approve-all', [ProjectController::class, 'approveAll'])->name('projects.approveAll');
-    Route::post('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
+    Route::post('/projects/approve-all', [ProjectController::class, 'approveAll'])->name('projects.approveAll')->middleware('role:admin,faculty_member');
 
 
     Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index');
     Route::middleware(['role:admin'])->group(function () {
+        Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+        Route::post('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
         Route::resource('users', UserController::class);
         Route::post('/users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
         Route::resource('departments', DepartmentController::class);
