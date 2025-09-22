@@ -15,7 +15,7 @@ use Illuminate\Http\Response;
 class ProjectController extends Controller
 {
 
-        protected $commonService;
+    protected $commonService;
 
     public function __construct(CommonService $commonService)
     {
@@ -39,12 +39,17 @@ class ProjectController extends Controller
         ];
 
 
-        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
+        // $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
+        $userRcellId = Auth::user()->r_cell_id;
+        $rcell_id = RCell::where('research_cell_head', $user->id)->first();
 
+        // return $rcell->id;
         if ($user->role === 'admin') {
             $projectsQuery->whereIn('status', $validStatuses);
-        } elseif ($is_research_cell_member) {
-            $projectsQuery->where('status', '!=', 'pending_admin');
+        } elseif (RCell::where('research_cell_head', $user->id)->exists()) {
+            $projectsQuery->whereNotIn('status',  ['pending_admin', "rejected_admin"])
+                ->where('r_cell_id', $rcell_id->id)
+                ->orWhere('supervisor_id', $user->id)->whereNotIn('status', ['pending_admin', "rejected_admin", 'pending_research_cell', 'rejected_research_cell']);
         } elseif ($user->role === 'faculty_member') {
             $projectsQuery->where('supervisor_id', $user->id)
                 ->orWhere('cosupervisor_id', $user->id);
@@ -81,7 +86,7 @@ class ProjectController extends Controller
             $projectsQuery->where('r_cell_id', $request->input('r_cell_id'));
         }
 
-         if ($request->has('semester') && $request->input('semester') !== null && $request->input('semester') !== '') {
+        if ($request->has('semester') && $request->input('semester') !== null && $request->input('semester') !== '') {
             $projectsQuery->where('semester', $request->input('semester'));
         }
 
@@ -95,7 +100,7 @@ class ProjectController extends Controller
         $projects = $projectsQuery->paginate(10)->withQueryString();
         $rcells = RCell::with('researchCellHead')->get();
 
-        return view('projects.index', compact('projects', 'faculty_members', 'rcells'));
+        return view('projects.index', compact('projects', 'faculty_members', 'rcells',));
     }
 
     public function create()
@@ -161,7 +166,7 @@ class ProjectController extends Controller
             }
         }
 
- $currentMemberIds = $project->members->pluck('id');
+        $currentMemberIds = $project->members->pluck('id');
         $students = User::where('role', 'student')
             ->where('approved', true)
             ->where(function ($query) use ($currentMemberIds) {
@@ -169,11 +174,12 @@ class ProjectController extends Controller
                     ->whereDoesntHave('memberOfProjects')
                     ->orWhereIn('id', $currentMemberIds);
             })
-            ->get();        $currentMembers = $project->members->pluck('id')->toArray();
+            ->get();
+        $currentMembers = $project->members->pluck('id')->toArray();
         $departments = Department::get();
         $rcells = RCell::with('researchCellHead')->get();
         $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
-                $project->load('rcell.researchCellHead');
+        $project->load('rcell.researchCellHead');
 
         return view('projects.edit', compact('project', 'students', 'currentMembers', 'departments', 'rcells', 'faculty_members'));
     }
@@ -207,7 +213,7 @@ class ProjectController extends Controller
             'cosupervisor_id' => $request->cosupervisor_id,
         ]);
 
-         if (count($request->members) > $this->commonService->getSetting('max_member', 5)) {
+        if (count($request->members) > $this->commonService->getSetting('max_member', 5)) {
             return back()->withErrors(['members' => 'You can only add a maximum of ' . $this->commonService->getSetting('max_member', 5) . ' members.'])->withInput();
         }
 
@@ -240,12 +246,16 @@ class ProjectController extends Controller
                 return back()->with('success', 'Project has been approved by admin.');
             }
         } elseif ($is_research_cell_member) {
-            if ($project->status === 'pending_research_cell') {
+            // if ($project->status === 'pending_research_cell') {
+            $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
+            if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
                 $project->update(['status' => 'pending_supervisor']);
                 return back()->with('success', 'Project has been approved by research cell.');
             }
         } elseif ($user->role === 'faculty_member') {
-            if ($project->status === 'pending_supervisor') {
+            // if ($project->status === 'pending_supervisor') {
+            if ($project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
+
                 $project->update(['status' => 'completed']);
                 return back()->with('success', 'Project has been completed.');
             }
@@ -313,7 +323,7 @@ class ProjectController extends Controller
 
     public function deleteAll(Request $request)
     {
-    // dd($request->all());
+        // dd($request->all());
         $projectIds = $request->input('project_ids', []);
         Project::whereIn('id', $projectIds)->delete();
 

@@ -45,6 +45,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
     Route::post('/projects/{project}/reject', [ProjectController::class, 'reject'])->name('projects.reject');
 
+    Route::post('/projects/approve-all', [ProjectController::class, 'approveAll'])->name('projects.approveAll');
+    Route::post('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
+
+
     Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index');
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);

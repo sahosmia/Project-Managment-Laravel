@@ -182,9 +182,13 @@
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 "
                                             role="menuitem">View</a>
                                         @php $user = auth()->user(); @endphp
-                                        @if (
-                                        ($user->role == 'admin' && $item->status == 'pending_admin') ||
-                                        ($user->role == 'faculty_member' && $item->status == 'pending_supervisor'))
+
+                                        @if (($user->role == 'admin' && $item->status == 'pending_admin') ||
+                                        ($item->rcell && $item->rcell->researchCellHead &&
+                                        auth()->id() == $item->rcell->researchCellHead->id && $item->status ==
+                                        'pending_research_cell') || ($user->role ==
+                                        'faculty_member' && $item->supervisor_id == $user->id && $item->status ==
+                                        'pending_supervisor'))
                                         <form method="POST" action="{{ route('projects.approve', $item->id) }}"
                                             class="approve-form">
                                             @csrf
@@ -397,6 +401,31 @@
                 });
             });
 
+
+
+            approveAllButton.addEventListener('click', function() {
+            bulkActionForm.action = "{{ route('projects.approveAll') }}";
+            bulkActionForm.method = 'POST';
+            bulkActionForm.submit();
+            });
+
+            deleteAllButton.addEventListener('click', function() {
+            Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete them!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+            bulkActionForm.action = "{{ route('projects.deleteAll') }}";
+            bulkActionForm.method = 'POST';
+            bulkActionForm.submit();
+            }
+            })
+            });
 
 
 
