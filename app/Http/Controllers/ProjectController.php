@@ -227,7 +227,9 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'You are not authorized to perform this action.');
+        }
         $project->delete();
 
         return back()->with('success', 'Project deleted successfully.');
@@ -238,30 +240,27 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         $user = auth()->user();
-        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
 
-        if ($user->role === 'admin') {
-            if ($project->status === 'pending_admin') {
-                $project->update(['status' => 'pending_research_cell']);
-                return back()->with('success', 'Project has been approved by admin.');
-            }
-        } elseif ($is_research_cell_member) {
-            // if ($project->status === 'pending_research_cell') {
-            $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
-            if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
-                $project->update(['status' => 'pending_supervisor']);
-                return back()->with('success', 'Project has been approved by research cell.');
-            }
-        } elseif ($user->role === 'faculty_member') {
-            // if ($project->status === 'pending_supervisor') {
-            if ($project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
-
-                $project->update(['status' => 'completed']);
-                return back()->with('success', 'Project has been completed.');
-            }
+        // Admin approval logic
+        if ($user->role === 'admin' && $project->status === 'pending_admin') {
+            $project->update(['status' => 'pending_research_cell']);
+            return back()->with('success', 'Project has been approved by admin.');
         }
 
-        abort(403, "You are not authorized to perform this action or the project is not in a valid state for approval.");
+        // R-Cell Head approval logic
+        $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
+        if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
+            $project->update(['status' => 'pending_supervisor']);
+            return back()->with('success', 'Project has been approved by research cell.');
+        }
+
+        // Supervisor approval logic
+        if ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
+            $project->update(['status' => 'completed']);
+            return back()->with('success', 'Project has been completed.');
+        }
+
+        return abort(403, "You are not authorized to perform this action or the project is not in a valid state for approval.");
     }
 
 
@@ -269,28 +268,28 @@ class ProjectController extends Controller
     public function reject(Request $request, Project $project)
     {
         $user = auth()->user();
-        $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
-
         $request->validate(['notes' => 'required|string']);
 
-        if ($user->role === 'admin') {
-            if ($project->status === 'pending_admin') {
-                $project->update(['status' => 'rejected_admin', 'notes' => $request->notes]);
-                return back()->with('success', 'Project has been rejected by admin.');
-            }
-        } elseif ($is_research_cell_member) {
-            if ($project->status === 'pending_research_cell') {
-                $project->update(['status' => 'rejected_research_cell', 'notes' => $request->notes]);
-                return back()->with('success', 'Project has been rejected by research cell.');
-            }
-        } elseif ($user->role === 'faculty_member') {
-            if ($project->status === 'pending_supervisor') {
-                $project->update(['status' => 'rejected_supervisor', 'notes' => $request->notes]);
-                return back()->with('success', 'Project has been rejected by supervisor.');
-            }
+        // Admin rejection logic
+        if ($user->role === 'admin' && $project->status === 'pending_admin') {
+            $project->update(['status' => 'rejected_admin', 'notes' => $request->notes]);
+            return back()->with('success', 'Project has been rejected by admin.');
         }
 
-        abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
+        // R-Cell Head rejection logic
+        $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
+        if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
+            $project->update(['status' => 'rejected_research_cell', 'notes' => $request->notes]);
+            return back()->with('success', 'Project has been rejected by research cell.');
+        }
+
+        // Supervisor rejection logic
+        if ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
+            $project->update(['status' => 'rejected_supervisor', 'notes' => $request->notes]);
+            return back()->with('success', 'Project has been rejected by supervisor.');
+        }
+
+        return abort(403, "You are not authorized to perform this action or the project is not in a valid state for rejection.");
     }
 
     public function approveAll(Request $request)
@@ -323,7 +322,9 @@ class ProjectController extends Controller
 
     public function deleteAll(Request $request)
     {
-        // dd($request->all());
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'You are not authorized to perform this action.');
+        }
         $projectIds = $request->input('project_ids', []);
         Project::whereIn('id', $projectIds)->delete();
 
