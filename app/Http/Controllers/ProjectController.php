@@ -247,7 +247,6 @@ class ProjectController extends Controller
         }
         // R-Cell Head approval logic
         $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
-        return $rCellHeadedByUser;
         if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
             $project->update(['status' => 'pending_supervisor']);
             return back()->with('success', 'Project has been approved by research cell.');

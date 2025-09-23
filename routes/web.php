@@ -50,7 +50,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index');
     Route::middleware(['role:admin'])->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-        Route::delete('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
+                Route::post('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
+
 
 
 
