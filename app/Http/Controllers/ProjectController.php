@@ -249,14 +249,14 @@ class ProjectController extends Controller
         }
         // R-Cell Head approval logic
 
-        elseif ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
+        if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
 
             $project->update(['status' => 'pending_supervisor']);
             return back()->with('success', 'Project has been approved by research cell.');
         }
 
         // Supervisor approval logic
-        elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
+        if ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
 
             $project->update(['status' => 'completed']);
             return back()->with('success', 'Project has been completed.');
@@ -304,18 +304,12 @@ class ProjectController extends Controller
         $projects = Project::whereIn('id', $projectIds)->get();
 
         foreach ($projects as $project) {
-            if ($user->role === 'admin') {
-                if ($project->status === 'pending_admin') {
-                    $project->update(['status' => 'pending_research_cell']);
-                }
-            } elseif ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id) {
-                if ($project->status === 'pending_research_cell') {
-                    $project->update(['status' => 'pending_supervisor']);
-                }
-            } elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id) {
-                if ($project->status === 'pending_supervisor') {
+            if ($user->role === 'admin' && $project->status === 'pending_admin') {
+                $project->update(['status' => 'pending_research_cell']);
+            } elseif ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
+                $project->update(['status' => 'pending_supervisor']);
+            } elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
                     $project->update(['status' => 'completed']);
-                }
             }
         }
 
