@@ -39,20 +39,19 @@ class ProjectController extends Controller
         ];
 
 
-        // $is_research_cell_member = RCell::where('research_cell_head', $user->id)->exists();
-        $userRcellId = Auth::user()->r_cell_id;
-        $rcell_id = RCell::where('research_cell_head', $user->id)->first();
+        $rcell = RCell::where('research_cell_head', $user->id)->first();
 
-        // return $rcell->id;
         if ($user->role === 'admin') {
             $projectsQuery->whereIn('status', $validStatuses);
-        } elseif (RCell::where('research_cell_head', $user->id)->exists()) {
-            $projectsQuery->whereNotIn('status',  ['pending_admin', "rejected_admin"])
-                ->where('r_cell_id', $rcell_id->id)
-                ->orWhere('supervisor_id', $user->id)->whereNotIn('status', ['pending_admin', "rejected_admin", 'pending_research_cell', 'rejected_research_cell']);
         } elseif ($user->role === 'faculty_member') {
-            $projectsQuery->where('supervisor_id', $user->id)
-                ->orWhere('cosupervisor_id', $user->id);
+            $projectsQuery->whereNotIn('status', ['pending_admin', 'rejected_admin']);
+            $projectsQuery->where(function ($query) use ($user, $rcell) {
+                $query->where('supervisor_id', $user->id)
+                    ->orWhere('cosupervisor_id', $user->id);
+                if ($rcell) {
+                    $query->orWhere('r_cell_id', $rcell->id);
+                }
+            });
         } elseif ($user->role === 'student') {
             $projectsQuery->where(function ($q) use ($user) {
                 $q->where('created_by', $user->id)
