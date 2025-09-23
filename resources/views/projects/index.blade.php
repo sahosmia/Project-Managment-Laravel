@@ -404,6 +404,10 @@
 
 
             approveAllButton.addEventListener('click', function() {
+                const methodInput = bulkActionForm.querySelector('input[name="_method"]');
+                if (methodInput) {
+                methodInput.remove();
+                }
             bulkActionForm.action = "{{ route('projects.approveAll') }}";
             bulkActionForm.method = 'POST';
             bulkActionForm.submit();
@@ -420,6 +424,15 @@
             confirmButtonText: 'Yes, delete them!'
             }).then((result) => {
             if (result.isConfirmed) {
+                if (!bulkActionForm.querySelector('input[name="_method"]')) {
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                bulkActionForm.appendChild(methodInput);
+                } else {
+                bulkActionForm.querySelector('input[name="_method"]').value = 'DELETE';
+                }
             bulkActionForm.action = "{{ route('projects.deleteAll') }}";
             bulkActionForm.method = 'POST';
             bulkActionForm.submit();

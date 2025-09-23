@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:student'])->group(function () {
         Route::get('/proposal-sends', [ProjectController::class, 'create'])->name('projects.create');
 
-         Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
+        Route::get('/industrial-proposals/create', [IndustrialProposalController::class, 'create'])->name('industrial-proposals.create');
         Route::post('/industrial-proposals', [IndustrialProposalController::class, 'store'])->name('industrial-proposals.store');
     });
 
@@ -50,7 +50,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/industrial-proposals', [IndustrialProposalController::class, 'index'])->name('industrial-proposals.index');
     Route::middleware(['role:admin'])->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-        Route::post('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
+        Route::delete('/projects/delete-all', [ProjectController::class, 'deleteAll'])->name('projects.deleteAll');
+
+
+
         Route::resource('users', UserController::class);
         Route::post('/users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
         Route::resource('departments', DepartmentController::class);
@@ -60,11 +63,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/industrial-proposals/{industrial_proposal}/edit', [IndustrialProposalController::class, 'edit'])->name('industrial-proposals.edit');
         Route::put('/industrial-proposals/{industrial_proposal}', [IndustrialProposalController::class, 'update'])->name('industrial-proposals.update');
 
-         Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+        Route::get('settings', [SettingsController::class, 'index'])->name('admin.settings.index');
         Route::put('settings', [SettingsController::class, 'update'])->name('admin.settings.update');
     });
-
-
 });
 
 require __DIR__ . '/auth.php';
