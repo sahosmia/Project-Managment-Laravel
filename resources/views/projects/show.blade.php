@@ -134,10 +134,12 @@
     <div class="flex justify-end gap-3 mt-8">
         @php $user = auth()->user(); @endphp
 
-        @if(
-        ($user->role == 'admin' && $project->status == 'pending_admin') ||
-        ($user->role == 'faculty_member' && $project->status == 'pending_supervisor')
-        )
+        @if (($user->role == 'admin' && $project->status == 'pending_admin') ||
+        ($project->rcell && $project->rcell->researchCellHead &&
+        auth()->id() == $project->rcell->researchCellHead->id && $project->status ==
+        'pending_research_cell') || ($user->role ==
+        'faculty_member' && $project->supervisor_id == $user->id && $project->status ==
+        'pending_supervisor'))
         <form action="{{ route('projects.approve', $project) }}" method="POST">
             @csrf
             <button type="submit"
@@ -157,8 +159,12 @@
 </div>
 
 
-@if(($user->role == 'admin' && $project->status == 'pending_admin') ||
-($user->role == 'faculty_member' && $project->status == 'pending_supervisor'))
+@if (($user->role == 'admin' && $project->status == 'pending_admin') ||
+($project->rcell && $project->rcell->researchCellHead &&
+auth()->id() == $project->rcell->researchCellHead->id && $project->status ==
+'pending_research_cell') || ($user->role ==
+'faculty_member' && $project->supervisor_id == $user->id && $project->status ==
+'pending_supervisor'))
 <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl mx-auto my-8 z-10">
     <section class="space-y-6">
         <header>

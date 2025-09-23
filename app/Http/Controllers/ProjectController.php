@@ -239,6 +239,8 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         $user = auth()->user();
+        $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
+
 
         // Admin approval logic
         if ($user->role === 'admin' && $project->status === 'pending_admin') {
@@ -246,14 +248,16 @@ class ProjectController extends Controller
             return back()->with('success', 'Project has been approved by admin.');
         }
         // R-Cell Head approval logic
-        $rCellHeadedByUser = RCell::where('research_cell_head', $user->id)->first();
-        if ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
+
+        elseif ($rCellHeadedByUser && $project->r_cell_id == $rCellHeadedByUser->id && $project->status === 'pending_research_cell') {
+
             $project->update(['status' => 'pending_supervisor']);
             return back()->with('success', 'Project has been approved by research cell.');
         }
 
         // Supervisor approval logic
-        if ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
+        elseif ($user->role === 'faculty_member' && $project->supervisor_id == $user->id && $project->status === 'pending_supervisor') {
+
             $project->update(['status' => 'completed']);
             return back()->with('success', 'Project has been completed.');
         }
