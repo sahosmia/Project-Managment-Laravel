@@ -44,12 +44,28 @@ class ProjectController extends Controller
         if ($user->role === 'admin') {
             $projectsQuery->whereIn('status', $validStatuses);
         } elseif ($user->role === 'faculty_member') {
-            $projectsQuery->whereNotIn('status', ['pending_admin', 'rejected_admin']);
-            $projectsQuery->where(function ($query) use ($user, $rcell) {
-                $query->where('supervisor_id', $user->id)
-                    ->orWhere('cosupervisor_id', $user->id);
+            // $projectsQuery->whereNotIn('status', ['pending_admin', 'rejected_admin']);
+            // $projectsQuery->where(function ($query) use ($user, $rcell) {
+            //     $query->where('supervisor_id', $user->id)
+            //         ->orWhere('cosupervisor_id', $user->id);
+            //     if ($rcell) {
+            //         $query->orWhere('r_cell_id', $rcell->id);
+            //     }
+            // });
+
+             $projectsQuery->where(function ($query) use ($user, $rcell) {
+                $query->orWhere(function ($q) use ($user) {
+                    $q->whereIn('status', ['pending_supervisor', 'rejected_supervisor', 'completed'])
+                        ->where(function ($qq) use ($user) {
+                            $qq->where('supervisor_id', $user->id)
+                                ->orWhere('cosupervisor_id', $user->id);
+                        });
+                });
                 if ($rcell) {
-                    $query->orWhere('r_cell_id', $rcell->id);
+                    $query->orWhere(function ($q) use ($rcell) {
+                        $q->where('r_cell_id', $rcell->id)
+                            ->whereNotIn('status', ['pending_admin', 'rejected_admin']);
+                    });
                 }
             });
         } elseif ($user->role === 'student') {

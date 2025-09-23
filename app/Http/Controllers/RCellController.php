@@ -24,7 +24,7 @@ class RCellController extends Controller
 
     public function create()
     {
-        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
+        $faculty_members = User::where('role', 'faculty_member')->get();
         return view('r-cells.create', compact('faculty_members'));
     }
 
@@ -43,7 +43,7 @@ class RCellController extends Controller
 
     public function edit(RCell $r_cell)
     {
-        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
+        $faculty_members = User::where('role', 'faculty_member')->where('r_cell_id', $r_cell->id)->get();
         return view('r-cells.edit', compact('r_cell', 'faculty_members'));
     }
 

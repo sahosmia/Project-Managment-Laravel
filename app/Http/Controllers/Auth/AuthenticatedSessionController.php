@@ -28,12 +28,6 @@ class AuthenticatedSessionController extends Controller
 
         $user = $request->user();
 
-        if (!$user->approved) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect()->route('login')->withErrors(['email' => 'Your account is not approved yet.']);
-        }
 
         $request->session()->regenerate();
 

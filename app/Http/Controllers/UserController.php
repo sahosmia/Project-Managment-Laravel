@@ -26,9 +26,7 @@ class UserController extends Controller
             }
         }
 
-        if ($request->has('approved') && $request->input('approved') !== null && $request->input('approved') !== '') {
-            $usersQuery->where('approved', $request->input('approved'));
-        }
+
 
         $users = $usersQuery->latest()->paginate(10)->withQueryString();
         return view('users.index', compact('users'));
@@ -48,6 +46,7 @@ class UserController extends Controller
             'password' => 'required|min:6',
             'role' => ['required', Rule::in(['admin', 'faculty_member', 'student'])],
             'r_cell_id' => ['nullable', 'exists:r_cells,id'],
+            'student_id' => ['nullable'],
         ]);
 
         User::create([
@@ -81,6 +80,7 @@ class UserController extends Controller
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['required', Rule::in(['admin', 'faculty_member', 'student'])],
             'r_cell_id' => ['nullable', 'exists:r_cells,id'],
+            'student_id' => ['nullable'],
         ]);
 
         if ($request->filled('password')) {
@@ -100,62 +100,6 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
-    }
-
-    public function allProjects()
-    {
-        $projects = Project::with('creator', 'supervisor', 'members')->get();
-        return view('admin.projects.all', compact('projects'));
-    }
-
-    public function editProject(Project $project)
-    {
-        $faculty_members = User::where('role', 'faculty_member')->where('approved', true)->get();
-        $students = User::where('role', 'student')->where('approved', true)->get();
-        return view('admin.projects.edit', compact('project', 'faculty_members', 'students'));
-    }
-
-    public function updateProject(Request $request, Project $project)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => ['required', Rule::in(['pending_research_cell', 'rejected_research_cell', 'approved_by_research_cell', 'pending_admin_review', 'assigned_to_supervisor', 'in_progress', 'completed', 'cancelled'])],
-            'supervisor_id' => ['nullable', 'exists:users,id', Rule::in(User::where('role', 'faculty_member')->pluck('id'))],
-            'members' => 'nullable|array',
-            'members.*' => 'exists:users,id',
-        ]);
-
-        $project->update($request->only(['title', 'description', 'status', 'supervisor_id']));
-
-        if ($request->has('members')) {
-            $project->members()->sync($request->members);
-        } else {
-            $project->members()->detach();
-        }
-
-        return redirect()->route('admin.projects.all')->with('success', 'Project updated successfully.');
-    }
-
-    public function assignSupervisor(Request $request, Project $project)
-    {
-        $request->validate([
-            'supervisor_id' => ['required', 'exists:users,id', Rule::in(User::where('role', 'faculty_member')->pluck('id'))],
-        ]);
-
-        $project->update([
-            'supervisor_id' => $request->supervisor_id,
-            'status' => 'assigned_to_supervisor',
-        ]);
-
-        return back()->with('success', 'Supervisor assigned successfully.');
-    }
-
-
-    public function approve(User $user)
-    {
-        $user->update(['approved' => true]);
-        return redirect()->route('users.index')->with('success', 'User approved successfully.');
     }
 
 }

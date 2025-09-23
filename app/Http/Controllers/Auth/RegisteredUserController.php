@@ -49,7 +49,6 @@ class RegisteredUserController extends Controller
             'r_cell_id' => $request->r_cell_id,
             'password' => Hash::make($request->password),
             'role' => $request->role,
-            'approved' => false,
         ]);
 
         event(new Registered($user));

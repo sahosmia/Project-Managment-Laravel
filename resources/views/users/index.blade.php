@@ -74,13 +74,7 @@
                             </p>
                         </div>
                     </th>
-                    <th class="py-3  text-left">
-                        <div class="flex items-center">
-                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                Approved
-                            </p>
-                        </div>
-                    </th>
+
                     <th class="py-3  w-5">
                         <div class="flex items-center ">
                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -161,21 +155,6 @@
                         </div>
                     </td>
 
-                    <td class="py-3">
-                        @if ($item->approved == 0)
-
-                        <div class="flex items-center">
-                            <div class="flex items-center gap-3">
-
-                                <div>
-                                    <p
-                                        class=" rounded-full px-2 py-0.5 text-theme-xs font-medium bg-yellow-50 text-yellow-600">
-                                        Unapproved </p>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                    </td>
 
 
 
@@ -198,14 +177,7 @@
                                         role="menuitem">Edit</a>
 
 
-                                    @if ($item->approved == 0)
-                                    <form method="POST" action="{{route('users.approve', $item->id)}}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-yellow-700 hover:bg-gray-100 hover:text-yellow-900 dark:text-red-300 dark:hover:bg-gray-600"
-                                            role="menuitem">Approve</button>
-                                    </form>
-                                    @endif
+
 
 
                                     {{-- delete --}}
@@ -260,22 +232,7 @@
                     <input type="text" name="name" id="name" class="input" value="{{ request('name') }}">
                 </div>
 
-                <div class="mb-4">
-                    <label for="approved" class="input_label">Approval Status</label>
-                    <div class="relative">
-                        <select id="approved" name="approved" class="input select2">
-                            <option value="">All</option>
-                            <option @selected(request('approved')=='1' ) value="1">Approved</option>
-                            <option @selected(request('approved')=='0' ) value="0">Unapproved</option>
-                        </select>
-                        <div
-                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+             
 
                 <div class="mb-4">
                     <label for="role" class="input_label">Role</label>
