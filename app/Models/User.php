@@ -25,7 +25,6 @@ class User extends Authenticatable
         'parent_id',
         'student_id',
         'phone',
-        'approved',
         'r_cell_id',
     ];
 

@@ -55,6 +55,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'r_cell_id' => $request->r_cell_id,
+            'student_id' => $request->student_id,
         ]);
 
 
@@ -91,6 +92,8 @@ class UserController extends Controller
             'email' => $request->email,
             'role' => $request->role,
             'r_cell_id' => $request->r_cell_id,
+            'student_id' => $request->student_id,
+
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
