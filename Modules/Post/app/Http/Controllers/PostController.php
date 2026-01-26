@@ -5,6 +5,8 @@ namespace Modules\Post\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Modules\Post\Models\Post;
+use Modules\Post\Models\PostAttachment;
 
 class PostController extends Controller
 {
@@ -13,8 +15,16 @@ class PostController extends Controller
      */
     public function index()
     {
-
-        return view('post::index');
+        $posts = Post::with([
+            'user',
+            'project',
+            'likes',
+            'comments.user'
+        ])
+            ->orderByDesc('is_pinned')
+            ->latest()
+            ->get();
+        return view('post::index', compact(['posts']));
     }
 
     /**

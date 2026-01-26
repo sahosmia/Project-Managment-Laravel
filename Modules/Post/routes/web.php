@@ -13,6 +13,11 @@ use Modules\Post\Http\Controllers\PostPinController;
 Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
 Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
 
+Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+
 Route::post('/post-like', [PostLikeController::class, 'toggle'])->name('post.like');
 Route::post('/comments', [PostCommentController::class, 'store'])->name('comments.store');
 Route::post('/posts/{post}/pin', [PostPinController::class, 'toggle'])->name('post.pin');

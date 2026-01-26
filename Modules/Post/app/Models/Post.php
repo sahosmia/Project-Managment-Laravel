@@ -2,6 +2,8 @@
 
 namespace Modules\Post\Models;
 
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\Post\Database\Factories\PostFactory;
@@ -16,6 +18,10 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 
     public function attachments()
     {
@@ -29,6 +35,6 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class)->whereNull('parent_id');
+        return $this->hasMany(PostComment::class)->whereNull('parent_id');
     }
 }

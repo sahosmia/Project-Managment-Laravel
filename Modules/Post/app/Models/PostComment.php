@@ -2,6 +2,7 @@
 
 namespace Modules\Post\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\Post\Database\Factories\PostCommentFactory;
@@ -14,7 +15,7 @@ class PostComment extends Model
 
     public function replies()
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return $this->hasMany(PostComment::class, 'parent_id');
     }
 
     public function user()
