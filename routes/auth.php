@@ -10,12 +10,21 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\OtpController;
+
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
+
+
+    Route::get('otp/verify', [OtpController::class, 'create'])->name('otp.verification');
+    Route::post('otp/verify', [OtpController::class, 'store'])->name('otp.verify');
+    Route::post('otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
+
+
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
@@ -57,5 +66,9 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
-    
+<<<<<<< HEAD
+
+=======
+
+>>>>>>> 9ef8c57 (try new for post)
 });

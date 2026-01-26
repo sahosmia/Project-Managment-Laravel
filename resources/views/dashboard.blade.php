@@ -13,7 +13,7 @@
         <!-- Total Users Card -->
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Total Users</h2>
+                <h2 class="text-sm font-medium text-gray-700">Total Users</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $totalUsers }}</p>
             </div>
             <div class="p-3 bg-blue-100 rounded-full text-blue-600">
@@ -29,7 +29,7 @@
         <!-- Total Projects Card -->
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Total Industrial Proposal</h2>
+                <h2 class="text-sm font-medium text-gray-700">Total Industrial Proposal</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $totalIndustrialProposal }}</p>
             </div>
             <div class="p-3 bg-green-100 rounded-full text-green-600">
@@ -45,7 +45,7 @@
         <!-- Total Projects Card -->
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Total Projects</h2>
+                <h2 class=" text-sm font-medium text-gray-700">Total Projects</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $totalProjects }}</p>
             </div>
             <div class="p-3 bg-green-100 rounded-full text-green-600">
@@ -61,7 +61,7 @@
         <!-- Global Pending Projects Card (Approved by Research Cell) -->
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Projects for Admin Review</h2>
+                <h2 class="text-sm font-medium text-gray-700">Projects for Admin Review</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $pendingAdmin }}</p>
             </div>
             <div class="p-3 bg-yellow-100 rounded-full text-yellow-600">
@@ -75,7 +75,7 @@
 
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Projects for Admin Rejects</h2>
+                <h2 class="text-sm font-medium text-gray-700">Projects for Admin Rejects</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $rejectAdmin }}</p>
             </div>
             <div class="p-3 bg-red-100 rounded-full text-red-600">
@@ -92,7 +92,7 @@
         @if ($user_role == 'admin')
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Pending (RC)</h2>
+                <h2 class="text-sm font-medium text-gray-700">Pending (RC)</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $pendingProjectsRc }}</p>
             </div>
             <div class="p-3 bg-teal-100 rounded-full text-teal-600">
@@ -106,7 +106,7 @@
 
         <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
             <div>
-                <h2 class="text-lg font-medium text-gray-500">Rejected (RC)</h2>
+                <h2 class="text-sm font-medium text-gray-700">Rejected (RC)</h2>
                 <p class="text-3xl font-semibold text-gray-900 mt-1">{{ $rejectProjectsRc }}</p>
             </div>
             <div class="p-3 bg-purple-100 rounded-full text-purple-600">

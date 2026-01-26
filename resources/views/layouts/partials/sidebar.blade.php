@@ -163,6 +163,16 @@
                                             'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
                                         Project & Thesis List </a>
                                 </li>
+                                <li>
+                                    <a href="/posts" class="menu-dropdown-item group" :class="{{ request()->is('projects.posts.index') ? 'true' : 'false' }} ?
+                                            'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                        Post Newsfeed</a>
+                                </li>
+                                <li>
+                                    <a href="/posts/create" class="menu-dropdown-item group" :class="{{ request()->is('projects.posts.index') ? 'true' : 'false' }} ?
+                                            'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                        New Post Create </a>
+                                </li>
 
                             </ul>
                         </div>
