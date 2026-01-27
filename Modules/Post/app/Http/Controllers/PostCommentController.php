@@ -4,6 +4,7 @@ namespace Modules\Post\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Post\Models\PostComment;
 
 class PostCommentController extends Controller
 {
@@ -26,16 +27,63 @@ class PostCommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
- public function store(Request $request)
+  public function store(Request $request)
     {
-        Comment::create([
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $comment = PostComment::create([
             'post_id' => $request->post_id,
             'user_id' => auth()->id(),
             'comment' => $request->comment,
-            'parent_id' => $request->parent_id
+                'parent_id' => $request->parent_id // 🔥 important
+
         ]);
 
-        return back();
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'id' => $comment->id,
+                'user' => auth()->user()->name,
+                'comment' => $comment->comment,
+                'time' => $comment->created_at->diffForHumans(),
+                'is_owner' => true,
+            ]
+        ]);
+    }
+
+    public function update(Request $request, PostComment $comment)
+    {
+        abort_if($comment->user_id !== auth()->id(), 403);
+
+        $request->validate([
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $comment->update([
+            'comment' => $request->comment
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'comment' => $comment->comment
+        ]);
+    }
+
+    public function destroy(PostComment $comment)
+    {
+        abort_if($comment->user_id !== auth()->id(), 403);
+    $comment->replies()->delete();
+
+        $comment->delete();
+
+        return response()->json([
+            'status' => true
+        ]);
+
+        
     }
     /**
      * Show the specified resource.
@@ -53,13 +101,5 @@ class PostCommentController extends Controller
         return view('post::edit');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+   
 }
