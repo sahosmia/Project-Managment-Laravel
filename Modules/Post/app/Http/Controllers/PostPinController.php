@@ -4,6 +4,7 @@ namespace Modules\Post\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Post\Models\Post;
 
 class PostPinController extends Controller
 {
@@ -53,7 +54,7 @@ class PostPinController extends Controller
      */
 public function toggle(Post $post)
     {
-        abort_unless(auth()->user()->role === 'supervisor', 403);
+        abort_unless(in_array(auth()->user()->role, ['supervisor', 'faculty_member', 'admin']), 403);
 
         $post->update([
             'is_pinned' => !$post->is_pinned

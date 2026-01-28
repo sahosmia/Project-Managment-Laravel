@@ -39,23 +39,39 @@
             </span>
             @endif
 
-            <!-- 3 Dots Menu (Only Owner) -->
-            @if ($post->user_id === auth()->id())
+            <!-- 3 Dots Menu -->
+            @php
+            $isOwner = $post->user_id === auth()->id();
+            $canPin = in_array(auth()->user()->role, ['supervisor', 'faculty_member', 'admin']);
+            @endphp
+
+            @if ($isOwner || $canPin)
             <div class="relative">
                 <button class="dots-btn text-xl px-2">⋮</button>
 
-                <div class="dots-menu hidden absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
-                    <a href="{{ route('posts.edit', $post) }}" class="block px-3 py-1 text-sm hover:bg-gray-100">
-                        Edit
+                <div class="dots-menu hidden absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10 overflow-hidden">
+                    @if ($isOwner)
+                    <a href="{{ route('posts.edit', $post) }}" class="block px-3 py-2 text-sm hover:bg-gray-100 border-b">
+                        <i class="fas fa-edit mr-2"></i> Edit
                     </a>
 
-                    <form method="POST" action="{{ route('posts.destroy', $post) }}">
+                    <form method="POST" action="{{ route('posts.destroy', $post) }}" class="{{ $canPin ? 'border-b' : '' }}">
                         @csrf
                         @method('DELETE')
-                        <button class="w-full text-left px-3 py-1 text-sm hover:bg-gray-100 text-red-600">
-                            Delete
+                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 text-red-600">
+                            <i class="fas fa-trash-alt mr-2"></i> Delete
                         </button>
                     </form>
+                    @endif
+
+                    @if ($canPin)
+                    <form method="POST" action="{{ route('post.pin', $post) }}">
+                        @csrf
+                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-100">
+                            <i class="fas fa-thumbtack mr-2"></i> {{ $post->is_pinned ? 'Unpin' : 'Pin' }}
+                        </button>
+                    </form>
+                    @endif
                 </div>
             </div>
             @endif
@@ -95,7 +111,8 @@
 
             <!-- Comment Toggle -->
             <button class="toggle-comment text-sm text-gray-600">
-                💬 <span class="comment-count">
+                <i class="far fa-comment"></i>
+                <span class="comment-count">
                     {{ $post->comments->count() + $post->comments->sum(fn($c) => $c->replies->count()) }}
                 </span> Comment
             </button>

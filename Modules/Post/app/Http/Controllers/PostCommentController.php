@@ -44,6 +44,7 @@ class PostCommentController extends Controller
 
         return response()->json([
             'status' => true,
+            'total_count' => PostComment::where('post_id', $request->post_id)->count(),
             'data' => [
                 'id' => $comment->id,
                 'user' => auth()->user()->name,
@@ -75,15 +76,15 @@ class PostCommentController extends Controller
     public function destroy(PostComment $comment)
     {
         abort_if($comment->user_id !== auth()->id(), 403);
-    $comment->replies()->delete();
 
+        $postId = $comment->post_id;
+        $comment->replies()->delete();
         $comment->delete();
 
         return response()->json([
-            'status' => true
+            'status' => true,
+            'total_count' => PostComment::where('post_id', $postId)->count()
         ]);
-
-        
     }
     /**
      * Show the specified resource.
