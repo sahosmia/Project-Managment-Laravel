@@ -95,9 +95,9 @@
             <div class="space-y-2">
                 @foreach($post->attachments as $attachment)
                     @if($attachment->type === 'image')
-                        <div class="rounded-lg overflow-hidden border">
+                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" class="block rounded-lg overflow-hidden border hover:opacity-90 transition">
                             <img src="{{ Storage::url($attachment->file_path) }}" class="w-full object-cover max-h-96">
-                        </div>
+                        </a>
                     @elseif($attachment->type === 'pdf')
                         <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
                            class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition group">
