@@ -4,6 +4,8 @@ namespace Modules\Post\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Post\Models\PostAttachment;
+use Illuminate\Support\Facades\Storage;
 
 class PostAttachmentController extends Controller
 {
@@ -52,5 +54,16 @@ class PostAttachmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {}
+    public function destroy(PostAttachment $attachment)
+    {
+        abort_if($attachment->post->user_id !== auth()->id(), 403);
+
+        if ($attachment->file_path) {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
+
+        $attachment->delete();
+
+        return response()->json(['success' => true]);
+    }
 }

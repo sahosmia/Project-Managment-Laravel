@@ -3,12 +3,22 @@
 @section('content')
 <div class="max-w-2xl mx-auto flex flex-col gap-4">
 
+    {{-- Create Post Trigger --}}
+    <div class="bg-white rounded-lg shadow-sm border p-3 flex items-center gap-3">
+        <img src="{{ auth()->user()->profile_photo_url ?? asset('images/avatar.png') }}"
+            class="w-10 h-10 rounded-full object-cover">
+        <a href="{{ route('posts.create') }}"
+            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full px-4 py-2 text-sm transition text-left">
+            Share something with your project...
+        </a>
+    </div>
+
     @foreach ($posts as $post)
     @php
     $userLike = $post->likes->where('user_id', auth()->id())->first();
     @endphp
 
-    <div class="bg-white rounded-lg shadow-sm border relative">
+    <div class="bg-white rounded-lg shadow-sm border relative post-card">
 
         <!-- Header -->
         <div class="flex items-center justify-between p-3">
@@ -39,23 +49,42 @@
             </span>
             @endif
 
-            <!-- 3 Dots Menu (Only Owner) -->
-            @if ($post->user_id === auth()->id())
+            <!-- 3 Dots Menu -->
+            @php
+            $isOwner = $post->user_id === auth()->id();
+            $canPin = in_array(auth()->user()->role, ['supervisor', 'faculty_member', 'admin']);
+            @endphp
+
+            @if ($isOwner || $canPin)
             <div class="relative">
                 <button class="dots-btn text-xl px-2">⋮</button>
 
-                <div class="dots-menu hidden absolute right-0 mt-2 w-28 bg-white border rounded shadow z-10">
-                    <a href="{{ route('posts.edit', $post) }}" class="block px-3 py-1 text-sm hover:bg-gray-100">
-                        Edit
+                <div
+                    class="dots-menu hidden absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10 overflow-hidden">
+                    @if ($isOwner)
+                    <a href="{{ route('posts.edit', $post) }}"
+                        class="block px-3 py-2 text-sm hover:bg-gray-100 border-b">
+                        <i class="fas fa-edit mr-2"></i> Edit
                     </a>
 
-                    <form method="POST" action="{{ route('posts.destroy', $post) }}">
+                    <form method="POST" action="{{ route('posts.destroy', $post) }}"
+                        class="{{ $canPin ? 'border-b' : '' }}">
                         @csrf
                         @method('DELETE')
-                        <button class="w-full text-left px-3 py-1 text-sm hover:bg-gray-100 text-red-600">
-                            Delete
+                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 text-red-600">
+                            <i class="fas fa-trash-alt mr-2"></i> Delete
                         </button>
                     </form>
+                    @endif
+
+                    @if ($canPin)
+                    <form method="POST" action="{{ route('post.pin', $post) }}">
+                        @csrf
+                        <button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-100">
+                            <i class="fas fa-thumbtack mr-2"></i> {{ $post->is_pinned ? 'Unpin' : 'Pin' }}
+                        </button>
+                    </form>
+                    @endif
                 </div>
             </div>
             @endif
@@ -64,7 +93,40 @@
 
         <!-- Content -->
         <div class="px-3 pb-3 text-sm text-gray-800">
-            {{ $post->content }}
+            <p class="mb-3">{{ $post->content }}</p>
+
+            @if($post->attachments->count() > 0)
+            <div class="space-y-2">
+                @foreach($post->attachments as $attachment)
+                @if($attachment->type === 'image')
+                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                    class="block rounded-lg overflow-hidden border hover:opacity-90 transition">
+                    <img src="{{ Storage::url($attachment->file_path) }}" class="w-full object-cover max-h-96">
+                </a>
+                @elseif($attachment->type === 'pdf')
+                <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                    class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition group">
+                    <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-xs font-medium text-gray-700 truncate">View PDF Document</p>
+                        <p class="text-[10px] text-gray-500">Click to open in new tab</p>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-400 text-xs group-hover:text-gray-600"></i>
+                </a>
+                @elseif($attachment->type === 'link')
+                <a href="{{ $attachment->link_url }}" target="_blank"
+                    class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition group">
+                    <i class="fas fa-link text-blue-500 text-xl"></i>
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-xs font-medium text-blue-700 truncate">{{ $attachment->link_url }}</p>
+                        <p class="text-[10px] text-blue-500">External Link</p>
+                    </div>
+                    <i class="fas fa-external-link-alt text-blue-400 text-xs group-hover:text-blue-600"></i>
+                </a>
+                @endif
+                @endforeach
+            </div>
+            @endif
         </div>
 
         <!-- Actions -->
@@ -75,24 +137,28 @@
 
                 <button class="like-btn {{ $userLike?->type === 'like' ? 'text-blue-600 font-semibold' : '' }}"
                     data-id="{{ $post->id }}" data-type="like">
-                    👍 {{ $post->likes->where('type', 'like')->count() }}
+                    <i class="{{ $userLike?->type === 'like' ? 'fas' : 'far' }} fa-thumbs-up"></i>
+                    <span class="like-count">{{ $post->likes->where('type', 'like')->count() }}</span>
                 </button>
 
                 <button class="like-btn {{ $userLike?->type === 'love' ? 'text-red-600 font-semibold' : '' }}"
                     data-id="{{ $post->id }}" data-type="love">
-                    ❤️ {{ $post->likes->where('type', 'love')->count() }}
+                    <i class="{{ $userLike?->type === 'love' ? 'fas' : 'far' }} fa-heart"></i>
+                    <span class="like-count">{{ $post->likes->where('type', 'love')->count() }}</span>
                 </button>
 
                 <button class="like-btn {{ $userLike?->type === 'dislike' ? 'font-semibold' : '' }}"
                     data-id="{{ $post->id }}" data-type="dislike">
-                    👎 {{ $post->likes->where('type', 'dislike')->count() }}
+                    <i class="{{ $userLike?->type === 'dislike' ? 'fas' : 'far' }} fa-thumbs-down"></i>
+                    <span class="like-count">{{ $post->likes->where('type', 'dislike')->count() }}</span>
                 </button>
 
             </div>
 
             <!-- Comment Toggle -->
             <button class="toggle-comment text-sm text-gray-600">
-                💬 <span class="comment-count">
+                <i class="far fa-comment"></i>
+                <span class="comment-count">
                     {{ $post->comments->count() + $post->comments->sum(fn($c) => $c->replies->count()) }}
                 </span> Comment
             </button>
@@ -234,19 +300,41 @@ function updateCount(postContainer, change) {
 /* ================= LIKE ================= */
 $(document).on('click', '.like-btn', function () {
     let btn = $(this);
+    let postContainer = btn.closest('.flex.gap-4');
 
     $.post("{{ route('post.like') }}", {
         _token: "{{ csrf_token() }}",
         post_id: btn.data('id'),
         type: btn.data('type')
-    }, function () {
-        location.reload();
+    }, function (res) {
+        if (res.success) {
+            // Update counts
+            postContainer.find('[data-type="like"] .like-count').text(res.counts.like);
+            postContainer.find('[data-type="love"] .like-count').text(res.counts.love);
+            postContainer.find('[data-type="dislike"] .like-count').text(res.counts.dislike);
+
+            // Reset button states and icons
+            postContainer.find('.like-btn').removeClass('text-blue-600 text-red-600 font-semibold');
+            postContainer.find('.like-btn i').removeClass('fas').addClass('far');
+
+            // Set active state
+            if (res.current_type === 'like') {
+                postContainer.find('[data-type="like"]').addClass('text-blue-600 font-semibold');
+                postContainer.find('[data-type="like"] i').removeClass('far').addClass('fas');
+            } else if (res.current_type === 'love') {
+                postContainer.find('[data-type="love"]').addClass('text-red-600 font-semibold');
+                postContainer.find('[data-type="love"] i').removeClass('far').addClass('fas');
+            } else if (res.current_type === 'dislike') {
+                postContainer.find('[data-type="dislike"]').addClass('font-semibold');
+                postContainer.find('[data-type="dislike"] i').removeClass('far').addClass('fas');
+            }
+        }
     });
 });
 
 /* ================= TOGGLE COMMENT BOX ================= */
 $(document).on('click', '.toggle-comment', function () {
-    $(this).closest('.bg-white').find('.comment-box').toggleClass('hidden');
+    $(this).closest('.post-card').find('.comment-box').toggleClass('hidden');
 });
 
 /* ================= CREATE COMMENT ================= */
@@ -254,7 +342,7 @@ $(document).on('submit', '.comment-form', function (e) {
     e.preventDefault();
 
     let form = $(this);
-    let postContainer = form.closest('.bg-white');
+    let postContainer = form.closest('.post-card');
     let list = postContainer.find('.comment-list');
     let input = form.find('.comment-input');
 
@@ -300,7 +388,7 @@ $(document).on('submit', '.comment-form', function (e) {
             `);
 
             input.val('');
-            
+
             // If backend doesn't return total_count, update locally
             if (res.total_count !== undefined) {
                 setCount(postContainer, res.total_count);
@@ -314,7 +402,7 @@ $(document).on('submit', '.comment-form', function (e) {
 /* ================= DELETE COMMENT (WITH REPLIES) ================= */
 $(document).on('click', '.delete-comment', function () {
     let item = $(this).closest('.comment-item');
-    let postContainer = item.closest('.bg-white');
+    let postContainer = item.closest('.post-card');
     let id = item.data('id');
     let replyCount = item.find('.reply-item').length;
     let totalToDelete = 1 + replyCount;
@@ -328,7 +416,7 @@ $(document).on('click', '.delete-comment', function () {
         success: function (res) {
             if (res.status) {
                 item.remove();
-                
+
                 // If backend doesn't return total_count, update locally
                 if (res.total_count !== undefined) {
                     setCount(postContainer, res.total_count);
@@ -378,7 +466,7 @@ $(document).on('click', '.send-reply', function () {
     let commentItem = $(this).closest('.comment-item');
     let replyInput = commentItem.find('.reply-input');
     let replyList = commentItem.find('.reply-list');
-    let postContainer = commentItem.closest('.bg-white');
+    let postContainer = commentItem.closest('.post-card');
 
     $.post("{{ route('comments.store') }}", {
         _token: "{{ csrf_token() }}",
@@ -466,7 +554,7 @@ $(document).on('click', '.save-reply-edit', function () {
 $(document).on('click', '.delete-reply', function () {
     let item = $(this).closest('.reply-item');
     let commentItem = item.closest('.comment-item');
-    let postContainer = item.closest('.bg-white');
+    let postContainer = item.closest('.post-card');
 
     if (!confirm('Delete reply?')) return;
 
