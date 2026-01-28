@@ -17,7 +17,7 @@
     $userLike = $post->likes->where('user_id', auth()->id())->first();
     @endphp
 
-    <div class="bg-white rounded-lg shadow-sm border relative">
+    <div class="bg-white rounded-lg shadow-sm border relative post-card">
 
         <!-- Header -->
         <div class="flex items-center justify-between p-3">
@@ -329,7 +329,7 @@ $(document).on('click', '.like-btn', function () {
 
 /* ================= TOGGLE COMMENT BOX ================= */
 $(document).on('click', '.toggle-comment', function () {
-    $(this).closest('.bg-white').find('.comment-box').toggleClass('hidden');
+    $(this).closest('.post-card').find('.comment-box').toggleClass('hidden');
 });
 
 /* ================= CREATE COMMENT ================= */
@@ -337,7 +337,7 @@ $(document).on('submit', '.comment-form', function (e) {
     e.preventDefault();
 
     let form = $(this);
-    let postContainer = form.closest('.bg-white');
+    let postContainer = form.closest('.post-card');
     let list = postContainer.find('.comment-list');
     let input = form.find('.comment-input');
 
@@ -397,7 +397,7 @@ $(document).on('submit', '.comment-form', function (e) {
 /* ================= DELETE COMMENT (WITH REPLIES) ================= */
 $(document).on('click', '.delete-comment', function () {
     let item = $(this).closest('.comment-item');
-    let postContainer = item.closest('.bg-white');
+    let postContainer = item.closest('.post-card');
     let id = item.data('id');
     let replyCount = item.find('.reply-item').length;
     let totalToDelete = 1 + replyCount;
@@ -461,7 +461,7 @@ $(document).on('click', '.send-reply', function () {
     let commentItem = $(this).closest('.comment-item');
     let replyInput = commentItem.find('.reply-input');
     let replyList = commentItem.find('.reply-list');
-    let postContainer = commentItem.closest('.bg-white');
+    let postContainer = commentItem.closest('.post-card');
 
     $.post("{{ route('comments.store') }}", {
         _token: "{{ csrf_token() }}",
@@ -549,7 +549,7 @@ $(document).on('click', '.save-reply-edit', function () {
 $(document).on('click', '.delete-reply', function () {
     let item = $(this).closest('.reply-item');
     let commentItem = item.closest('.comment-item');
-    let postContainer = item.closest('.bg-white');
+    let postContainer = item.closest('.post-card');
 
     if (!confirm('Delete reply?')) return;
 
