@@ -30,9 +30,14 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $project = Project::find(3);
+        $project = Project::find($request->project_id) ?? Project::first();
+
+        if (!$project) {
+            return redirect()->route('posts.index')->with('error', 'No project found to post in.');
+        }
+
         return view('post::create', compact('project'));
     }
 
@@ -41,6 +46,13 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'content' => 'required_without_all:attachments,link_url',
+            'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'link_url' => 'nullable|url',
+        ]);
+
         $post = Post::create([
             'project_id' => $request->project_id,
             'user_id'    => auth()->id(),
@@ -49,11 +61,11 @@ class PostController extends Controller
 
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('posts');
+                $path = $file->store('posts', 'public');
 
                 PostAttachment::create([
                     'post_id' => $post->id,
-                    'type' => $file->getClientOriginalExtension() === 'pdf' ? 'pdf' : 'image',
+                    'type' => str_contains($file->getMimeType(), 'pdf') ? 'pdf' : 'image',
                     'file_path' => $path
                 ]);
             }
@@ -67,7 +79,7 @@ class PostController extends Controller
             ]);
         }
 
-        return back();
+        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
 
     /**

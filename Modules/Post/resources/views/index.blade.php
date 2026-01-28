@@ -3,6 +3,15 @@
 @section('content')
 <div class="max-w-2xl mx-auto flex flex-col gap-4">
 
+    {{-- Create Post Trigger --}}
+    <div class="bg-white rounded-lg shadow-sm border p-3 flex items-center gap-3">
+        <img src="{{ auth()->user()->profile_photo_url ?? asset('images/avatar.png') }}"
+            class="w-10 h-10 rounded-full object-cover">
+        <a href="{{ route('posts.create') }}" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full px-4 py-2 text-sm transition text-left">
+            Share something with your project...
+        </a>
+    </div>
+
     @foreach ($posts as $post)
     @php
     $userLike = $post->likes->where('user_id', auth()->id())->first();
@@ -80,7 +89,39 @@
 
         <!-- Content -->
         <div class="px-3 pb-3 text-sm text-gray-800">
-            {{ $post->content }}
+            <p class="mb-3">{{ $post->content }}</p>
+
+            @if($post->attachments->count() > 0)
+            <div class="space-y-2">
+                @foreach($post->attachments as $attachment)
+                    @if($attachment->type === 'image')
+                        <div class="rounded-lg overflow-hidden border">
+                            <img src="{{ Storage::url($attachment->file_path) }}" class="w-full object-cover max-h-96">
+                        </div>
+                    @elseif($attachment->type === 'pdf')
+                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                           class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition group">
+                            <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+                            <div class="flex-1 overflow-hidden">
+                                <p class="text-xs font-medium text-gray-700 truncate">View PDF Document</p>
+                                <p class="text-[10px] text-gray-500">Click to open in new tab</p>
+                            </div>
+                            <i class="fas fa-external-link-alt text-gray-400 text-xs group-hover:text-gray-600"></i>
+                        </a>
+                    @elseif($attachment->type === 'link')
+                        <a href="{{ $attachment->link_url }}" target="_blank"
+                           class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition group">
+                            <i class="fas fa-link text-blue-500 text-xl"></i>
+                            <div class="flex-1 overflow-hidden">
+                                <p class="text-xs font-medium text-blue-700 truncate">{{ $attachment->link_url }}</p>
+                                <p class="text-[10px] text-blue-500">External Link</p>
+                            </div>
+                            <i class="fas fa-external-link-alt text-blue-400 text-xs group-hover:text-blue-600"></i>
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+            @endif
         </div>
 
         <!-- Actions -->
