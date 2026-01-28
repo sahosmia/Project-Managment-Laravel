@@ -75,17 +75,20 @@
 
                 <button class="like-btn {{ $userLike?->type === 'like' ? 'text-blue-600 font-semibold' : '' }}"
                     data-id="{{ $post->id }}" data-type="like">
-                    👍 {{ $post->likes->where('type', 'like')->count() }}
+                    <i class="{{ $userLike?->type === 'like' ? 'fas' : 'far' }} fa-thumbs-up"></i>
+                    <span class="like-count">{{ $post->likes->where('type', 'like')->count() }}</span>
                 </button>
 
                 <button class="like-btn {{ $userLike?->type === 'love' ? 'text-red-600 font-semibold' : '' }}"
                     data-id="{{ $post->id }}" data-type="love">
-                    ❤️ {{ $post->likes->where('type', 'love')->count() }}
+                    <i class="{{ $userLike?->type === 'love' ? 'fas' : 'far' }} fa-heart"></i>
+                    <span class="like-count">{{ $post->likes->where('type', 'love')->count() }}</span>
                 </button>
 
                 <button class="like-btn {{ $userLike?->type === 'dislike' ? 'font-semibold' : '' }}"
                     data-id="{{ $post->id }}" data-type="dislike">
-                    👎 {{ $post->likes->where('type', 'dislike')->count() }}
+                    <i class="{{ $userLike?->type === 'dislike' ? 'fas' : 'far' }} fa-thumbs-down"></i>
+                    <span class="like-count">{{ $post->likes->where('type', 'dislike')->count() }}</span>
                 </button>
 
             </div>
@@ -234,13 +237,35 @@ function updateCount(postContainer, change) {
 /* ================= LIKE ================= */
 $(document).on('click', '.like-btn', function () {
     let btn = $(this);
+    let postContainer = btn.closest('.flex.gap-4');
 
     $.post("{{ route('post.like') }}", {
         _token: "{{ csrf_token() }}",
         post_id: btn.data('id'),
         type: btn.data('type')
-    }, function () {
-        location.reload();
+    }, function (res) {
+        if (res.success) {
+            // Update counts
+            postContainer.find('[data-type="like"] .like-count').text(res.counts.like);
+            postContainer.find('[data-type="love"] .like-count').text(res.counts.love);
+            postContainer.find('[data-type="dislike"] .like-count').text(res.counts.dislike);
+
+            // Reset button states and icons
+            postContainer.find('.like-btn').removeClass('text-blue-600 text-red-600 font-semibold');
+            postContainer.find('.like-btn i').removeClass('fas').addClass('far');
+
+            // Set active state
+            if (res.current_type === 'like') {
+                postContainer.find('[data-type="like"]').addClass('text-blue-600 font-semibold');
+                postContainer.find('[data-type="like"] i').removeClass('far').addClass('fas');
+            } else if (res.current_type === 'love') {
+                postContainer.find('[data-type="love"]').addClass('text-red-600 font-semibold');
+                postContainer.find('[data-type="love"] i').removeClass('far').addClass('fas');
+            } else if (res.current_type === 'dislike') {
+                postContainer.find('[data-type="dislike"]').addClass('font-semibold');
+                postContainer.find('[data-type="dislike"] i').removeClass('far').addClass('fas');
+            }
+        }
     });
 });
 
