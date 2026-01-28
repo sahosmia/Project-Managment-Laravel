@@ -26,6 +26,7 @@ class User extends Authenticatable
         'student_id',
         'phone',
         'r_cell_id',
+        'avatar',
     ];
 
     /**

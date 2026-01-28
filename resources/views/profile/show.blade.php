@@ -16,6 +16,22 @@
                 </p>
 
                 <div class="mt-6 space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="w-20 h-20 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                            @if ($user->avatar)
+                                <img src="{{ Storage::url($user->avatar) }}" alt="Avatar"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <i class="fas fa-user text-3xl text-gray-400 dark:text-gray-500"></i>
+                            @endif
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $user->name }}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($user->role) }}</p>
+                        </div>
+                    </div>
+
                     <div>
                         <x-input-label for="name" :value="__('Name')" />
                         <p class="mt-1 text-lg text-gray-900 dark:text-gray-100">{{ $user->name }}</p>
