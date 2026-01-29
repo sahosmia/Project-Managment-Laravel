@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('student_id')->nullable();
             $table->string('phone')->nullable();
+            $table->string('avatar')->nullable();
 
             $table->rememberToken();
             $table->enum('role', ['admin', 'faculty_member', 'student'])->default('student');

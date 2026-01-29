@@ -6,14 +6,14 @@
         <a href="/dashboard">
             <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
                 <img class="dark:hidden w-36 flex items-center justify-center"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSor28R4NlTk5A2Vr3zfgi3FnldWQCm6YgOZQ&s"
+                    src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ed/Green_University_of_Bangladesh_logo.svg/960px-Green_University_of_Bangladesh_logo.svg.png?20250629073429"
                     alt="Logo" />
-                <img class="hidden dark:block" src="https://via.placeholder.com/1f2937/d1d5db?text=Dark+Logo"
+                <img class="hidden dark:block" src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ed/Green_University_of_Bangladesh_logo.svg/960px-Green_University_of_Bangladesh_logo.svg.png?20250629073429"
                     alt="Logo" />
             </span>
 
             <img class="logo-icon" :class="sidebarToggle ? 'lg:block' : 'hidden'"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Green_University_of_Bangladesh_logo.svg/1200px-Green_University_of_Bangladesh_logo.svg.png"
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ed/Green_University_of_Bangladesh_logo.svg/960px-Green_University_of_Bangladesh_logo.svg.png?20250629073429"
                 alt="Logo Icon" />
         </a>
         <button @click="sidebarToggle = !sidebarToggle"
@@ -168,11 +168,7 @@
                                             'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
                                         Post Newsfeed</a>
                                 </li>
-                                <li>
-                                    <a href="/posts/create" class="menu-dropdown-item group" :class="{{ request()->is('projects.posts.index') ? 'true' : 'false' }} ?
-                                            'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
-                                        New Post Create </a>
-                                </li>
+                               
 
                             </ul>
                         </div>

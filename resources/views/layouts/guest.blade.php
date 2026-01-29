@@ -16,7 +16,7 @@
 </head>
 <style>
     body {
-        background-image: url('https://media.licdn.com/dms/image/v2/D5622AQEHPLEw4RbzpA/feedshare-shrink_800/feedshare-shrink_800/0/1700317760482?e=2147483647&v=beta&t=jYV7EbKQBd3zCK_QZIGH__VFhRGlsF5PyHxg926gb_0');
+        background-image: url('https://i.ytimg.com/vi/-ZQXYhbMiXM/maxresdefault.jpg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -27,8 +27,8 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-900/70 ">
         <div>
             <a href="/">
-                <img class=" w-36 flex items-center justify-center"
-                    src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Green_University_of_Bangladesh_logo.svg"
+                <img class=" w-48 flex items-center justify-center"
+                    src="https://upload.wikimedia.org/wikipedia/en/e/ed/Green_University_of_Bangladesh_logo.svg"
                     alt="Logo" />
             </a>
         </div>

@@ -1,12 +1,19 @@
 @extends('layouts.admin')
 
+@section('title', "Post Page")
+
 @section('content')
 <div class="max-w-2xl mx-auto flex flex-col gap-4">
 
     {{-- Create Post Trigger --}}
     <div class="bg-white rounded-lg shadow-sm border p-3 flex items-center gap-3">
-        <img src="{{ auth()->user()->profile_photo_url ?? asset('images/avatar.png') }}"
-            class="w-10 h-10 rounded-full object-cover">
+
+
+        @if (auth()->user()->avatar)
+        <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+        @else
+        <i class="fa-solid fa-user"></i>
+        @endif
         <a href="{{ route('posts.create') }}"
             class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full px-4 py-2 text-sm transition text-left">
             Share something with your project...
@@ -24,8 +31,16 @@
         <div class="flex items-center justify-between p-3">
 
             <div class="flex items-center gap-3">
-                <img src="{{ $post->user->profile_photo_url ?? asset('images/avatar.png') }}"
-                    class="w-10 h-10 rounded-full object-cover">
+
+
+                @if ($post->user->avatar)
+                <img src="{{ Storage::url($post->user->avatar) }}" alt="Avatar"
+                    class="w-10 h-10  rounded-full object-cover">
+                @else
+                <i class="fa-solid fa-user"></i>
+                @endif
+
+
 
                 <div>
                     <p class="font-semibold text-sm">
@@ -33,8 +48,8 @@
                     </p>
 
                     <p class="text-xs text-gray-500">
-                        {{ $post->project->title }}
-                        ·
+                        {{-- {{ $post->project->title }} --}}
+                        {{-- · --}}
                         {{ $post->created_at->isToday() || $post->created_at->isYesterday()
                         ? $post->created_at->diffForHumans()
                         : $post->created_at->format('d M Y') }}
@@ -169,7 +184,7 @@
 
 
 
-        <div class="comment-box hidden border-t relative max-h-64 overflow-y-auto">
+        <div class="comment-box hidden border-t relative max-h-64 overflow-y-auto no-scrollbar">
 
             <!-- Sticky Comment Input -->
             <form class="comment-form sticky top-0 z-10 bg-white p-3 border-b flex gap-2">
@@ -180,7 +195,7 @@
                     placeholder="Write a comment..." required>
 
                 <button class="bg-blue-600 text-white px-3 rounded text-sm">
-                    Post
+                    <i class="fas fa-floppy-disk"></i>
                 </button>
             </form>
 
@@ -200,9 +215,15 @@
                         </div>
 
                         @if ($comment->user_id === auth()->id())
-                        <div class="text-xs space-x-2">
-                            <button class="edit-comment text-blue-600">Edit</button>
-                            <button class="delete-comment text-red-600">Delete</button>
+                        <div class="flex items-center gap-3">
+                            <button class="edit-comment text-gray-400 hover:text-blue-600 transition-colors"
+                                title="Edit">
+                                <i class="fas fa-pen-to-square"></i>
+                            </button>
+                            <button class="delete-comment text-gray-400 hover:text-red-600 transition-colors"
+                                title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                         @endif
                     </div>
@@ -211,9 +232,13 @@
 
                     <!-- Edit Box -->
                     <div class="edit-box hidden mt-2">
-                        <input type="text" class="edit-input w-full border rounded px-2 py-1 text-sm"
-                            value="{{ $comment->comment }}">
-                        <button class="save-edit text-blue-600 text-sm mt-1">Save</button>
+                        <div class="flex gap-2 items-center">
+                            <input type="text" class="edit-input w-full border rounded px-2 py-1 text-sm"
+                                value="{{ $comment->comment }}">
+                            <button class="save-edit text-gray-400 hover:text-blue-600 transition-colors" title="Save">
+                                <i class="fas fa-floppy-disk"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Actions -->
@@ -232,7 +257,7 @@
                         <input type="text" class="reply-input w-full border rounded px-2 py-1 text-sm"
                             placeholder="Write a reply...">
                         <button class="send-reply text-blue-600 text-sm mt-1">
-                            Reply
+                            <i class="fa-solid fa-reply"></i>
                         </button>
                     </div>
 
@@ -248,9 +273,15 @@
                                 </div>
 
                                 @if ($reply->user_id === auth()->id())
-                                <div class="space-x-1">
-                                    <button class="edit-reply text-blue-600">Edit</button>
-                                    <button class="delete-reply text-red-600">Delete</button>
+                                <div class="flex items-center gap-2">
+                                    <button class="edit-reply text-gray-400 hover:text-blue-600 transition-colors"
+                                        title="Edit">
+                                        <i class="fas fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="delete-reply text-gray-400 hover:text-red-600 transition-colors"
+                                        title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
                                 @endif
                             </div>
@@ -258,11 +289,14 @@
                             <p class="reply-text mt-1">{{ $reply->comment }}</p>
 
                             <div class="reply-edit-box hidden mt-1">
-                                <input type="text" class="reply-edit-input w-full border rounded px-2 py-1 text-xs"
-                                    value="{{ $reply->comment }}">
-                                <button class="save-reply-edit text-blue-600 text-xs mt-1">
-                                    Save
-                                </button>
+                                <div class="flex gap-2 items-center">
+                                    <input type="text" class="reply-edit-input w-full border rounded px-2 py-1 text-xs"
+                                        value="{{ $reply->comment }}">
+                                    <button class="save-reply-edit text-gray-400 hover:text-blue-600 transition-colors"
+                                        title="Save">
+                                        <i class="fas fa-floppy-disk"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         @endforeach
@@ -359,18 +393,26 @@ $(document).on('submit', '.comment-form', function (e) {
                             <span class="font-semibold">${res.data.user}</span>
                             <span class="text-xs text-gray-500">${res.data.time}</span>
                         </div>
-                        <div class="text-xs space-x-2">
-                            <button class="edit-comment text-blue-600">Edit</button>
-                            <button class="delete-comment text-red-600">Delete</button>
+                        <div class="flex items-center gap-3">
+                            <button class="edit-comment text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
+                                <i class="fas fa-pen-to-square"></i>
+                            </button>
+                            <button class="delete-comment text-gray-400 hover:text-red-600 transition-colors" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </div>
 
                     <p class="comment-text mt-1">${res.data.comment}</p>
 
                     <div class="edit-box hidden mt-2">
-                        <input type="text" class="edit-input w-full border rounded px-2 py-1 text-sm"
-                               value="${res.data.comment}">
-                        <button class="save-edit text-blue-600 text-sm mt-1">Save</button>
+                        <div class="flex gap-2 items-center">
+                            <input type="text" class="edit-input w-full border rounded px-2 py-1 text-sm"
+                                   value="${res.data.comment}">
+                            <button class="save-edit text-gray-400 hover:text-blue-600 transition-colors" title="Save">
+                                <i class="fas fa-floppy-disk"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="text-xs mt-1 space-x-3">
@@ -482,18 +524,26 @@ $(document).on('click', '.send-reply', function () {
                             <span class="font-semibold">${res.data.user}</span>
                             · ${res.data.time}
                         </div>
-                        <div class="space-x-1">
-                            <button class="edit-reply text-blue-600">Edit</button>
-                            <button class="delete-reply text-red-600">Delete</button>
+                        <div class="flex items-center gap-2">
+                            <button class="edit-reply text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
+                                <i class="fas fa-pen-to-square"></i>
+                            </button>
+                            <button class="delete-reply text-gray-400 hover:text-red-600 transition-colors" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </div>
 
                     <p class="reply-text mt-1">${res.data.comment}</p>
 
                     <div class="reply-edit-box hidden mt-1">
-                        <input type="text" class="reply-edit-input w-full border rounded px-2 py-1 text-xs"
-                               value="${res.data.comment}">
-                        <button class="save-reply-edit text-blue-600 text-xs mt-1">Save</button>
+                        <div class="flex gap-2 items-center">
+                            <input type="text" class="reply-edit-input w-full border rounded px-2 py-1 text-xs"
+                                   value="${res.data.comment}">
+                            <button class="save-reply-edit text-gray-400 hover:text-blue-600 transition-colors" title="Save">
+                                <i class="fas fa-floppy-disk"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `);

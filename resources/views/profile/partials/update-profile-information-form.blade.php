@@ -13,9 +13,31 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
+
+        <!-- Profile Picture -->
+        <div class="flex flex-col items-center space-y-4">
+            <div class="relative">
+                <div id="avatar-preview"
+                    class="w-32 h-32 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+                    @if ($user->avatar)
+                    <img src="{{ Storage::url($user->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                    @else
+                    <i class="fas fa-user text-5xl text-gray-400 dark:text-gray-500"></i>
+                    @endif
+                </div>
+                <label for="avatar"
+                    class="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition shadow-lg">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="avatar" name="avatar" class="hidden" accept="image/*"
+                        onchange="previewImage(this)">
+                </label>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Allowed JPG, GIF or PNG. Max size of 2MB</p>
+            <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
+        </div>
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -90,3 +112,18 @@
         </div>
     </form>
 </section>
+
+@push('scripts')
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var preview = document.getElementById('avatar-preview');
+                preview.innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover">';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+@endpush

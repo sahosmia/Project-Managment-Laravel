@@ -28,6 +28,8 @@ class ProfileUpdateRequest extends FormRequest
             'student_id'=>['nullable', Rule::unique(User::class)->ignore($this->user()->id),],
             'phone' => ['required' ],
             'r_cell_id' => ['nullable', 'exists:r_cells,id'],
+                        'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+
         ];
     }
 }

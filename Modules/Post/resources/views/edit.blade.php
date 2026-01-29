@@ -1,4 +1,6 @@
 @extends('layouts.admin')
+
+@section('title', "Edit Post Page")
 @section('content')
 
 <div class="max-w-2xl mx-auto">
